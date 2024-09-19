@@ -1,0 +1,7 @@
+must import the npm commands list:
+
+1. npm install
+2. npm node modules
+3. npm fontAwesomes
+4. npm heroicons
+5.npm create-next-app@latest
