@@ -4,89 +4,57 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function LeadForm({ closeForm,handleAddLead ,initialData }) {
+export default function LeadForm({ closeForm, handleCreateLead, initialData }) {
     const [formData, setFormData] = useState({
-        name: '',
-        cc: '91',
-        phone: '',
-        email: '',
-        feeQuoted: '',
-        batchTiming: '',
-        description: '',
-        leadStatus: '',
-        leadSource: '',
-        stack: '',
-        course: '',
-        classMode: '',
-        nextFollowUp: ''
+      name: '',
+      cc: '91',
+      phone: '',
+      email: '',
+      feeQuoted: '',
+      batchTiming: '',
+      description: '',
+      leadStatus: '',
+      leadSource: '',
+      stack: '',
+      course: '',
+      classMode: '',
+      nextFollowUp: ''
     });
-
-
-
-
-   
-    const [leads, setLeads] = useState([]);
-
-
-
-    useEffect(() => {
-        if (initialData) {
-          setFormData(initialData);
-        }
-      }, [initialData]);
-    
-
-    // Fetch data from json-server when the component mounts
-    useEffect(() => {
-      fetchLeads();
-    }, []);
   
-    // Function to fetch leads from json-server
-    const fetchLeads = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/Leads');
-        const data = await response.json();
-        setLeads(data); // Set the leads state with the fetched data
-      } catch (error) {
-        console.error('Error fetching leads:', error);
+    useEffect(() => {
+      if (initialData) {
+        setFormData(initialData);
       }
-    };
+    }, [initialData]);
   
-    // Handle form input changes
     const handleChange = (e) => {
       const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
     };
   
-
-
-    // Handle form submission
     const handleSubmit = async (e) => {
       e.preventDefault(); // Prevent default form behavior
-      handleAddLead(formData);
-    closeForm();
-
+  
+      // Prepare the data with a timestamp
+      const now = new Date();
+      const date = now.toLocaleDateString('en-GB');
+    //   const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const timestamp = `${date}`;
+  
+      const formDataWithTimestamp = { ...formData, createdOn: timestamp };
+  
       try {
-        const now = new Date();
-        const date = now.toLocaleDateString('en-GB'); // Adjust the locale for the desired format
-        const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const timestamp = `${date} ${time}`; // Combine date and time
-        
-        // Add timestamp to formData
-        const formDataWithTimestamp = { ...formData, createdOn: timestamp };
-
         const response = await fetch('http://localhost:3000/Leads', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify( formDataWithTimestamp),
+          body: JSON.stringify(formDataWithTimestamp),
         });
   
         if (response.ok) {
-          // Fetch the updated leads list after form submission
-          fetchLeads();
-          alert('Form data successfully submitted');
+          alert('Lead successfully created!');
+          // Clear the form data
           setFormData({
             name: '',
             cc: '91',
@@ -102,15 +70,18 @@ export default function LeadForm({ closeForm,handleAddLead ,initialData }) {
             classMode: '',
             nextFollowUp: ''
           });
-          closeForm(); // Close the form
+          closeForm();
         } else {
-          alert('Failed to submit data. Please try again.');
+          alert('Failed to create lead. Please try again.');
         }
       } catch (error) {
         console.error('Error submitting form data:', error);
         alert('An error occurred while submitting the data.');
       }
     };
+
+
+
 
    
   
@@ -268,6 +239,8 @@ export default function LeadForm({ closeForm,handleAddLead ,initialData }) {
                         <option value="Full Stack">Full Stack</option>
                     </select>
                 </div>
+
+
 
                 {/* Course */}
                 <div className="flex flex-col">

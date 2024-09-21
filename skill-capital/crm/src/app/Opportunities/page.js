@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
@@ -18,16 +18,18 @@ const Oppurtunity = () => {
 
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const [rows, setRows] = useState([]);
+  // const [rows, setRows] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [chance, setChance] = useState([]);
 
   // Leads.js
   const handleAddLead = (formData) => {
     const now = new Date();
     const timestamp = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const leadWithTimestamp = { ...formData, createdOn: timestamp };
-    setRows((prevRows) => [leadWithTimestamp, ...prevRows]); // Insert at the top
+    setChance((prevRows) => [leadWithTimestamp, ...prevRows]); // Insert at the top
   };
 
 
@@ -40,9 +42,27 @@ const Oppurtunity = () => {
     setIsFormVisible(false);
   };
 
-  const filteredRows = rows.filter((row) =>
+  const filteredRows = chance.filter((row) =>
     row.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const fetchChance = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/opportunities", {
+        method: 'GET'
+      });
+      const data = response.json();
+      setChance(data);
+
+    } catch (error) {
+      console.error('Error Fetching Oppurtunity', error);
+    }
+
+  }
+
+  useEffect(() => {
+    fetchChance();
+  }, [])
 
   return (
 
@@ -70,8 +90,8 @@ const Oppurtunity = () => {
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <MenuButton
-               onClick={openForm}
-               className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 hover:bg-blue-500 hover:text-white">
+                onClick={openForm}
+                className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500 hover:bg-blue-500 hover:text-white">
                 Create Oppurtunity
                 <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
               </MenuButton>
@@ -174,8 +194,8 @@ const Oppurtunity = () => {
                 <td colSpan="11">No data available</td>
               </tr>
             ) : (
-              filteredRows.map((row, index) => (
-                <tr key={index}>
+              filteredRows.map((row) => (
+                <tr key={row.id}>
                   <td className="border-2 px-3">{row.createdOn}</td> {/* New column data not exising in form */}
                   <td className='border-2 px-3'>{row.name}</td>
                   <td className='border-2 px-3'>{row.oppurtunityStatus}</td>
@@ -190,9 +210,9 @@ const Oppurtunity = () => {
         </table>
       </div>
     </div>
-  
-    
-)
+
+
+  )
 
 };
 export default Oppurtunity;

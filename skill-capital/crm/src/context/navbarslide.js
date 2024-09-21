@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faBell, faUser } from '@fortawesome/free-solid-svg-icons';
 import AppsIcon from '@mui/icons-material/Apps';
+import LogoutIcon from '@mui/icons-material/Logout';
 //  import GroupsIcon from '@mui/icons-material/Groups';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
@@ -79,6 +80,7 @@ export default function NavbarSlide() {
             <Link href="#"><FontAwesomeIcon icon={faStar} size="1x" aria-label="Favorites" /></Link>
             <Link href="#"><FontAwesomeIcon icon={faBell} size="1x" aria-label="Notifications" /></Link>
             <Link href="#"><FontAwesomeIcon icon={faUser} size="1x" aria-label="User" /></Link>
+            <Link href="/app">< LogoutIcon/></Link>
         </div>
 
         </div>
