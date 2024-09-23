@@ -444,7 +444,7 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                 {/* Action Buttons */}
                 <div className="flex justify-between space-x-4 mt-6">
                     <button onClick={closeForm} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md">Cancel</button>
-                    <button type='submit' className="px-4 py-2 bg-blue-600 text-white rounded-md">Create</button>
+                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Create</button>
                 </div>
             </div>
         </form>

@@ -433,11 +433,11 @@ const handleUpdate = (row) => {
                             </button>
                             {isUpdateFormVisible && (
                               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10 m-h-[50px] p-5">
-                              <UpdateForm
+                              {/* <UpdateForm
                                 rowData={currentRowData}
                                 onClose={() => setIsUpdateFormVisible(false)}
                                 onUpdate={fetchLearner} // or whatever method you use to refresh the data
-                              />
+                              /> */}
                             </div>
                             )}
 
