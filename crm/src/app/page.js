@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function LoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -16,8 +17,8 @@ export default function LoginPage() {
 
         setTimeout(async () => {
             try {
-                const response = await fetch('http://localhost:3000/login');
-
+                const response = await fetch('http://18.224.180.91:8000/api1/login/');
+                
                 if (!response.ok) {
                     throw new Error("Failed to fetch users from the server");
                 }
@@ -96,8 +97,8 @@ export default function LoginPage() {
                             </button>
                         </div>
                         <div className="flex gap-2 mt-8">
-                            <input type="checkbox" className="h-5 w-5" />
-                            <span className="font-normal text-sm text-gray-600">Remember Me</span>
+                            <input type="checkbox" className="h-4 w-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500 transition duration-200 ease-in-out" />
+                            <span className="ml-2 block text-sm font-medium text-gray-700 hover:text-pink-600 cursor-pointer transition duration-200 ease-in-out mt-[-3px]">Remember Me</span>
                         </div>
                         <span className="text-gray-500 text-sm font-medium mt-24 text-center block">©2024, All rights reserved</span>
                     </form>

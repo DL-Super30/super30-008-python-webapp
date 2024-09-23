@@ -29,7 +29,7 @@ export default function Learners() {
             <div className="flex flex-wrap gap-3 justify-between items-center px-5 py-2">
               <div className="flex gap-3 items-center">
                 <Image
-                  src="/images/1.svg"
+                  src="/images/employee_contact.2d215fd6.svg"
                   alt="logo"
                   width={44}
                   height={44}

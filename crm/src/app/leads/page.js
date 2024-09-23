@@ -19,7 +19,7 @@ export default function Leads() {
   useEffect(() => {
     async function fetchLeads() {
       try {
-        const response = await fetch('http://localhost:3000/leads');
+        const response = await fetch('http://18.217.40.33:8000/api2/leads/');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setLeads(data);

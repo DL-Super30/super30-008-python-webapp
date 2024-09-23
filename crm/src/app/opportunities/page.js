@@ -118,7 +118,7 @@ export default function Opportunities() {
         <div className="mb-5">
           <div className="flex flex-wrap justify-between items-center px-5 py-2 gap-3">
             <div className="flex items-center gap-3">
-              <Image src="/images/1.svg" alt="logo" width={44} height={44} />
+              <Image src="/images/employee_contact.2d215fd6.svg" alt="logo" width={44} height={44} />
               <h2 className="text-2xl font-medium text-black flex items-center gap-2">
                 All Opportunities <FontAwesomeIcon icon={faAngleDown} />
               </h2>
