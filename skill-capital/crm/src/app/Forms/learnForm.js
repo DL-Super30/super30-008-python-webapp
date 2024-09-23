@@ -183,7 +183,7 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* Batch ID's*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Batch ID's</label>
+                        <label className="text-sm font-medium">Batch ID&apos;s</label>
                         <input
                             type="text"
                             name="batchId"
