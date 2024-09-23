@@ -27,19 +27,17 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         e.preventDefault();
         try {
             // Send the updated data to the JSON server
-            const response = await fetch(`http://18.116.199.48:8000/api/leads/${rowData.id}/`, {
+            const response = await fetch(`http://18.217.249.38:8000/api/opportunities/${rowData.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
                 },
                 body: JSON.stringify(formData), // Make sure formData is correctly structured
             });
     
             if (!response.ok) {
                 // Handle server errors
-                const errorDetails = await response.text();  // Get the error details
-                throw new Error(`Failed to update lead: ${response.statusText} - ${errorDetails}`);
+                throw new Error(`Failed to update oppourtunity: ${response.statusText}`);
             }
     
             const result = await response.json();
@@ -52,8 +50,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
             onClose();
             
         } catch (error) {
-            console.error('Error updating lead:', error);
-            alert('There was an issue updating the lead.');
+            console.error('Error updating oppourtunity:', error);
+            alert('There was an issue updating the oppourtunity.');
         }
         onUpdate(); // Call the update function to refresh the table
         onClose(); // Close the form
@@ -71,7 +69,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <div className="bg-blue-600 p-2 rounded-md">
                             <FontAwesomeIcon icon={faIdCard} className=" flex bg-blue-600 text-white justify-center items-center w-[30px] h-[20px]" />
                         </div>
-                        <p className="text-lg font-bold">Update Lead</p>
+                        <p className="text-lg font-bold">Update oppourtunity</p>
                         <span>
                         <input
                             type="text"
@@ -85,7 +83,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     </div>
                     <div>
                         <button className="text-gray-600 hover:text-gray-900" onClick={closeForm}>
-                            <CloseIcon />
+                            <CloseIcon  />
                         </button>
                     </div>
                 </div>
@@ -106,20 +104,20 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     </div>
 
 
-                    {/* Lead Status */}
+                    {/* oppourtunity Status */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Lead Status</label>
+                        <label className="text-sm font-medium">oppourtunity Status</label>
                         <select
-                            name="lead_status"
-                            value={formData.lead_status}
+                            name="oppourtunity_status"
+                            value={formData.oppourtunity_status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
-                            <option value="" disabled>Select Lead Status</option>
-                            <option value="Not Contacted">Not Contacted</option>
-                            <option value="Contacted">Contacted</option>
-                            <option value="Warm Lead">Warm Lead</option>
-                            <option value="Cold Lead">Cold Lead</option>
+                            <option value="" disabled>Select oppourtunity Status</option>
+                            <option value="Visiting">Visiting</option>
+                            <option value="Visited">Visited</option>
+                            <option value=" demoAttemptedStage"> demoAttemptedStage</option>
+                            <option value="Lost Oppourtunity">Lost Oppourtunity</option>
                         </select>
                     </div>
 
@@ -191,7 +189,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                 {/* Add other fields as necessary */}
                 <div className="flex justify-between space-x-4 mt-6">
                     <button onClick={closeForm} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md">Cancel</button>
-                    <button type='submit' className="px-4 py-2 bg-blue-600 text-white rounded-md">Update Lead </button>
+                    <button type='submit' className="px-4 py-2 bg-blue-600 text-white rounded-md">Update oppourtunity </button>
                 </div>
             </div>
         </form>

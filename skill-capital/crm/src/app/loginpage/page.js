@@ -106,7 +106,7 @@ export default function LoginForm() {
     if (username && password && username.length >= 5 && password.length >= 8) {
       try {
         // Send form data to the API
-        const response = await fetch('http://18.217.40.33:8000/api1/login/', {
+        const response = await fetch('http://18.217.249.38:8000/api/login/', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

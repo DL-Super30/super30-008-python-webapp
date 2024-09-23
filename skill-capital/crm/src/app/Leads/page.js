@@ -45,7 +45,7 @@ export default function LeadManagement() {
 
   const fetchLeads = async () => {
     try {
-      const response = await fetch('http://localhost:3000/Leads', {
+      const response = await fetch('http://18.116.199.48:8000/api/leads/', {
         method: 'GET'
       });
       const data = await response.json()
@@ -59,14 +59,14 @@ export default function LeadManagement() {
 
 
   const handleCreateLead = (newLead) => {
-    // Add the new lead to the state and sort by createdOn (most recent first)
+    // Add the new lead to the state and sort by date (most recent first)
     setLeads((prevLeads) => {
       const updatedLeads = [newLead, ...prevLeads]; // Add the new lead at the top
-      return updatedLeads.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+      return updatedLeads.sort((a, b) => new Date(b.date) - new Date(a.date));
     });
     setFilteredRows((prevLeads) => {
       const updatedLeads = [newLead, ...prevLeads];
-      return updatedLeads.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+      return updatedLeads.sort((a, b) => new Date(b.date) - new Date(a.date));
     });
   };
 
@@ -77,15 +77,15 @@ export default function LeadManagement() {
   useEffect(() => {
     let filteredData = Leads.filter((row) =>
       row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (filterByLeadStatus === "" || row.leadStatus === filterByLeadStatus)
+      (filterByLeadStatus === "" || row.lead_status === filterByLeadStatus)
     );
     setFilteredRows(filteredData);
 
     const updatedCounts = {
-      NotContacted: filteredData.filter(row => row.leadStatus === "Not Contacted").length,
-      Contacted: filteredData.filter(row => row.leadStatus === "Contacted").length,
-      WarmLead: filteredData.filter(row => row.leadStatus === "Warm Lead").length,
-      ColdLead: filteredData.filter(row => row.leadStatus === "Cold Lead").length,
+      NotContacted: filteredData.filter(row => row.lead_status === "Not Contacted").length,
+      Contacted: filteredData.filter(row => row.lead_status === "Contacted").length,
+      WarmLead: filteredData.filter(row => row.lead_status === "Warm Lead").length,
+      ColdLead: filteredData.filter(row => row.lead_status === "Cold Lead").length,
     };
 
     setCounts(updatedCounts);
@@ -97,12 +97,12 @@ export default function LeadManagement() {
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:3000/Leads/${id}`, {
+    fetch(`http://18.116.199.48:8000/api/leads/${id}/`, {
       method: 'DELETE',
     })
       .then(response => {
         if (response.ok) {
-          setRows(prevRows => prevRows.filter(row => row.id !== id));
+          setLeads(prevRows => prevRows.filter(row => row.id !== id));
         } else {
           console.error('Error deleting the row');
         }
@@ -123,10 +123,25 @@ export default function LeadManagement() {
   }
 
   const renderKanbanColumn = (status) => {
-    const filteredLeads = filteredRows.filter(lead => lead.leadStatus === status);
+    const filteredLeads = filteredRows.filter(lead => lead.lead_status === status);
+
+    const getColorByStatus=()=>{
+      switch(status){
+        case "Not Contacted":
+          return "bg-green-100 border-t-[5px] border-t-green-800";
+        case "Contacted":
+          return " bg-yellow-100 border-t-[5px] border-t-yellow-800";
+        case "Warm Lead":
+          return "bg-orange-100 border-t-[5px] border-t-orange-800";
+        case "Cold Lead":
+          return "bg-pink-100 border-t-[5px] border-t-pink-800"
+      }
+
+    }
     return (
       <div className="grid gap-3 text-center min-w-[200px] max-w-[300px]">
-        <div className="border-1 bg-green-100 flex flex-col not-italic gap-2 rounded-lg text-sm p-2">
+
+        <div className={`border-1  flex flex-col not-italic gap-2 rounded-lg text-sm p-2 ${getColorByStatus(status)}`}>
           <p>{status}</p>
           <p>
             {filteredLeads.length} Leads
@@ -137,10 +152,10 @@ export default function LeadManagement() {
             <p>No leads</p>
           ) : (
             filteredLeads.map((lead) => (
-              <div key={lead.id} className="bg-white p-2 mb-2 rounded shadow">
+              <div key={lead.id} className="bg-white p-2 mb-2 rounded-md text-sm shadow">
                 <p className="font-bold">{lead.name}</p>
                 <p>{lead.email}</p>
-                <p>{lead.phone}</p>
+                <p>{lead.contact_no}</p>
                 <div className="flex justify-between mt-2">
                   <button className="text-green-700 flex items-center text-xs">
                     <EditIcon className="w-4 h-4 mr-1" />
@@ -371,9 +386,9 @@ const handleUpdate = (row) => {
                     <th className='border-2 px-[50px]'>created On</th>
                     <th className='border-2 px-[50px]'>Name</th>
                     <th className='border-2 px-[50px]'>Lead Status</th>
-                    <th className='border-2 px-[50px]'>Phone</th>
+                    <th className='border-2 px-[50px]'>Contact</th>
                     <th className='border-2 px-[50px]'>Email</th>
-                    <th className='border-2 px-[50px]'>Stack</th>
+                    <th className='border-2 px-[50px]'>TechStack</th>
                     <th className='border-2 px-[50px]'>Course</th>
                     <th className='border-2 px-[50px]'>Update</th>
                     <th className='border-2 px-[50px]'>Delete</th>
@@ -395,13 +410,13 @@ const handleUpdate = (row) => {
 
                           />
                         </td>
-                        <td className="border-2 p-2">{row.createdOn}</td>
+                        <td className="border-2 p-2">{row.date}</td>
                         <td className='border-2 p-2'>{row.name}</td>
-                        <td className='border-2 p-2'>{row.leadStatus}</td>
-                        <td className='border-2 p-2'>{row.phone}</td>
+                        <td className='border-2 p-2'>{row.lead_status}</td>
+                        <td className='border-2 p-2'>{row.contact_no}</td>
                         <td className='border-2 p-2'>{row.email}</td>
-                        <td className='border-2 p-2'>{row.stack}</td>
-                        <td className='border-2 p-2'>{row.course}</td>
+                        <td className='border-2 p-2'>{row.TechStack}</td>
+                        <td className='border-2 p-2'>{row.Course}</td>
                         <td className=' border-2 px-3'>
                           <div className="flex items-center justify-center">
                             <button

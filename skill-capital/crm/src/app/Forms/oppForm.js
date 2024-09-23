@@ -4,24 +4,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function OppurtunityForm({ closeForm, handleAddLead }) {
+export default function OppurtunityForm({ closeForm }) {
 
-    const [chance, setChance] = useState([]);
+    // const [chance, setChance] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
         cc: '91',
-        phone: '',
+        contact_no: '',
         email: '',
-        feeQuoted: '',
-        batchTiming: '',
+        fee_coated: '',
+        batch_timing: '',
         description: '',
-        leadStatus: '',
-        leadSource: '',
-        stack: '',
-        course: '',
-        classMode: '',
+       lead_status: '',
+        lead_source: '',
+        TechStack: '',
+        Course: '',
+        class_mode: '',
         nextFollowUp: '',
-        oppurtunityStatus: '',
+        oppourtunity_status: '',
         oppurtunityStage: '',
         demoAttemptedStage: '',
         visitedStage: '',
@@ -31,19 +31,19 @@ export default function OppurtunityForm({ closeForm, handleAddLead }) {
 
 
     // Fetching data from server json
-    const fetchChance = async () => {
-        try {
+    // const fetchChance = async () => {
+    //     try {
 
-            const response = await fetch('http://localhost:3000/opportunities');
-            const data = await response.json();
-            setChance(data);
-        }
+    //         const response = await fetch('http://localhost:3002/opportunities');
+    //         const data = await response.json();
+    //         setChance(data);
+    //     }
 
-        catch (error) {
-            console.error('Fetching oppourtunites error:', error);
+    //     catch (error) {
+    //         console.error('Fetching oppourtunites error:', error);
 
-        }
-    };
+    //     }
+    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -53,47 +53,47 @@ export default function OppurtunityForm({ closeForm, handleAddLead }) {
 
     const handleSubmit = async(e) => {
         e.preventDefault(); // Prevent default form behavior
-        setFormData({ name: "", age: "", email: "", stack: "", course: "" }); // Reset the form data
-        handleAddLead(formData);
+        setFormData({ name: "", contact_no: "", email: "", TechStack: "", Course: "" }); // Reset the form data
+       
         closeForm(); // Close the form
         alert("Form data successfully submitted"); // Show confirmation
 
         try {
             const now = new Date();
             const date = now.toLocaleDateString('en-GB'); // Adjust the locale for the desired format
-            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const timestamp = `${date} ${time}`; // Combine date and time
+            // const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const datestamp = `${date}`; // Combine date and time
 
-            // Add timestamp to formData
-            const formDataWithTimestamp = { ...formData, createdOn: timestamp };
+            // Add datestamp to formData
+            const formDataWithdatestamp = { ...formData, date: datestamp };
 
-            const response = await fetch('http://localhost:3000/opportunities', {
+            const response = await fetch('http://18.217.249.38:8000/api/opportunities/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formDataWithTimestamp),
+                body: JSON.stringify(formDataWithdatestamp),
             });
 
             if (response.ok) {
                 // Fetch the updated leads list after form submission
-                fetchChance();
+                // fetchChance();
                 alert('Form data successfully submitted');
                 setFormData({
                     name: '',
                     cc: '91',
-                    phone: '',
+                    contact_no: '',
                     email: '',
-                    feeQuoted: '',
-                    batchTiming: '',
+                    fee_coated: '',
+                    batch_timing: '',
                     description: '',
-                    leadStatus: '',
-                    leadSource: '',
-                    stack: '',
-                    course: '',
-                    classMode: '',
+                   lead_status: '',
+                    lead_source: '',
+                    TechStack: '',
+                    Course: '',
+                    class_mode: '',
                     nextFollowUp: '',
-                    oppurtunityStatus: '',
+                    oppourtunity_status: '',
                     oppurtunityStage: '',
                     demoAttemptedStage: '',
                     visitedStage: '',
@@ -157,16 +157,16 @@ return (
                     />
                 </div>
 
-                {/* Phone */}
+                {/* contact_no */}
                 <div className="flex flex-col">
-                    <label className="text-sm font-medium">Phone</label>
+                    <label className="text-sm font-medium">contact_no</label>
                     <input
                         type="number"
                         pattern='[0-9]{10}'
-                        name="phone"
-                        value={formData.phone}
+                        name="contact_no"
+                        value={formData.contact_no}
                         onChange={handleChange}
-                        placeholder="Phone"
+                        placeholder="contact_no"
                         minLength="10"
                         maxLength="10"
                         required
@@ -192,8 +192,8 @@ return (
                     <label className="text-sm font-medium">Fee Quoted</label>
                     <input
                         type="text"
-                        name="feeQuoted"
-                        value={formData.feeQuoted}
+                        name="fee_coated"
+                        value={formData.fee_coated}
                         onChange={handleChange}
                         placeholder="Fee Quoted"
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -205,8 +205,8 @@ return (
                     <label className="text-sm font-medium">Batch Timing</label>
                     <input
                         type="text"
-                        name="batchTiming"
-                        value={formData.batchTiming}
+                        name="batch_timing"
+                        value={formData.batch_timing}
                         onChange={handleChange}
                         placeholder="Batch Timing"
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -218,16 +218,16 @@ return (
                 <div className="flex flex-col">
                     <label className="text-sm font-medium">Lead Status</label>
                     <select
-                        name="leadStatus"
-                        value={formData.leadStatus}
+                        name="lead_status"
+                        value={formData.lead_status}
                         onChange={handleChange}
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         <option value="" disabled>Select Lead Status</option>
                         <option value="Not Contacted">Not Contacted</option>
                         <option value="Contacted">Contacted</option>
-                        <option value="Interested">Interested</option>
-                        <option value="Closed">Closed</option>
+                        <option value="Warm Lead">Warm Lead</option>
+                        <option value="Cold Lead">Cold Lead</option>
                     </select>
                 </div>
 
@@ -235,8 +235,8 @@ return (
                 <div className="flex flex-col">
                     <label className="text-sm font-medium">Lead Source</label>
                     <select
-                        name="leadSource"
-                        value={formData.leadSource}
+                        name="lead_source"
+                        value={formData.lead_source}
                         onChange={handleChange}
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
@@ -247,19 +247,19 @@ return (
                     </select>
                 </div>
 
-                {/* Stack */}
+                {/* TechStack */}
                 <div className="flex flex-col">
-                    <label className="text-sm font-medium">Stack</label>
+                    <label className="text-sm font-medium">TechStack</label>
                     <select
-                        name="stack"
-                        value={formData.stack}
+                        name="TechStack"
+                        value={formData.TechStack}
                         onChange={handleChange}
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
-                        <option value="" disabled>Select Stack</option>
+                        <option value="" disabled>Select TechStack</option>
                         <option value="Frontend">Frontend</option>
                         <option value="Backend">Backend</option>
-                        <option value="Full Stack">Full Stack</option>
+                        <option value="Full TechStack">Full TechStack</option>
                     </select>
                 </div>
 
@@ -267,8 +267,8 @@ return (
                 <div className="flex flex-col">
                     <label className="text-sm font-medium">Course</label>
                     <select
-                        name="course"
-                        value={formData.course}
+                        name="Course"
+                        value={formData.Course}
                         onChange={handleChange}
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
@@ -283,8 +283,8 @@ return (
                 <div className="flex flex-col">
                     <label className="text-sm font-medium">Class Mode</label>
                     <select
-                        name="classMode"
-                        value={formData.classMode}
+                        name="class_mode"
+                        value={formData.class_mode}
                         onChange={handleChange}
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
@@ -310,15 +310,15 @@ return (
                 <div className="flex flex-col">
                     <label className="text-sm font-medium">Oppurtunity Status</label>
                     <select
-                        name="oppurtunityStatus"
-                        value={formData.oppurtunityStatus}
+                        name="oppourtunity_status"
+                        value={formData.oppourtunity_status}
                         onChange={handleChange}
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         <option value="" disabled>Select Oppurtunity Status</option>
                         <option value="Visiting">Visiting</option>
                         <option value="Not Visited">Not Visited</option>
-                        <option value="Demo Attended">Demo Attended</option>
+                        <option value="demoAttemptedStage">demoAttemptedStage</option>
                         <option value="Lost Oppourtunity">Lost Oppourtunity</option>
                     </select>
                 </div>
@@ -332,9 +332,9 @@ return (
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         <option value="" disabled>Select Oppurtunity Stage</option>
-                        <option value="Not Contacted">Not Contacted</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Interested">Interested</option>
+                        <option value="Visiting">Visiting</option>
+                        <option value="Visited">Visited</option>
+                        <option value="demoAttemptedStage">demoAttemptedStage</option>
                         <option value="Closed">Closed</option>
                     </select>
                 </div>
@@ -348,9 +348,9 @@ return (
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         <option value="" disabled>Select Demo Attempted Stage</option>
-                        <option value="Not Contacted">Not Contacted</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Interested">Interested</option>
+                        <option value="Visiting">Visiting</option>
+                        <option value="Visited">Visited</option>
+                        <option value="demoAttemptedStage">demoAttemptedStage</option>
                         <option value="Closed">Closed</option>
                     </select>
                 </div>
@@ -364,9 +364,9 @@ return (
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         <option value="" disabled>Select Visited Stage</option>
-                        <option value="Not Contacted">Not Contacted</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Interested">Interested</option>
+                        <option value="Visiting">Visiting</option>
+                        <option value="Visited">Visited</option>
+                        <option value="demoAttemptedStage">demoAttemptedStage</option>
                         <option value="Closed">Closed</option>
                     </select>
                 </div>
@@ -380,9 +380,9 @@ return (
                         className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         <option value="" disabled>Select Lost Oppurtunity Reason</option>
-                        <option value="Not Contacted">Not Contacted</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Interested">Interested</option>
+                        <option value="Visiting">Visiting</option>
+                        <option value="Visited">Visited</option>
+                        <option value="demoAttemptedStage">demoAttemptedStage</option>
                         <option value="Closed">Closed</option>
                     </select>
                 </div>

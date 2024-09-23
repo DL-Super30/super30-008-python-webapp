@@ -9,7 +9,7 @@ export default function LearnForm({ closeForm, handleAddLead }) {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
-        phone: '',
+       contact_no: '',
         email: '',
         idProof: '',
         dateOfBirth: '',
@@ -27,10 +27,10 @@ export default function LearnForm({ closeForm, handleAddLead }) {
         counsellingDoneBy: '',
         registeredCourseCount: '',
         preferableTime : '',
-        techStack : '',
+        TechStack : '',
         batchTiming : '',
         courseComments : '',
-        modeOfClass : '',
+        mode_of_class : '',
         slackAccess : '',
         Comment : '',
         lmsAccess : ''
@@ -52,10 +52,10 @@ export default function LearnForm({ closeForm, handleAddLead }) {
             createdOn: '',
             registeredDate: '',
             lastName: '',
-            phone: '',
+           contact_no: '',
             email: '',
-            modeOfClass: '',
-            techStack: '',
+            mode_of_class: '',
+            TechStack: '',
             totalFee: '',
             feePaid: '',
             dueAmount: '',
@@ -114,7 +114,7 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                         />
                     </div>
 
-                    {/* Phone */}
+                    {/*contact_no */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Phone</label>
                         <input
@@ -193,9 +193,9 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                         />
                     </div>
 
-                    {/* Alternate phone*/}
+                    {/* Alternatecontact_no*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Alternate phone</label>
+                        <label className="text-sm font-medium">Alternatecontact_no</label>
                         <input
                             type="text"
                             name="alternatePhone"
@@ -355,8 +355,8 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                             <label className="text-sm font-medium">Tech Stack</label>
                             <input
                                 type="text"
-                                name="techStack"
-                                value={formData.techStack}
+                                name="TechStack"
+                                value={formData.TechStack}
                                 onChange={handleChange}
                                 placeholder="Tech Stack"
                                 className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -392,8 +392,8 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                             <label className="text-sm font-medium">Mode Of Class</label>
                             <input
                                 type="text"
-                                name="modeOfClass"
-                                value={formData.modeOfClass}
+                                name="mode_of_class"
+                                value={formData.mode_of_class}
                                 onChange={handleChange}
                                 placeholder="Mode Of Class"
                                 className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
