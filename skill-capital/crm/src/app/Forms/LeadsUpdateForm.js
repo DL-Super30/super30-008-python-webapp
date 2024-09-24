@@ -27,7 +27,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         e.preventDefault();
         try {
             // Send the updated data to the JSON server
-            const response = await fetch(`http://18.116.199.48:8000/api/leads/${rowData.id}/`, {
+            const leadsApiUrl = process.env.NEXT_PUBLIC_LEADS_API_URL;
+            const response = await fetch(`${leadsApiUrl}${rowData.id}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

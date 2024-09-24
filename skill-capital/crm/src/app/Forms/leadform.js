@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function LeadForm({ closeForm, handleCreateLead, initialData }) {
-    const [formData, setFormData] = useState({
+export default function LeadForm({ closeForm,  initialData }) {
+    const [formData, setFormData] = useState( initialData || {
         name: '',
         cc: '91',
         contact_no: '',
@@ -34,7 +34,7 @@ export default function LeadForm({ closeForm, handleCreateLead, initialData }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form behavior
-
+        // handleCreateLead(formData);
         // Prepare the data with a datestamp
         const now = new Date();
         const date = now.toLocaleDateString('en-GB');
@@ -44,7 +44,8 @@ export default function LeadForm({ closeForm, handleCreateLead, initialData }) {
         const formDataWithdatestamp = { ...formData, date: datestamp };
 
         try {
-            const response = await fetch('http://18.116.199.48:8000/api/leads/', {
+            const leadsApiUrl = process.env.NEXT_PUBLIC_LEADS_API_URL;
+            const response = await fetch(`${leadsApiUrl}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ export default function LeadForm({ closeForm, handleCreateLead, initialData }) {
                     // date: ''
                 });
                 closeForm();
-                handleCreateLead(); 
+               
             } else {
                 alert('Failed to create lead. Please try again.');
             }

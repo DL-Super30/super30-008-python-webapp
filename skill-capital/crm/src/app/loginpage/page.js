@@ -145,7 +145,7 @@ export default function LoginForm() {
       {/* container-1 */}
       <div className="flex flex-col w-1/2 h-full justify-center p-10 text-justify">
         <div className="flex items-center justify-center py-3">
-          <Image src="/Image/2.webp" alt="Skill Capital Logo" width={200} height={70} />
+          <Image src="./Image/2.webp" alt="Skill Capital Logo" width={200} height={70} />
         </div>
         <form
           className="flex flex-col items-center justify-center w-[440px] h-fit gap-3 p-4 mx-auto shadow-inner rounded-md bg-gray-100"
@@ -233,7 +233,7 @@ export default function LoginForm() {
           Centralize customer data effortlessly. Streamline communication, sales, and support for seamless growth.
         </p>
         <div className="w-full h-full">
-          <Image src="/Image/1.jpg" alt="Skill Capital" width={1000} height={1000} className="h-full w-full object-cover" />
+          <Image src="./Image/1.jpg" alt="Skill Capital" width={1000} height={1000} className="h-full w-full object-cover" />
         </div>
       </div>
 

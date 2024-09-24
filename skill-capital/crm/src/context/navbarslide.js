@@ -21,7 +21,7 @@ export default function NavbarSlide() {
 
   return (
     <header>
-      <nav className="w-full h-[70px] bg-light-100 flex justify-around  ring-1 ring-inset ring-gray-200 py-5 items-center shadow-md">
+      <div className="w-full h-[80px]  bg-gray-100 flex justify-around   py-[70px] items-center shadow-md ">
 
         <div className=" w-[300px] flex items-center justify-between gap-3">
 
@@ -84,7 +84,7 @@ export default function NavbarSlide() {
         </div>
 
         </div>
-      </nav>
+      </div>
     </header>
   );
 }
