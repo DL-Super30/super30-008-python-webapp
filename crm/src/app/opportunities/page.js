@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import { faAngleDown, faAngleUp, faTable, faColumns, faSearch, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import OpportunityForm from "../../components/opportunityform";
+import OpportunityForm from "../../components/createopportunities";
 // import UpdateOpportunityForm from "../../components/updateOpportunity"; // Import UpdateOpportunityForm component
 
 export default function Opportunities() {
@@ -284,8 +284,8 @@ export default function Opportunities() {
                 </div>
               </div>
 
-              {/* Conditionally render the OpportunityForm
-              {showOpportunityForm && <OpportunityForm />} */}
+              {/* Conditionally render the OpportunityForm */}
+
 
               {/* Conditionally render the UpdateOpportunityForm */}
               {/* {showUpdateForm && opportunityToUpdate && (
@@ -295,6 +295,8 @@ export default function Opportunities() {
           )}
         </div>
       </div>
+      {showOpportunityForm && (<OpportunityForm setShowOpportunityForm = {setShowOpportunityForm}/>)}
+
     </div>
   );
 }
