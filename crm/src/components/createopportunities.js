@@ -149,13 +149,13 @@ export default function OpportunityForm({ setShowOpportunityForm }) {
                 <option value="Advanced Discussion">Advanced Discussion</option>
                 <option value="Ready to Join">Ready to Join</option>
                 <option value="Fees Negotiation">Fees Negotiation</option>
-                <option value="Ready to Join">Ready to Join</option>
-                <option value="Ready to Join">Ready to Join</option>
-                <option value="Ready to Join">Ready to Join</option>
-                <option value="Ready to Join">Ready to Join</option>
-                <option value="Ready to Join">Ready to Join</option>
-                <option value="Ready to Join">Ready to Join</option>
-                <option value="Ready to Join">Ready to Join</option>
+                <option value="Batch Allocation"></option>
+                <option value="interested"></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
                 
               </select>
             </div>
@@ -196,33 +196,6 @@ export default function OpportunityForm({ setShowOpportunityForm }) {
                 className="w-full p-2 border rounded"
                 placeholder="Fee Quoted"
               />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="font-medium text-base">Batch Timings</label>
-              <select
-                name="batchTimings"
-                value={formData.batchTimings}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-              >
-                <option value="">Select</option>
-                <option value="selected">Select</option>
-                <option value="7AM-8AM">7AM-8AM</option>
-                <option value="8AM-9AM">8AM-9AM</option>
-                <option value="9AM-10AM">9AM-10AM</option>
-                <option value="10AM-11AM">10AM-11AM</option>
-                <option value="11AM-12PM">11AM-12PM</option>
-                <option value="12PM-1PM">12PM-1PM</option>
-                <option value="1PM-2PM">1PM-2PM</option>
-                <option value="2PM-3PM">2PM-3PM</option>
-                <option value="3PM-4PM">3PM-4PM</option>
-                <option value="4PM-5PM">4PM-5PM</option>
-                <option value="5PM-6PM">5PM-6PM</option>
-                <option value="6PM-7PM">6PM-7PM</option>
-                <option value="7PM-8PM">7PM-8PM</option>
-                <option value="8PM-9PM">8PM-9PM</option>
-              </select>
             </div>
 
             <div className="flex flex-col">

@@ -17,7 +17,7 @@ export default function LoginPage() {
 
         setTimeout(async () => {
             try {
-                const response = await fetch('http://18.224.180.91:8000/api1/login/');
+                const response = await fetch('');
                 
                 if (!response.ok) {
                     throw new Error("Failed to fetch users from the server");
