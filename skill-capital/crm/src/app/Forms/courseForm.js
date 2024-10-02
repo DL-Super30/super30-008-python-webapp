@@ -4,18 +4,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
+import { toast } from 'react-toastify';
 
 
-export default function CourseForm({ closeForm, handleAddLead }) {
+export default function CourseForm({ closeForm }) {
 
     const [image, setImage] = useState(null);
 
     const [formData, setFormData] = useState({
-        courseName: '',
+        course_Name: '',
 
-        courseFee: '',
+        course_Fee: '',
 
-        courseDescription: ''
+        course_Description: '',
+
+        date: '',
 
     });
 
@@ -27,19 +30,73 @@ export default function CourseForm({ closeForm, handleAddLead }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const AlertMessage = (message, type) => {
+        if (type === 'success') {
+            toast.success(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else if (type === 'error') {
+            toast.error(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form behavior
-        setFormData({
 
-            courseName: '',
+        const dateOnly = formData.date;  // Get the 'YYYY-MM-DD' part
 
-            courseFee: '',
+        // Prepare the data to be sent, ensuring the date is in the correct format
+        const formDataWithDateOnly = { ...formData, date: dateOnly };
 
-            courseDescription: ''
-        }); // Reset the form data
-        handleAddLead(formData);
-        closeForm(); // Close the form
-        alert("Form data successfully submitted"); // Show confirmation
+
+        try {
+
+            const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+            const response = await fetch(`${CourseApiUrl}/Courses/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'applicatiopn/json' },
+                body: JSON.stringify(formDataWithDateOnly),
+            })
+
+            if (response.ok) {
+
+                AlertMessage("Course Created Successfylly", 'success'); // Show confirmation
+
+                setFormData({
+
+                    course_Name: '',
+
+                    course_Fee: '',
+
+                    course_Description: ''
+
+                }); // Reset the form data
+
+                closeForm(); // Close the form
+
+            }
+            else {
+                AlertMessage("Failed to Create Lead Please Try again!", "error");
+            }
+
+        } catch (error) {
+            console.error("form submitted error", error);
+        }
     };
 
 
@@ -51,6 +108,10 @@ export default function CourseForm({ closeForm, handleAddLead }) {
             setImage(imageUrl);
         }
     };
+
+
+
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -102,8 +163,8 @@ export default function CourseForm({ closeForm, handleAddLead }) {
                         <label className="text-sm font-medium"> Course Name</label>
                         <input
                             type="text"
-                            name="courseName"
-                            value={formData.courseName}
+                            name="course_Name"
+                            value={formData.course_Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -115,8 +176,8 @@ export default function CourseForm({ closeForm, handleAddLead }) {
                         <label className="text-sm font-medium">Course Fee</label>
                         <input
                             type="text"
-                            name="courseFee"
-                            value={formData.courseFee}
+                            name="course_Fee"
+                            value={formData.course_Fee}
                             onChange={handleChange}
                             placeholder="Course Fee"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -127,8 +188,8 @@ export default function CourseForm({ closeForm, handleAddLead }) {
                         <label className="text-sm font-medium">Description</label>
                         <input
                             type="text"
-                            name="courseDescription"
-                            value={formData.courseDescription}
+                            name="course_Description"
+                            value={formData.course_Description}
                             onChange={handleChange}
                             placeholder="Description"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"

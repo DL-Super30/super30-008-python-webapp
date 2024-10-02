@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import { toast } from 'react-toastify';
+
+
 
 
 
@@ -14,6 +17,7 @@ export default function LoginForm() {
   const [usernameBorderColor, setUsernameBorderColor] = useState("");
   const [passwordBorderColor, setPasswordBorderColor] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [records, setRecords] = useState([])
 
   // const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
@@ -27,56 +31,80 @@ export default function LoginForm() {
 
   // Input validation functions
   const validateInput = () => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const uppercasePattern = /[A-Z]/;
+    const digitPattern = /[0-9]/;
 
     if (!username) {
-      setUsernameWarning("Email is required");
+      setUsernameWarning("Username is required");
       setUsernameBorderColor("red");
     }
-    else if (!emailPattern.test(username)) {
-      setUsernameWarning("Invalid email format");
+    else if (!uppercasePattern.test(username) && username.length <= 5) {
+      setUsernameWarning("Username must include at least one uppercase letter.");
+      setUsernameBorderColor("orange");
+    }
+    else if (!digitPattern.test(username) && username.length <= 5) {
+      setUsernameWarning("Maintain the digits for strong security");
       setUsernameBorderColor("orange");
     }
     else if (username.length <= 5) {
-      setUsernameWarning("Email too short, must be greater than 5 characters");
+      setUsernameWarning("Username too short, must be greater than 5 characters");
       setUsernameBorderColor("orange");
     }
     else {
-      setUsernameWarning("Email is valid");
+      setUsernameWarning("Username is valid");
       setUsernameBorderColor("green");
     }
   };
 
   const validatePassword = () => {
-
-    const uppercasePattern = /[A-Z]/;
-    const lowercasePattern = /[a-z]/;
-    const digitPattern = /[0-9]/;
-    const specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/;
+    const passwordRequirements = [
+      { pattern: /[A-Z]/, message: "at least one uppercase letter" },
+      { pattern: /[a-z]/, message: "at least one lowercase letter" },
+      { pattern: /[!@#$%^&*(),.?":{}|<>]/, message: "at least one special character" },
+      { pattern: /[0-9]/, message: "at least one digit" },
+    ];
 
     if (!password) {
       setPasswordWarning("Password is required");
       setPasswordBorderColor("red");
-    } else if (password.length <= 8) {
-      setPasswordBorderColor("orange");
-      setPasswordWarning("Password too short. It must be greater than 5 characters.");
-    } else if (!uppercasePattern.test(password)) {
-      setPasswordBorderColor("orange");
-      setPasswordWarning("Password must include at least one uppercase letter.");
-    } else if (!lowercasePattern.test(password)) {
-      setPasswordBorderColor("orange");
-      setPasswordWarning("Password must include at least one lowercase letter.");
-    } else if (!digitPattern.test(password)) {
-      setPasswordBorderColor("orange");
-      setPasswordWarning("Password must include at least one digit.");
-    } else if (!specialCharPattern.test(password)) {
-      setPasswordBorderColor("orange");
-      setPasswordWarning("Password must include at least one special character.");
     } else {
-      setPasswordWarning("Password is valid");
-      setPasswordBorderColor("green");
+      const isValid = passwordRequirements.every((req) => req.pattern.test(password));
+
+      if (isValid) {
+        setPasswordWarning("Password is valid");
+        setPasswordBorderColor("green");
+      } else {
+        const missingReq = passwordRequirements.find((req) => !req.pattern.test(password));
+        setPasswordBorderColor("orange");
+        setPasswordWarning(`Password must include ${missingReq.message}.`);
+      }
     }
   };
+
+  const AlertMessage = (message, type) => {
+    if (type === 'success') {
+      toast.success(message, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (type === 'error') {
+      toast.error(message, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -90,50 +118,56 @@ export default function LoginForm() {
     validateInput();
     validatePassword();
 
-    // useEffect(() => {
-    //   const isValidUsername = username.length > 5;
-    //   const isValidPassword = password.length > 8;
-  
-    //   // Enable button if both username and password meet the conditions
-    //   if (isValidUsername && isValidPassword) {
-    //     setIsButtonDisabled(false);
-    //   } else {
-    //     setIsButtonDisabled(true);
-    //   }
-    // }, [username, password]);
-  
-    
-    if (username && password && username.length >= 5 && password.length >= 8) {
+
+    if (username && password) {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         // Send form data to the API
-        const response = await fetch('http://18.217.249.38:8000/api/login/', {
-          method: 'GET',
+        const response = await fetch(`${apiUrl}/login `, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          body: JSON.stringify({ username, password }),
         });
 
-        const result = await response.json();
-        const user = result.find(user => user.username === username && user.password === password);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status:${response.status}`);
+        }
 
-        if (user) {
+        const result = await response.json();
+
+        if (result && result.token) {
           if (rememberMe) {
-            localStorage.setItem("rememberedUsername", username);
+            localStorage.setItem('rememberedUsername', username);
+          } else {
+            localStorage.removeItem('rememberedUsername');
           }
-          else {
-            localStorage.removeItem("rememberedUsername");
-          }
-          // If a match is found, redirect to the dashboard
-          window.location.href = "/Dashboard";
-        } else {
-          // If no match is found, show an error message
-          alert('Invalid username or password');
+
+          // Save token in localStorage
+          localStorage.setItem('token', result.token);
+
+          // Show success toast
+          AlertMessage('Login successful!', 'success');
+
+          // Redirect to dashboard
+          window.location.href = '/Dashboard'
+        }
+        else {
+
+          AlertMessage('Invalid username or password', 'error');
+
+          AlertMessage('Error while logging in. Please try again later.', 'error');
         }
 
       } catch (error) {
         console.error('Error fetching user data:', error);
         alert('Error while logging in');
       }
+    }
+    else {
+      // Show error toast for missing username/password
+      AlertMessage('Please enter both username and password', 'error');
     }
   };
 
@@ -145,7 +179,8 @@ export default function LoginForm() {
       {/* container-1 */}
       <div className="flex flex-col w-1/2 h-full justify-center p-10 text-justify">
         <div className="flex items-center justify-center py-3">
-          <Image src="./Image/2.webp" alt="Skill Capital Logo" width={200} height={70} />
+          {/* <Image src="/Image/2.webp" alt="Skill Capital Logo" width={200} height={70} /> */}
+          <img className="w-60 h-10" src="./Image/2.webp"></img>
         </div>
         <form
           className="flex flex-col items-center justify-center w-[440px] h-fit gap-3 p-4 mx-auto shadow-inner rounded-md bg-gray-100"
@@ -200,7 +235,7 @@ export default function LoginForm() {
           </span>
 
           <button
-          // disabled={isButtonDisabled}
+            // disabled={isButtonDisabled}
             type="submit"
             id="btn"
             className="w-[400px] h-10 rounded-md bg-gradient-to-b from-[#f472b6]  to-[#9a3412] bg-[length:100%_200%] bg-left transition-bg-position duration-1000 ease-linear border"
@@ -233,7 +268,8 @@ export default function LoginForm() {
           Centralize customer data effortlessly. Streamline communication, sales, and support for seamless growth.
         </p>
         <div className="w-full h-full">
-          <Image src="./Image/1.jpg" alt="Skill Capital" width={1000} height={1000} className="h-full w-full object-cover" />
+          <img className="w-full h-full" src="./Image/1.jpg"></img>
+          {/* <Image src="/Image/1.jpg" alt="Skill Capital" width={1000} height={1000} className="h-full w-full object-cover" /> */}
         </div>
       </div>
 

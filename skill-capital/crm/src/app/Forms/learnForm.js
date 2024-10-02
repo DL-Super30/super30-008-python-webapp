@@ -1,70 +1,160 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
+import { Select } from '@headlessui/react';
+import { toast } from 'react-toastify';
 
 
-export default function LearnForm({ closeForm, handleAddLead }) {
-    const [filteredRows, setFilteredRows] = useState([]);
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-       contact_no: '',
-        email: '',
-        idProof: '',
-        dateOfBirth: '',
-        description: '',
-        registeredDate: '',
-        batchId: '',
-        alternatePhone: '',
-        exchangeRate: '',
-        source: '',
-        attendedDemo: '',
-        learnerOwner: '',
-        learnerStage: '',
-        leadCreatedTime: '',
-        currency: '',
-        counsellingDoneBy: '',
-        registeredCourseCount: '',
-        preferableTime : '',
-        TechStack : '',
-        batchTiming : '',
-        courseComments : '',
-        mode_of_class : '',
-        slackAccess : '',
-        Comment : '',
-        lmsAccess : ''
+
+export default function LearnForm({ closeForm, initialData }) {
+
+    const [formData, setFormData] = useState(initialData || {
+        FirstName: '',
+        LastName: '',
+        Phone: '',
+        Email: '',
+        IdProof: '',
+        DateofBirth: '',
+        Description: '',
+        RegisteredDate: '',
+        BatchId: '',
+        Alternatephone: '',
+        total_fee: '',
+       Source: '',
+        Attended_Demo: '',
+        LearnerOwner: '',
+        Learner_Stage: '',
+        Leadcreatedtime: '',
+        fee_Paid: '',
+       CounselingDoneBY: '',
+        RegisteredCourse: '',
+        PreferableTime: '',
+        TechStack: '',
+        BatchTiming: '',
+        CourseComments: '',
+        ModeOfClass: '',
+        SlackAccess: '',
+        Comment: '',
+        LMSAccess: '',
+        due_Amount: '',
+        due_date: '',
+        learner_Status: '',
+        Currency: '',
+        ExchangeRate:'',
+        Location:'',
     });
 
+    useEffect(() => {
+        if (initialData) {
+            setFormData(initialData);
+        }
+    }, [initialData]);
 
-
+    const AlertMessage = (message, type) => {
+        if (type === 'success') {
+          toast.success(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else if (type === 'error') {
+          toast.error(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+
+        setFormData((prevData) => {
+            // Create updated form data
+            const updatedFormData = {
+                ...prevData,
+                [name]: value
+            };
+
+            // Handle date field if it's changing
+            if (name === "date") {
+                updatedFormData.date = value;
+            }
+
+            // If total_fee or fee_paid is changing, calculate due_Amount
+            if (name === "total_fee" || name === "fee_Paid") {
+                const total_fee = parseInt(updatedFormData.total_fee) || 0; // Default to 0 if NaN
+                const fee_paid = parseInt(updatedFormData.fee_Paid) || 0;   // Default to 0 if NaN
+                updatedFormData.due_Amount = total_fee - fee_paid; // Calculate due amount
+            }
+
+            // Return the updated form data to be set in state
+            return updatedFormData;
+        });
     };
 
-    const handleSubmit = (e) => {
+
+
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form behavior
 
-        setFilteredRows([...filteredRows, formData]);
-        setFormData({
-            createdOn: '',
-            registeredDate: '',
-            lastName: '',
-           contact_no: '',
-            email: '',
-            mode_of_class: '',
-            TechStack: '',
-            totalFee: '',
-            feePaid: '',
-            dueAmount: '',
-            dueDate: '',
-          });
-        handleAddLead(formData);
-        closeForm(); // Close the form
-        alert("Form data successfully submitted"); // Show confirmation
+        try {
+            const LearnApiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${LearnApiUrl}/learners/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData),
+            });
+
+
+            if (response.ok) {
+                AlertMessage("Learner Created Successfully", 'success');
+
+                setFormData({
+                    FirstName: '',
+                    LastName: '',
+                    RegisteredDate: '',
+                    Phone: '',
+                    Email: '',
+                    ModeOfClass: '',
+                    TechStack: '',
+                    total_Fee: '',
+                    fee_Paid: '',
+                    due_Amount: '',
+                    due_date: '',
+                    learner_Status: '',
+                    Currency:'',
+                    ExchangeRate:'',
+                    Location:'',
+
+                });
+
+                closeForm(); // Close the form
+            }
+            else {
+                AlertMessage("failed to create a Learner" , 'error');
+            }
+        } catch (error) {
+            console.error("Learn Lead Unscessfully ", error);
+            AlertMessage("Error to create a Learner" , 'error');
+        }
+
     };
+
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -77,6 +167,17 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                             <FontAwesomeIcon icon={faIdCard} className=" flex bg-blue-600 text-white justify-center items-center w-[30px] h-[20px]" />
                         </div>
                         <p className="text-lg font-bold">Create Learner</p>
+
+                        <div className="flex flex-col">
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.FirstName}
+                                onChange={handleChange}
+                                placeholder=" Full Name"
+                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            />
+                        </div>
                     </div>
                     <div>
                         <button className="text-gray-600 hover:text-gray-900" onClick={closeForm}>
@@ -90,11 +191,11 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* First Name */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">First Name</label>
+                        <label className="text-sm font-medium"> First Name</label>
                         <input
                             type="text"
-                            name="firstName"
-                            value={formData.firstName}
+                            name="FirstName"
+                            value={formData.FirstName}
                             onChange={handleChange}
                             placeholder="First Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -103,25 +204,27 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* Last Name */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Last Name</label>
+                        <label className="text-sm font-medium"> Last Name</label>
                         <input
                             type="text"
-                            name="lastName"
-                            value={formData.lastName}
+                            name="LastName"
+                            value={formData.LastName}
                             onChange={handleChange}
                             placeholder="Last Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/*contact_no */}
+
+
+                    {/*Phone */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Phone</label>
                         <input
                             type="number"
                             pattern='[0-9]{10}'
-                            name="phone"
-                            value={formData.phone}
+                            name="Phone"
+                            value={formData.Phone}
                             onChange={handleChange}
                             placeholder="Phone"
                             minLength="10"
@@ -135,9 +238,9 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Email</label>
                         <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
+                            type="Email"
+                            name="Email"
+                            value={formData.Email}
                             onChange={handleChange}
                             placeholder="Email"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -146,11 +249,11 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* Id Proof */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Id Proof</label>
+                        <label className="text-sm font-medium">IdProof</label>
                         <input
                             type="text"
-                            name="idProof"
-                            value={formData.idProof}
+                            name="IdProof"
+                            value={formData.IdProof}
                             onChange={handleChange}
                             placeholder="Id Proof"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -159,11 +262,11 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* Date of Birth*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Date of Birth</label>
+                        <label className="text-sm font-medium">DateofBirth</label>
                         <input
                             type="date"
-                            name="dateOfBirth"
-                            value={formData.dateOfBirth}
+                            name="DateofBirth"
+                            value={formData.DateofBirth}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -171,11 +274,11 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* Registered Date*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Registered Date</label>
+                        <label className="text-sm font-medium">RegisteredDate</label>
                         <input
                             type="date"
-                            name="registeredDate"
-                            value={formData.registeredDate}
+                            name="RegisteredDate"
+                            value={formData.RegisteredDate}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -183,47 +286,72 @@ export default function LearnForm({ closeForm, handleAddLead }) {
 
                     {/* Batch ID's*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Batch ID&apos;s</label>
+                        <label className="text-sm font-medium">BatchId</label>
                         <input
                             type="text"
-                            name="batchId"
-                            value={formData.batchId}
+                            name="BatchId"
+                            value={formData.BatchId}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* Alternatecontact_no*/}
+                    {/* AlternatePhone*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Alternatecontact_no</label>
+                        <label className="text-sm font-medium">Alternatephone</label>
                         <input
                             type="text"
-                            name="alternatePhone"
-                            value={formData.alternatePhone}
+                            name="Alternatephone"
+                            value={formData.Alternatephone}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* Exchange Rate*/}
+                    {/* Total fee*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Exchange Rate</label>
+                        <label className="text-sm font-medium">Total Fee</label>
                         <input
                             type="text"
-                            name="exchangeRate"
-                            value={formData.exchangeRate}
+                            name="total_fee"
+                            value={formData.total_fee}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* Source*/}
+                     {/* Currency*/}
+                     <div className="flex flex-col">
+                        <label className="text-sm font-medium">Currency</label>
+                        <input
+                            type="number"
+                            name="Currency"
+                            value={formData.Currency}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
+
+                     {/* ExchangeRate*/}
+                     <div className="flex flex-col">
+                        <label className="text-sm font-medium">ExchangeRate</label>
+                        <input
+                            type="number"
+                            name="ExchangeRate"
+                            value={formData.ExchangeRate}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
+
+
+                    {/*Source*/}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Source</label>
                         <input
                             type="text"
-                            name="source"
-                            value={formData.source}
+                            name="Source"
+                            value={formData.Source}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -234,15 +362,57 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Attended Demo</label>
                         <select
-                            name="attendedDemo"
-                            value={formData.attendedDemo}
+                            name="Attended_Demo"
+                            value={formData.Attended_Demo}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled> Select Attended Demo</option>
-                            <option value="Referral">Bangloore</option>
-                            <option value="Advertisement">Hyderbad</option>
-                            <option value="Website">pune</option>
+                            <option value="None">None</option>
+                            <option value="Ready To Join">Ready To Join</option>
+                            <option value="Call Not Answered">Call Not Answered</option>
+                            <option value="Need Time This Week">Need Time This Week</option>
+                            <option value="Need Time Next Week">Need Time Next Week</option>
+                            <option value="Need Time This Month">Need Time This Month</option>
+                            <option value="Need Time Next Month">Need Time Next Month</option>
+                            <option value="Advanced Discussion">Advanced Discussion</option>
+                            <option value="Visiting">Visiting</option>
+                            <option value="Fees Negotiation">Fees Negotiation</option>
+                            <option value="Batch Allocation">Batch Allocation</option>
+                            <option value="Closed Own Register">Closed Own Register</option>
+                            <option value="Closed Lost Cold Lead">Closed Lost Cold Lead</option>
+                            <option value="Special Requirements">Special Requirements</option>
+    
+                        </select>
+                    </div>
+
+                     {/* Location */}
+                     <div className="flex flex-col">
+                        <label className="text-sm font-medium">Location</label>
+                        <select
+                            name="Location"
+                            value={formData.Location}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                            <option value="" disabled>Location</option>
+                            <option value="None">None</option>
+                            <option value="Ready To Join">Ready To Join</option>
+                            <option value="Need Time This Week">Need Time This Week</option>
+                            <option value="Need Time Next Week">Need Time Next Week</option>
+                            <option value="Need Time This Month">Need Time This Month</option>
+                            <option value="Need Time Next Month">Need Time Next Month</option>
+                            <option value="Advanced Discussion">Advanced Discussion</option>
+                            <option value="Visiting">Visiting</option>
+                            <option value="Fees Negotiation">Fees Negotiation</option>
+                            <option value="Batch Allocation">Batch Allocation</option>
+                            <option value="Busy Asked A Call Back">Busy Asked A Call Back</option>
+                            <option value="Closed Own Register">Closed Own Register</option>
+                            <option value="Payment Link Sent">Payment Link Sent</option>
+                            <option value="Special Requirements">Special Requirements</option>
+                            <option value="Closed Lost">Closed Lost</option>
+                            <option value="Interested Demo">Interested Demo</option>
+    
                         </select>
                     </div>
 
@@ -251,8 +421,8 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                         <label className="text-sm font-medium">Learner Owner</label>
                         <input
                             type="text"
-                            name="learnerOwner"
-                            value={formData.learnerOwner}
+                            name="LearnerOwner"
+                            value={formData.LearnerOwner}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -262,37 +432,94 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Learner Stage</label>
                         <select
-                            name="learnerStage"
-                            value={formData.learnerStage}
+                            name="Learner_Stage"
+                            value={formData.Learner_Stage}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select Learner Stage</option>
-                            <option value="Frontend">Frontend</option>
-                            <option value="Backend">Backend</option>
-                            <option value="Full Stack">Full Stack</option>
+                            <option value="Call Not Answered">Call Not Answered</option>
+                            <option value="None">None</option>
+                            <option value="Ready To Join">Ready To Join</option>
+                            <option value="Need Time This Week">Need Time This Week</option>
+                            <option value="Need Time Next Week">Need Time Next Week</option>
+                            <option value="Need Time This Month">Need Time This Month</option>
+                            <option value="Need Time Next Month">Need Time Next Month</option>
+           
+                            <option value="Fees Negotiation">Fees Negotiation</option>
+                            <option value="Batch Allocation">Batch Allocation</option>
+                  
+                            <option value="Closed Own Register">Closed Own Register</option>
+                           
+                            <option value="Special Requirements">Special Requirements</option>
+                            
+                            <option value="Interested Demo">Interested Demo</option>
                         </select>
                     </div>
 
-                    {/* Currency*/}
+                    {/* Learner Status */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium"> Currency</label>
+                        <label className="text-sm font-medium">Learner Status</label>
+                        <select
+                            name="learner_Status"
+                            value={formData.learner_Status}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                            <option value="" disabled>Select Learner Status</option>
+                            <option value="Upcoming">Upcoming</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    {/* Fee paid*/}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium"> Fee Paid</label>
                         <input
                             type="text"
-                            name=" currency"
-                            value={formData.currency}
+                            name="fee_Paid"
+                            value={formData.fee_Paid}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* Lead Created Time*/}
+                    {/* Due Amount*/}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Lead Created Time</label>
+                        <label className="text-sm font-medium">Due Amount</label>
+                        <input
+                            type="text"
+                            name="due_Amount"
+                            value={formData.due_Amount}
+                            onChange={handleChange}
+                            readOnly
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
+
+
+
+                    {/* Due Date*/}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Due Date</label>
                         <input
                             type="date"
-                            name=" leadCreatedTime"
-                            value={formData.leadCreatedTime}
+                            name="due_date"
+                            value={formData.due_date}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
+
+                    {/* Learner Created Time*/}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Learner Created Time</label>
+                        <input
+                            type="date"
+                            name="Leadcreatedtime"
+                            value={formData.Leadcreatedtime}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -301,13 +528,17 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                     {/* Counselling Done By*/}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Counselling Done By</label>
-                        <input
+                        <select
                             type="number"
-                            name="counsellingDoneBy"
-                            value={formData.counsellingDoneBy}
+                            name="CounselingDoneBY"
+                            value={formData.CounselingDoneBY}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        />
+                        >
+                            <option value="" disabled>Select Counselling Done By</option>
+                            <option value="True">True</option>
+                            <option value="False">false</option>
+                    </select>
                     </div>
 
                     {/* Description */}
@@ -315,128 +546,139 @@ export default function LearnForm({ closeForm, handleAddLead }) {
                         <label className="text-sm font-medium">Description</label>
                         <input
                             type="text"
-                            name="description"
-                            value={formData.description}
+                            name="Description"
+                            value={formData.Description}
                             onChange={handleChange}
                             placeholder="Description"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    <p className='py-4 text-lg font-bold'>Course Details</p><br/>
+                    <p className='py-4 text-lg font-bold'>Course Details</p><br />
 
-                        {/* Registered Courses Count */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Registered Courses Count</label>
-                            <input
-                                type="number"
-                                name="registeredCourseCount"
-                                value={formData.registeredCourseCount}
-                                onChange={handleChange}
-                                placeholder="Registered Courses Count"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
+                    {/* Registered Courses Count */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Registered Courses Count</label>
+                        <input
+                            type="number"
+                            name="RegisteredCourse"
+                            value={formData.RegisteredCourse}
+                            onChange={handleChange}
+                            placeholder="Registered Courses Count"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
 
-                        {/*Preferable Time */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Preferable Time</label>
-                            <input
-                                type="date"
-                                name="preferableTime"
-                                value={formData.preferableTime}
-                                onChange={handleChange}
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
+                    {/*Preferable Time */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Preferable Time</label>
+                        <input
+                            type="date"
+                            name="PreferableTime"
+                            value={formData.PreferableTime}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
 
-                        {/* Tech Stack */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Tech Stack</label>
-                            <input
-                                type="text"
-                                name="TechStack"
-                                value={formData.TechStack}
-                                onChange={handleChange}
-                                placeholder="Tech Stack"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
+                    {/* Tech Stack */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Tech Stack</label>
+                        <input
+                            name="TechStack"
+                            value={formData.TechStack}
+                            onChange={handleChange}
+                            placeholder="Tech Stack"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
 
-                        {/*Batch Timing */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Batch Timing</label>
-                            <input
-                                type="date"
-                                name="batchTiming"
-                                value={formData.batchTiming}
-                                onChange={handleChange}
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
+                    {/*Batch Timing */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Batch Timing</label>
+                        <input
+                            type="date"
+                            name="BatchTiming"
+                            value={formData.BatchTiming}
+                            onChange={handleChange}
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
 
-                        {/* Course Comments */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Course Comments</label>
-                            <input
-                                type="text"
-                                name="courseComments"
-                                value={formData.courseComments}
-                                onChange={handleChange}
-                                placeholder="Course Comments"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
-                        {/* Mode Of Class*/}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Mode Of Class</label>
-                            <input
-                                type="text"
-                                name="mode_of_class"
-                                value={formData.mode_of_class}
-                                onChange={handleChange}
-                                placeholder="Mode Of Class"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
-                        {/* Slack Access */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Slack Access</label>
-                            <input
-                                type="text"
-                                name="slackAccess"
-                                value={formData.slackAccess}
-                                onChange={handleChange}
-                                placeholder="Slack Access"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
-                        {/* Comment */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Comment</label>
-                            <input
-                                type="text"
-                                name="Comment"
-                                value={formData.Comment}
-                                onChange={handleChange}
-                                placeholder="Comment"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
-                        {/* LMS Access */}
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">LMS Access</label>
-                            <input
-                                type="text"
-                                name="lmsAccess"
-                                value={formData.lmsAccess}
-                                onChange={handleChange}
-                                placeholder="LMS Access"
-                                className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                        </div>
+                    {/* Course Comments */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Course Comments</label>
+                        <input
+                            type="text"
+                            name="CourseComments"
+                            value={formData.CourseComments}
+                            onChange={handleChange}
+                            placeholder="Course Comments"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
+                    {/* Mode Of Class*/}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Mode Of Class</label>
+                        <select
 
-                    
+                            name="ModeOfClass"
+                            value={formData.ModeOfClass}
+                            onChange={handleChange}
+                            placeholder="Mode Of Class"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                            <option value="" disabled> select mode of class</option>
+                            <option value="Online" >Online</option>
+                            <option value="Offline">Offline</option>
+                        </select>
+                    </div>
+
+                    {/* Slack Access */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Slack Access</label>
+                        <Select
+                            name="SlackAccess"
+                            value={formData.SlackAccess}
+                            onChange={handleChange}
+                            placeholder="Slack Access"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                            <option value="" disabled>Select Slack Access</option>
+                            <option value="Yes" >Yes</option>
+                            <option value="No" >No</option>
+                        </Select>
+                    </div>
+
+                    {/* Comment */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">Comment</label>
+                        <input
+                            type="text"
+                            name="Comment"
+                            value={formData.Comment}
+                            onChange={handleChange}
+                            placeholder="Comment"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                    </div>
+                    {/* LMS Access */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium">LMS Access</label>
+                        <Select
+                            name="LMSAccess"
+                            value={formData.LMSAccess}
+                            onChange={handleChange}
+                            placeholder="LMS Access"
+                            className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        >
+                            <option value="" disabled>Select Lms Access</option>
+                            <option value="Yes" >Yes</option>
+                            <option value="No" >No</option>
+                        </Select>
+                    </div>
+
+
 
 
                 </div>

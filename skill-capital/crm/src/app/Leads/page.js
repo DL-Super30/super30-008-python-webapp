@@ -4,14 +4,18 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { faIdCard } from '@fortawesome/free-solid-svg-icons';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+// import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import LeadForm from "../Forms/leadform";
 import UpdateForm from "../Forms/LeadsUpdateForm";
+import { toast } from 'react-toastify';
+
 
 
 export default function LeadManagement() {
@@ -28,26 +32,25 @@ export default function LeadManagement() {
 
 
 
-
   const openForm = () => {
     setISFormVIsible(true);
   }
 
-  const closeForm = () => {
-    setISFormVIsible(false);
-  }
+  // const closeForm = () => {
+  //   setISFormVIsible(false);
+  // }
 
   const [counts, setCounts] = useState({
     NotContacted: 0,
-    Contacted: 0,
+    Attempted: 0,
     WarmLead: 0,
     ColdLead: 0,
   });
 
   const fetchLeads = async () => {
-    const leadsApiUrl = process.env.NEXT_PUBLIC_LEADS_API_URL;
+    const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
     try {
-      const response = await fetch(`${leadsApiUrl}`, {
+      const response = await fetch(`${leadsApiUrl}/leads/`, {
         method: 'GET'
       });
       const data = await response.json()
@@ -86,7 +89,7 @@ export default function LeadManagement() {
 
     const updatedCounts = {
       NotContacted: filteredData.filter(row => row.lead_status === "Not Contacted").length,
-      Contacted: filteredData.filter(row => row.lead_status === "Contacted").length,
+      Attempted: filteredData.filter(row => row.lead_status === "Attempted").length,
       WarmLead: filteredData.filter(row => row.lead_status === "Warm Lead").length,
       ColdLead: filteredData.filter(row => row.lead_status === "Cold Lead").length,
     };
@@ -99,16 +102,42 @@ export default function LeadManagement() {
     setSearchQuery(query);
   };
 
+
+  const AlertMessage = (message, type) => {
+    if (type === 'success') {
+        toast.success(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    } else if (type === 'error') {
+        toast.error(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+};
+
   const handleDelete = (id) => {
-    const leadsApiUrl = process.env.NEXT_PUBLIC_LEADS_API_URL;
-    fetch(`${leadsApiUrl}${id}/`, {
+    const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
+    fetch(`${leadsApiUrl}/leads/${id}/`, {
       method: 'DELETE',
     })
       .then(response => {
         if (response.ok) {
           setLeads(prevRows => prevRows.filter(row => row.id !== id));
+          AlertMessage('Row Deleted Successfully', 'success');
         } else {
-          console.error('Error deleting the row');
+          AlertMessage('Row Deleted UnSuccessfully', 'error');
         }
       })
       .catch(error => console.error('Error in delete request:', error));
@@ -133,7 +162,7 @@ export default function LeadManagement() {
       switch (status) {
         case "Not Contacted":
           return "bg-green-100 border-t-[5px] border-t-green-800";
-        case "Contacted":
+        case "Attempted":
           return " bg-yellow-100 border-t-[5px] border-t-yellow-800";
         case "Warm Lead":
           return "bg-orange-100 border-t-[5px] border-t-orange-800";
@@ -143,31 +172,28 @@ export default function LeadManagement() {
 
     }
     return (
-      <div className="grid gap-3 text-center min-w-[200px] max-w-[300px]">
+      <div className="grid gap-3 text-center min-w-[280px] max-w-[300px]">
 
         <div className={`border-1  flex flex-col not-italic gap-2 rounded-lg text-sm p-2 ${getColorByStatus(status)}`}>
           <p>{status}</p>
-          <p>
+          <p className="font-bold">
             {filteredLeads.length} Leads
           </p>
         </div>
-        <div className="w-full h-[calc(100vh-300px)] overflow-y-auto border-1 bg-gray-100 rounded-lg p-2">
+        <div className={`w-full h-[calc(100vh-300px)] overflow-y-auto border-1 bg-gray-100 rounded-lg p-2 ${getColorByStatus(status)}`}>
           {filteredLeads.length === 0 ? (
-            <p>No leads</p>
+            <p className="py-[80px]">No leads</p>
           ) : (
             filteredLeads.map((lead) => (
-              <div key={lead.id} className="bg-white p-2 mb-2 rounded-md text-sm shadow">
-                <p className="font-bold">{lead.name}</p>
-                <p>{lead.email}</p>
+              <div key={lead.id} className=" flex  flex-col  w-full bg-white p-2 mb-2 rounded-md text-sm shadow">
+                <div className="flex items-baseline justify-between">
+                <p className="font-medium">{lead.name}</p>
                 <p>{lead.contact_no}</p>
-                <div className="flex justify-between mt-2">
-                  <button className="text-green-700 flex items-center text-xs">
-                    <EditIcon className="w-4 h-4 mr-1" />
-                    Update
-                  </button>
+                </div>
+                <div className="flex items-baseline justify-between">
+                <p>{lead.email}</p>
                   <button onClick={() => handleDelete(lead.id)} className="text-red-600 flex items-center text-xs">
                     <DeleteIcon className="w-4 h-4 mr-1" />
-                    Delete
                   </button>
                 </div>
               </div>
@@ -252,21 +278,21 @@ export default function LeadManagement() {
 
   // for Dashboard:
 
- 
+
 
 
   return (
-    <div className="bg-light py-2 gap-y-5 border-1">
+    <div className="bg-light py-2 gap-y-5 border-1 rounded-3xl mt-1 bg-slate-200">
 
       <div className="w-full h-full border-1 rounded flex items-center justify-between gap-x-2 p-2">
+
         <div className="w-fit h-fit flex items-center justify-evenly px-3 gap-7">
-          <div className="flex bg-blue-600 text-white justify-center items-center w-[30px] h-[20px]">
-            <FontAwesomeIcon icon={faIdCard} />
-          </div>
+
           <div className="flex items-center justify-end">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-teal-400 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                  <LeaderboardIcon />
                   All Leads
                   <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
                 </MenuButton>
@@ -292,7 +318,7 @@ export default function LeadManagement() {
           </div>
         </div>
         <div className="flex gap-4 items-center">
-          <CalendarMonthIcon style={{ fontSize: 26, color: 'black' }} />
+          {/* <CalendarMonthIcon style={{ fontSize: 26, color: 'black' }} /> */}
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <MenuButton
@@ -325,24 +351,30 @@ export default function LeadManagement() {
                   <button className="w-full  block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900">Delete</button>
                 </MenuItem>
               </div>
+              <div className="py-1">
+                <MenuItem >
+                  <button className="w-full  block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900">Convert</button>
+                </MenuItem>
+              </div>
             </MenuItems>
           </Menu>
         </div>
       </div>
 
-      <div className="flex w-full h-fit border-1 items-center justify-around">
-        <div className="relative flex rounded-full">
+      <div className="flex w-full h-fit border-1 items-center justify-between p-2 rounded-md">
+
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             type="search"
-            placeholder="search"
+            placeholder="Search"
             onChange={handleSearchChange}
-            className="border-1 border-slate-600 bg-gray-200 rounded-full pl-10 pr-4 py-1"
+            className="pl-10 pr-4 py-1 w-full rounded-md border-2 border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
           />
-          <SearchIcon className="absolute top-1/2 left-3 transform -translate-y-1/2 text-slate-600" />
         </div>
 
         <div className="flex gap-1 rounded-r-lg items-center">
-          {['Not Contacted', 'Contacted', 'Warm Lead', 'Cold Lead'].map((status) => (
+          {['Not Contacted', 'Attempted', 'Warm Lead', 'Cold Lead'].map((status) => (
             <Menu key={status} as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton
@@ -350,7 +382,7 @@ export default function LeadManagement() {
                   className={`inline-flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${filterByLeadStatus === status ? 'bg-blue-500 text-white' : 'bg-white'}`}
                 >
                   {status}
-                  <div className="flex w-[28px] h-[28px] items-center bg-red-400 justify-center rounded-full text-sm">
+                  <div className="flex w-[28px] h-[28px] items-center bg-red-600 justify-center rounded-full text-sm">
                     {counts[status.replace(' ', '')]}
                   </div>
                 </MenuButton>
@@ -359,31 +391,33 @@ export default function LeadManagement() {
           ))}
         </div>
 
-        <div className="flex py-2 gap-1">
+        <div className="flex py-2 items-center justify-center">
           <div
             onClick={openTable}
-            className={`flex w-[90px] items-center justify-around gap-1 border-2 text-sm p-1 rounded-full ${isTableVisible ? 'bg-blue-500 text-white' : 'bg-light hover:bg-blue-500 hover:text-white'}`}
+            className={`flex w-[90px] items-center justify-around gap-1 border-2 text-sm p-1 rounded-md ${isTableVisible ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-500 hover:text-white'}`}
           >
             <TableChartIcon className="w-4 h-4" />
-            <button>table</button>
+            <button className=" border-1  rounded-md">table</button>
           </div>
+
           <div
             onClick={openKanban}
-            className={`flex w-[90px] items-center justify-between gap-1 border-2 text-sm p-1 rounded-full ${isKanbanVisible ? 'bg-blue-500 text-white' : 'bg-light hover:bg-blue-500 hover:text-white'}`}
+            className={`flex w-[90px] items-center justify-between gap-1 border-2 text-sm p-1 rounded-md ${isKanbanVisible ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-500 hover:text-white'}`}
           >
-            <button>kanban</button>
+            <button className=" border-1  rounded-md">kanban</button>
             <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
           </div>
         </div>
+
       </div>
 
       <div>
         {isTableVisible && (
-          <div className="flex items-center justify-center w-full h-full m-auto p-1 border-2 border-gray-100 rounded-md overflow-x-auto">
-            <table className=' min-w-full border-2 text-center table-auto text-sm capitalize text-medium w-full rounded-md  '>
+          <div className="flex flex-col items-center justify-center w-full h-full m-auto p-2 border-2 border-gray-100 rounded-2xl overflow-x-auto">
+            <table className=' min-w-full border-2 text-center table-auto text-sm capitalize text-medium w-full rounded-3xl  '>
               <thead>
-                <tr className='border-2 bg-rose-200 p-5 font-semibold '>
-                  <th className="border-2 px-3" >
+                <tr className='border-2  bg-teal-500 p-5 font-semibold  rounded-3xl'>
+                  <th className="border-1 p-2" >
 
                     <input
                       type="checkbox"
@@ -392,15 +426,15 @@ export default function LeadManagement() {
                     />
 
                   </th >
-                  <th className='border-2 p-2'>created On</th>
-                  <th className='border-2 p-2'>Name</th>
-                  <th className='border-2 p-2'>Lead Status</th>
-                  <th className='border-2 p-2'>Contact</th>
-                  <th className='border-2 p-2'>Email</th>
-                  <th className='border-2 p-2'>TechStack</th>
-                  <th className='border-2 p-2'>Course</th>
-                  <th className='border-2 p-2'>Update</th>
-                  <th className='border-2 p-2'>Delete</th>
+                  <th className='border-1 p-1'>created&nbsp;On</th>
+                  <th className='border-1 p-1'>Name</th>
+                  <th className='border-1 p-1'>Lead&nbsp;Status</th>
+                  <th className='border-1 p-1'>Contact</th>
+                  <th className='border-1 p-1'>Email</th>
+                  <th className='border-1 p-1'>Tech&nbsp;Stack</th>
+                  <th className='border-1 p-1'>Course</th>
+                  <th className='border-1 p-1'>Update</th>
+                  <th className='border-1 p-1'>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -410,7 +444,8 @@ export default function LeadManagement() {
                   </tr>
                 ) : (
                   currentRows.map((row) => (
-                    <tr key={row.id} className="bg-green-100">
+                    <tr key={row.id} className=" border-2 border-slate-100 rounded-md bg-red-100 ">
+
                       <td className="border-1 p-2">
                         <input
                           type="checkbox"
@@ -419,14 +454,15 @@ export default function LeadManagement() {
 
                         />
                       </td>
-                      <td className="border-1 px-3">{row.date}</td>
-                      <td className='border-1 px-2'>{row.name}</td>
-                      <td className='border-1 px-2'>{row.lead_status}</td>
-                      <td className='border-1 px-2'>{row.contact_no}</td>
-                      <td className='border-1 px-2'>{row.email}</td>
-                      <td className='border-1 px-2'>{row.TechStack}</td>
-                      <td className='border-1 px-2'>{row.Course}</td>
-                      <td className=' border-1 px-3'>
+
+                      <td className="border-1 p-1">{row.date}</td>
+                      <td className='border-1 p-1'>{row.name}</td>
+                      <td className='border-1 p-1'>{row.lead_status}</td>
+                      <td className='border-1 p-1'>{row.contact_no}</td>
+                      <td className='border-1 p-1'>{row.email}</td>
+                      <td className='border-1 p-1'>{row.TechStack}</td>
+                      <td className='border-1 p-1'>{row.Course}</td>
+                      <td className=' border-1 p-1'>
                         <div className="flex items-center justify-center">
                           <button
                             onClick={() => handleUpdate(row)}
@@ -446,7 +482,7 @@ export default function LeadManagement() {
 
                         </div>
                       </td>
-                      <td className='border-1 px-3'>
+                      <td className='border-1 p-1'>
                         <div className="flex items-center justify-center">
                           <button
                             onClick={() => handleDelete(row.id)}
@@ -462,13 +498,48 @@ export default function LeadManagement() {
                 )}
               </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-center items-center mt-4 space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={previousPage}
+                disabled={currentPage === 1}
+                className={`px-1 border rounded-md ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white'
+                  }`}
+              >
+                <ArrowBackIosIcon className="text-sm" />
+              </button>
+
+              {/* Page numbers */}
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={` w-fit h-fit px-1 border rounded-full ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                    }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className={`px-1   border rounded-md ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white'
+                  }`}
+              >
+                <ArrowForwardIosSharpIcon className="text-sm" />
+              </button>
+            </div>
           </div>
         )}
         {isKanbanVisible && (
           <div className="w-full">
             <div className="w-[100%] flex gap-x-2 items-start justify-evenly py-6 overflow-x-auto">
               {renderKanbanColumn("Not Contacted")}
-              {renderKanbanColumn("Contacted")}
+              {renderKanbanColumn("Attempted")}
               {renderKanbanColumn("Warm Lead")}
               {renderKanbanColumn("Cold Lead")}
             </div>
@@ -476,40 +547,7 @@ export default function LeadManagement() {
         )}
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center items-center mt-4 space-x-2">
-        {/* Previous Button */}
-        <button
-          onClick={previousPage}
-          disabled={currentPage === 1}
-          className={`px-3 py-1 border rounded-md ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white'
-            }`}
-        >
-          Previous
-        </button>
 
-        {/* Page numbers */}
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`px-3 py-1 border rounded-md ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-              }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-
-        {/* Next Button */}
-        <button
-          onClick={nextPage}
-          disabled={currentPage === totalPages}
-          className={`px-3 py-1 border rounded-md ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white'
-            }`}
-        >
-          Next
-        </button>
-      </div>
 
     </div>
   );

@@ -1,5 +1,6 @@
 import NavbarWrapper from '../context/navbarWrapper';
-
+import { ToastContainer } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';  
 import './globals.css';
 export const metadata = {
   title: 'Next.js',
@@ -9,7 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body><NavbarWrapper />{children}</body>
+      <body>
+        <NavbarWrapper />
+        <ToastContainer />
+        {children}</body>
     </html>
   )
 }

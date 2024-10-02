@@ -2,8 +2,9 @@ import React, { useState , useEffect} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 
-export default function UpdateForm({ rowData, onClose, onUpdate }) {
+export default function OppUpdateForm({ rowData, onClose, onUpdate }) {
 
     const [isFormVisible , setIsFormVisible]=useState(false);
 
@@ -23,11 +24,37 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const AlertMessage = (message, type) => {
+        if (type === 'success') {
+          toast.success(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else if (type === 'error') {
+          toast.error(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const OpportunityApiUrl= process.env.NEXT_PUBLIC_API_URL;
         try {
             // Send the updated data to the JSON server
-            const response = await fetch(`http://18.217.249.38:8000/api/opportunities/${rowData.id}`, {
+            const response = await fetch(`${OpportunityApiUrl}/opportunities/${rowData.id}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,11 +64,12 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
     
             if (!response.ok) {
                 // Handle server errors
-                throw new Error(`Failed to update oppourtunity: ${response.statusText}`);
+                const errorDetails = await response.text();  // Get the error details
+                throw new Error(`Failed to update Opportunity: ${response.statusText}- ${errorDetails}`);
             }
     
-            const result = await response.json();
-            console.log('Update successful:', result);
+
+            AlertMessage("Opportunity Updated Successfully.", 'success');
     
             // Call the update function to refresh the table
             onUpdate();
@@ -50,8 +78,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
             onClose();
             
         } catch (error) {
-            console.error('Error updating oppourtunity:', error);
-            alert('There was an issue updating the oppourtunity.');
+            console.error('Error updating Opportunity:', error);
+            AlertMessage ('There was an issue updating the Opportunity.', 'error');
         }
         onUpdate(); // Call the update function to refresh the table
         onClose(); // Close the form
@@ -69,7 +97,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <div className="bg-blue-600 p-2 rounded-md">
                             <FontAwesomeIcon icon={faIdCard} className=" flex bg-blue-600 text-white justify-center items-center w-[30px] h-[20px]" />
                         </div>
-                        <p className="text-lg font-bold">Update oppourtunity</p>
+                        <p className="text-lg font-bold">Update Opportunity</p>
                         <span>
                         <input
                             type="text"
@@ -104,26 +132,26 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     </div>
 
 
-                    {/* oppourtunity Status */}
+                    {/* Opportunity Status */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">oppourtunity Status</label>
+                        <label className="text-sm font-medium">Opportunity status</label>
                         <select
-                            name="oppourtunity_status"
-                            value={formData.oppourtunity_status}
+                            name="Opportunity_status"
+                            value={formData.Opportunity_status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
-                            <option value="" disabled>Select oppourtunity Status</option>
+                            <option value="" disabled>Select Opportunity Status</option>
                             <option value="Visiting">Visiting</option>
                             <option value="Visited">Visited</option>
-                            <option value=" demoAttemptedStage"> demoAttemptedStage</option>
-                            <option value="Lost Oppourtunity">Lost Oppourtunity</option>
+                            <option value="Demo Attended">Demo Attended</option>
+                            <option value="Lost Opportunity">Lost Opportunity</option>
                         </select>
                     </div>
 
                     {/* contact_no */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">contact_no</label>
+                        <label className="text-sm font-medium">Contact no</label>
                         <input
                             type="number"
                             pattern='[0-9]{10}'
@@ -161,9 +189,9 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select TechStack</option>
-                            <option value="Frontend">Frontend</option>
-                            <option value="Backend">Backend</option>
-                            <option value="Full TechStack">Full TechStack</option>
+                            <option value="Life Skills">Life Skills</option>
+                            <option value="Study Abroad">Study Abroad</option>
+                            <option value="HR">HR</option>
                         </select>
                     </div>
 
@@ -176,10 +204,27 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
-                            <option value="" disabled>Select Course</option>
-                            <option value="React">React</option>
-                            <option value="Node">Node</option>
-                            <option value="Python">Python</option>
+                            <option value="HR Business Partner">HR Business Partner</option>
+                            <option value="HR Generalist Core HR">HR Generalist Core HR</option>
+                            <option value="HR Analytics">HR Analytics</option>
+                            <option value="Spoken English">Spoken English</option>
+                            <option value="Public Speaking">Public Speaking</option>
+                            <option value="Communication Skills">Communication Skills</option>
+                            <option value="Soft Skills">Soft Skills</option>
+                            <option value="Personality Development">Personality Development</option>
+                            <option value="Aptitude">Aptitude</option>
+                            <option value="IELTS">IELTS</option>
+                            <option value="GRE">GRE</option>
+                            <option value="PTE">PTE</option>
+                            <option value="GMAT">GMAT</option>
+                            <option value="TOEFL">TOEFL</option>
+                            <option value="Recruitment Specialist">Recruitment Specialist</option>
+                            <option value="Payroll Specialist">Payroll Specialist</option>
+                            <option value="Learning and Development">Learning and Development</option>
+                            <option value="HR Manager">HR Manager</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Competitive Exams">Competitive Exams</option>
+                            <option value="Others">Others</option>
                         </select>
                     </div>
 
@@ -189,7 +234,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                 {/* Add other fields as necessary */}
                 <div className="flex justify-between space-x-4 mt-6">
                     <button onClick={closeForm} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md">Cancel</button>
-                    <button type='submit' className="px-4 py-2 bg-blue-600 text-white rounded-md">Update oppourtunity </button>
+                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Update Opportunity </button>
                 </div>
             </div>
         </form>

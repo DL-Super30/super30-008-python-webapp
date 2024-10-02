@@ -28,7 +28,7 @@ export default function NavbarSlide() {
         <AppsIcon style={{ fontSize: 26, color: 'blue' }} />
 
         <div className="flex w-[200px] h-[50px] items-center">
-          <Image src="/Image/2.webp" alt="Company logo" width={150} height={150} />
+        <img className="w-60 h-8" src="./Image/2.webp"></img>
         </div>
 
         </div>
@@ -80,7 +80,7 @@ export default function NavbarSlide() {
             <Link href="#"><FontAwesomeIcon icon={faStar} size="1x" aria-label="Favorites" /></Link>
             <Link href="#"><FontAwesomeIcon icon={faBell} size="1x" aria-label="Notifications" /></Link>
             <Link href="#"><FontAwesomeIcon icon={faUser} size="1x" aria-label="User" /></Link>
-            <Link href="/app">< LogoutIcon/></Link>
+            <Link href="http://localhost:3000">< LogoutIcon/></Link>
         </div>
 
         </div>

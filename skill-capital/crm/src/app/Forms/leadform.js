@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
-
+import { toast } from 'react-toastify';
 
 export default function LeadForm({ closeForm,  initialData }) {
     const [formData, setFormData] = useState( initialData || {
@@ -18,7 +18,7 @@ export default function LeadForm({ closeForm,  initialData }) {
         TechStack: '',
         Course: '',
         class_mode: '',
-        // date: ''
+        date: '',
     });
 
     useEffect(() => {
@@ -29,32 +29,60 @@ export default function LeadForm({ closeForm,  initialData }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+    
+        setFormData((prevData) => ({ 
+            ...prevData, 
+            [name]: value 
+        }));
     };
 
+    const AlertMessage = (message, type) => {
+        if (type === 'success') {
+          toast.success(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else if (type === 'error') {
+          toast.error(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      };
+    
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form behavior
         // handleCreateLead(formData);
-        // Prepare the data with a datestamp
-        const now = new Date();
-        const date = now.toLocaleDateString('en-GB');
-        //   const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const datestamp = `${date}`;
-
-        const formDataWithdatestamp = { ...formData, date: datestamp };
+        
+        // Prepare the data with a datestamp in yyyy-mm-dd format with time
+        // Extract only the date part (YYYY-MM-DD) from the datetime-local input
+    const dateOnly = formData.date;  // Get the 'YYYY-MM-DD' part
+    
+    // Prepare the data to be sent, ensuring the date is in the correct format
+    const formDataWithDateOnly = { ...formData, date: dateOnly };
 
         try {
-            const leadsApiUrl = process.env.NEXT_PUBLIC_LEADS_API_URL;
-            const response = await fetch(`${leadsApiUrl}`, {
+            const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${leadsApiUrl}/leads/`, {
                 method: 'POST',
-                headers: {
+                headers: {  
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formDataWithdatestamp),
+                body: JSON.stringify(formDataWithDateOnly),
             });
 
             if (response.ok) {
-                alert('Lead successfully created!');
+                AlertMessage("Lead Created Sucessfully", "success");
                 // Clear the form data
                 setFormData({
                     name: '',
@@ -69,16 +97,16 @@ export default function LeadForm({ closeForm,  initialData }) {
                     TechStack: '',
                     Course: '',
                     class_mode: '',
-                    // date: ''
+                    date: ''
                 });
                 closeForm();
                
             } else {
-                alert('Failed to create lead. Please try again.');
+                AlertMessage("Failed to Create Lead Please Try again!", "error");
             }
         } catch (error) {
             console.error('Error submitting form data:', error);
-            alert('An error occurred while submitting the data.');
+            AlertMessage('An error occurred while submitting the data.','error');
         }
     };
 
@@ -125,7 +153,7 @@ export default function LeadForm({ closeForm,  initialData }) {
 
                     {/* CC */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">CC</label>
+                        <label className="text-sm font-medium">Cc</label>
                         <input
                             type="text"
                             name="cc"
@@ -133,12 +161,13 @@ export default function LeadForm({ closeForm,  initialData }) {
                             onChange={handleChange}
                             placeholder="91"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            disabled
                         />
                     </div>
 
                     {/* contact_no */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">contact_no</label>
+                        <label className="text-sm font-medium">Contact no</label>
                         <input
                             type="number"
                             pattern='[0-9]{10}'
@@ -168,7 +197,7 @@ export default function LeadForm({ closeForm,  initialData }) {
 
                     {/* Fee Quoted */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Fee Quoted</label>
+                        <label className="text-sm font-medium">Fee coated</label>
                         <input
                             type="text"
                             name="fee_coated"
@@ -181,7 +210,7 @@ export default function LeadForm({ closeForm,  initialData }) {
 
                     {/* Batch Timing */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Batch Timing</label>
+                        <label className="text-sm font-medium">Batch timing</label>
                         <select
                             type="text"
                             name="batch_timing"
@@ -190,20 +219,29 @@ export default function LeadForm({ closeForm,  initialData }) {
                             placeholder="Batch Timing"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
-                            <option value="" disabled>Choose batch timing</option>
-                            <option value="Not Contacted">7AM - 10AM</option>
-                            <option value="Contacted">2AM - 4AM</option>
-                            <option value="Warm Lead">5AM - 7AM</option>
-                            <option value="Cold Lead">8AM - 10AM</option>
-
-
+                            <option value="" >Choose batch timing</option>
+                            <option value="7AM-8AM">7AM-8AM</option>
+                            <option value="8AM-9AM" >8AM-9AM</option>
+                            <option value="9AM-10AM" >9AM-10AM</option>
+                            <option value="10AM-11AM" >10AM-11AM</option>
+                            <option value="11AM-12PM" >11AM-12PM</option>
+                            <option value="12PM-1PM" >12PM-1PM</option>
+                            <option value="1PM-2PM" >1PM-2PM</option>
+                            <option value="2PM-3PM" >2PM-3PM</option>
+                            <option value="3PM-4PM" >3PM-4PM</option>
+                            <option value="4PM-5PM" >4PM-5PM</option>
+                            <option value="5PM-6PM" >5PM-6PM</option>
+                            <option value="6PM-7PM" >6PM-7PM</option>
+                            <option value="7PM-8PM" >7PM-8PM</option>
+                            <option value="8PM-9PM" >8PM-9PM</option>
+ 
                         </select>
                     </div>
 
 
                     {/* Lead Status */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Lead Status</label>
+                        <label className="text-sm font-medium">Lead status</label>
                         <select
                             name="lead_status"
                             value={formData.lead_status}
@@ -212,7 +250,7 @@ export default function LeadForm({ closeForm,  initialData }) {
                         >
                             <option value="" disabled>Select Lead Status</option>
                             <option value="Not Contacted">Not Contacted</option>
-                            <option value="Contacted">Contacted</option>
+                            <option value="Attempted">Attempted</option>
                             <option value="Warm Lead">Warm Lead</option>
                             <option value="Cold Lead">Cold Lead</option>
                         </select>
@@ -220,7 +258,7 @@ export default function LeadForm({ closeForm,  initialData }) {
 
                     {/* Lead Source */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Lead Source</label>
+                        <label className="text-sm font-medium">Lead source</label>
                         <select
                             name="lead_source"
                             value={formData.lead_source}
@@ -228,9 +266,17 @@ export default function LeadForm({ closeForm,  initialData }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select Lead Source</option>
-                            <option value="Referral">Referral</option>
-                            <option value="Advertisement">Advertisement</option>
-                            <option value="Website">Website</option>
+                            <option value="None">None</option>
+                            <option value="Walk In">Walk In</option>
+                            <option value="Web Site">Web Site</option>
+                            <option value="Demo">Demo</option>
+                            <option value="Student Referral">Student Referral</option>
+                            <option value="Inbound Call">Inbound Call</option>
+                            <option value="Google Ad Words">Google Ad Words</option>
+                            <option value="Web Site Chat">Web Site Chat</option>
+                            <option value="Facebook Ads">Facebook Ads</option> 
+                            <option value="Google My Business">Google My Business</option> 
+                            <option value="WhatsApp Skill Capital">WhatsApp Skill Capital</option>
                         </select>
                     </div>
 
@@ -244,9 +290,9 @@ export default function LeadForm({ closeForm,  initialData }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select TechStack</option>
-                            <option value="Frontend">Frontend</option>
-                            <option value="Backend">Backend</option>
-                            <option value="Full TechStack">Full TechStack</option>
+                            <option value="Life Skills">Life Skills</option>
+                            <option value="Study Abroad">Study Abroad</option>
+                            <option value="HR">HR</option>
                         </select>
                     </div>
 
@@ -262,15 +308,33 @@ export default function LeadForm({ closeForm,  initialData }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select Course</option>
-                            <option value="React">React</option>
-                            <option value="Node">Node</option>
-                            <option value="Python">Python</option>
+                            <option value="HR Business Partner">HR Business Partner</option>
+                            <option value="HR Generalist Core HR">HR Generalist Core HR</option>
+                            <option value="HR Analytics">HR Analytics</option>
+                            <option value="Spoken English">Spoken English</option>
+                            <option value="Public Speaking">Public Speaking</option>
+                            <option value="Communication Skills">Communication Skills</option>
+                            <option value="Soft Skills">Soft Skills</option>
+                            <option value="Personality Development">Personality Development</option>
+                            <option value="Aptitude">Aptitude</option>
+                            <option value="IELTS">IELTS</option>
+                            <option value="GRE">GRE</option>
+                            <option value="PTE">PTE</option>
+                            <option value="GMAT">GMAT</option>
+                            <option value="TOEFL">TOEFL</option>
+                            <option value="Recruitment Specialist">Recruitment Specialist</option>
+                            <option value="Payroll Specialist">Payroll Specialist</option>
+                            <option value="Learning and Development">Learning and Development</option>
+                            <option value="HR Manager">HR Manager</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Competitive Exams">Competitive Exams</option>
+                            <option value="Others">Others</option>
                         </select>
                     </div>
 
                     {/* Class Mode */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Class Mode</label>
+                        <label className="text-sm font-medium">Class mode</label>
                         <select
                             name="class_mode"
                             value={formData.class_mode}
@@ -278,15 +342,16 @@ export default function LeadForm({ closeForm,  initialData }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select Class Mode</option>
-                            <option value="Online">Online</option>
-                            <option value="Offline">Offline</option>
-                            <option value="Hybrid">Hybrid</option>
+                            <option value="International Online">International Online</option>
+                            <option value="India Online">India Online</option>
+                            <option value="BLR Classroom">BLR Classroom</option>
+                            <option value="HYD Classroom">HYD Classroom</option>
                         </select>
                     </div>
 
                     {/* Next Follow Up */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Next Follow Up</label>
+                        <label className="text-sm font-medium">Date</label>
                         <input
                             type="date"
                             name="date"

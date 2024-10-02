@@ -10,7 +10,6 @@ export default function StartForm({ closeForm }) {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    phone: ''
   });
 
 
@@ -43,8 +42,9 @@ export default function StartForm({ closeForm }) {
     e.preventDefault();
 
     try {
+      const apiUrl=process.env.NEXT_PUBLIC_API_URL;
 
-      const response = await fetch('http://localhost:3000/SignUp',
+      const response = await fetch(`${apiUrl}/signUp`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', },
@@ -58,7 +58,6 @@ export default function StartForm({ closeForm }) {
         setFormData({
           user: '',
           Password: '',
-          phone: ''
         });
         closeForm(); // Close the form
       } else {
@@ -166,19 +165,6 @@ export default function StartForm({ closeForm }) {
             <span id="span-1" className="text-xs" style={{ color: passwordBorderColor }}>
               {passwordWarning}
             </span>
-          </div>
-          <div className="flex flex-col not italic font-bold capitalize">
-            <label >Phone</label>
-            <input
-              type="tel"
-              className="w-[300px] rounded border-1 text-center p-1"
-              placeholder=" contact"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-            <span></span>
           </div>
           <button
             type="submit"

@@ -2,6 +2,7 @@ import React, { useState , useEffect} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 
 export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
@@ -23,12 +24,39 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+   
+
+
+    const AlertMessage = (message, type) => {
+        if (type === 'success') {
+          toast.success(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else if (type === 'error') {
+          toast.error(message, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             // Send the updated data to the JSON server
-            const leadsApiUrl = process.env.NEXT_PUBLIC_LEADS_API_URL;
-            const response = await fetch(`${leadsApiUrl}${rowData.id}/`, {
+            const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${leadsApiUrl}/leads/${rowData.id}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,8 +71,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                 throw new Error(`Failed to update lead: ${response.statusText} - ${errorDetails}`);
             }
     
-            const result = await response.json();
-            console.log('Update successful:', result);
+            AlertMessage("Lead Updated Successful","success");
     
             // Call the update function to refresh the table
             onUpdate();
@@ -54,7 +81,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
             
         } catch (error) {
             console.error('Error updating lead:', error);
-            alert('There was an issue updating the lead.');
+            AlertMessage('There was an issue updating the lead.', 'error');
         }
         onUpdate(); // Call the update function to refresh the table
         onClose(); // Close the form
@@ -118,7 +145,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         >
                             <option value="" disabled>Select Lead Status</option>
                             <option value="Not Contacted">Not Contacted</option>
-                            <option value="Contacted">Contacted</option>
+                            <option value="Attempted">Attempted</option>
                             <option value="Warm Lead">Warm Lead</option>
                             <option value="Cold Lead">Cold Lead</option>
                         </select>
@@ -164,9 +191,9 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select TechStack</option>
-                            <option value="Frontend">Frontend</option>
-                            <option value="Backend">Backend</option>
-                            <option value="Full TechStack">Full TechStack</option>
+                            <option value="Life Skills">Life Skills</option>
+                            <option value="Study Abroad">Study Abroad</option>
+                            <option value="HR">HR</option>
                         </select>
                     </div>
 
@@ -180,9 +207,27 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select Course</option>
-                            <option value="React">React</option>
-                            <option value="Node">Node</option>
-                            <option value="Python">Python</option>
+                            <option value="HR Business Partner">HR Business Partner</option>
+                            <option value="HR Generalist Core HR">HR Generalist Core HR</option>
+                            <option value="HR Analytics">HR Analytics</option>
+                            <option value="Spoken English">Spoken English</option>
+                            <option value="Public Speaking">Public Speaking</option>
+                            <option value="Communication Skills">Communication Skills</option>
+                            <option value="Soft Skills">Soft Skills</option>
+                            <option value="Personality Development">Personality Development</option>
+                            <option value="Aptitude">Aptitude</option>
+                            <option value="IELTS">IELTS</option>
+                            <option value="GRE">GRE</option>
+                            <option value="PTE">PTE</option>
+                            <option value="GMAT">GMAT</option>
+                            <option value="TOEFL">TOEFL</option>
+                            <option value="Recruitment Specialist">Recruitment Specialist</option>
+                            <option value="Payroll Specialist">Payroll Specialist</option>
+                            <option value="Learning and Development">Learning and Development</option>
+                            <option value="HR Manager">HR Manager</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Competitive Exams">Competitive Exams</option>
+                            <option value="Others">Others</option>
                         </select>
                     </div>
 
