@@ -10,7 +10,7 @@ export default function Header() {
   const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const getClassLink = (pathId) =>
-    pathId === pathName ? 'text-red-500 font-semi-bold' : 'text-black-500';
+    pathId === pathName ? 'bg-[#ab43c8] text-white  px-5 rounded font-semi-bold' : 'text-black';
   return (
     <nav className="bg- blue shadow rounded-md border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,19 +25,19 @@ export default function Header() {
                 </Link>
                 <Link href="/leads" className={`text-base font-medium flex items-center text-black ${getClassLink('/leads')}`}>
                     Leads
-                    <p><FontAwesomeIcon icon={faCaretDown} /></p>
+                   
                 </Link>
                 <Link href="/opportunities" className={`text-base font-medium flex items-center text-black ${getClassLink('/opportunities')}`}>
                     Opportunities
-                    <p><FontAwesomeIcon icon={faCaretDown} /></p>
+                   
                 </Link>
                 <Link href="/learners" className={`text-base font-medium flex items-center text-black ${getClassLink('/learners')}`}>
                     Learners
-                    <p><FontAwesomeIcon icon={faCaretDown} /></p>
+                   
                 </Link>
                 <Link href="/courses" className={`text-base font-medium flex items-center text-black ${getClassLink('/courses')}`}>
                     Courses
-                    <p><FontAwesomeIcon icon={faCaretDown} /></p>
+                   
                 </Link>
           </div>
           {/* Right: Icons */}

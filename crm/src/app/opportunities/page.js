@@ -4,6 +4,7 @@ import Image from "next/image";
 import { faAngleDown, faAngleUp, faTable, faColumns, faSearch, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OpportunityForm from "../../components/createopportunities";
+import UpdateOpportunityForm from '@/components/updateopportform';
 // import UpdateOpportunityForm from "../../components/updateOpportunity"; // Import UpdateOpportunityForm component
 
 export default function Opportunities() {
@@ -14,12 +15,13 @@ export default function Opportunities() {
   const [opportunities, setOpportunities] = useState([]);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [opportunityToUpdate, setOpportunityToUpdate] = useState(null);
+  
 
   // Fetch opportunities from API
   useEffect(() => {
     async function fetchOpportunities() {
       try {
-        const response = await fetch('http://localhost:3000/opportunities');
+        const response = await fetch('http://13.59.24.132:8000/api/opportunities/');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setOpportunities(data);
@@ -69,7 +71,7 @@ export default function Opportunities() {
 
   const handleDeleteOpportunity = async (opportunityId) => {
     try {
-      const response = await fetch(`http://localhost:3000/opportunities/${opportunityId}`, {
+      const response = await fetch(`http://13.59.24.132:8000/api/opportunities/${opportunityId}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete opportunity");
@@ -126,7 +128,7 @@ export default function Opportunities() {
             <div className="flex gap-2">
               <button
                 onClick={toggleOpportunityForm}
-                className="bg-[#0176D3] text-white text-sm rounded-lg border-black px-4 p-1 leading-6 gap-2"
+                className="bg-[#ab43c8] text-white text-sm rounded-lg border-black px-4 p-1 leading-6 gap-2"
               >
                 {showOpportunityForm ? "Close Opportunity Form" : "Create Opportunity"}{" "}
                 <FontAwesomeIcon icon={showOpportunityForm ? faAngleUp : faAngleDown} className="mt-2" />
@@ -158,13 +160,13 @@ export default function Opportunities() {
                     key={status}
                     type="button"
                     className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activeOpportunityStatus === status
-                      ? "bg-[#0176D3] text-white border-[#0176D3]"
+                      ? "bg-[#ab43c8] text-white border-[#ab43c8]"
                       : "bg-white text-black border-[#747474]"
                       }`}
                     onClick={() => handleOpportunityStatusClick(status)}
                   >
                     {status}
-                    <p className="bg-rose-600 py-1 px-2.5 rounded-full">
+                    <p className="bg-slate-400 py-1 px-2.5 rounded-full">
                       {getOpportunitiesCountByStatus(status)}
                     </p>
                   </button>
@@ -172,14 +174,14 @@ export default function Opportunities() {
               </div>
               <div className="inline-flex rounded-md shadow-sm">
                 <button
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-s-lg ${view === "Table" ? "bg-[#0176D3] text-white" : "bg-white text-black border-[#747474]"}`}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-s-lg ${view === "Table" ? "bg-[#ab43c8] text-white" : "bg-white text-black border-[#747474]"}`}
                   onClick={() => handleViewClick("Table")}
                 >
                   <FontAwesomeIcon icon={faTable} />
                   Table
                 </button>
                 <button
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-e-lg ${view === "Kanban" ? "bg-[#0176D3] text-white" : "bg-white text-black border-[#747474]"}`}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-e-lg ${view === "Kanban" ? "bg-[#ab43c8] text-white" : "bg-white text-black border-[#747474]"}`}
                   onClick={() => handleViewClick("Kanban")}
                 >
                   <FontAwesomeIcon icon={faColumns} />
@@ -284,18 +286,19 @@ export default function Opportunities() {
                 </div>
               </div>
 
-              {/* Conditionally render the OpportunityForm */}
+            
 
 
-              {/* Conditionally render the UpdateOpportunityForm */}
-              {/* {showUpdateForm && opportunityToUpdate && (
-                <UpdateOpportunityForm opportunity={opportunityToUpdate} onClose={() => setShowUpdateForm(false)} />
-              )} */}
+              
             </div>
           )}
         </div>
       </div>
       {showOpportunityForm && (<OpportunityForm setShowOpportunityForm = {setShowOpportunityForm}/>)}
+
+               {showUpdateForm && opportunityToUpdate && (
+                <UpdateOpportunityForm opportunity={opportunityToUpdate} onClose={() => setShowUpdateForm(false)} />
+              )}
 
     </div>
   );

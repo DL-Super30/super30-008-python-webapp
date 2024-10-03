@@ -38,7 +38,7 @@ export default function Learners() {
               </div>
               <div className="flex gap-2">
                 <div>
-                  <button className="bg-[#0176D3] text-white text-sm rounded-lg border-solid border-black px-4 p-1 leading-6 gap-2">Create Learner <FontAwesomeIcon icon={faAngleDown} className="mt-2" /></button>
+                  <button className="bg-[#ab43c8] text-white text-sm rounded-lg border-solid border-black px-4 p-1 leading-6 gap-2">Create Learner <FontAwesomeIcon icon={faAngleDown} className="mt-2" /></button>
                 </div>
                 <div>
                   <button className="bg-white text-black text-sm rounded-md border border-neutral-400 px-4 p-1 leading-6 gap-2">Actions<FontAwesomeIcon icon={faAngleDown} className="mt-2 ml-1" /></button>
@@ -64,7 +64,7 @@ export default function Learners() {
                   <button
                     type="button"
                     className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 rounded-s-lg ${activelearnerStatus === 'Not Contacted'
-                      ? 'bg-[#0176D3] text-white border-[#0176D3]'
+                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
                       : 'bg-white text-black border-[#747474]'
                       }`}
                     onClick={() => handlelearnerStatusClick('Not Contacted')}
@@ -76,7 +76,7 @@ export default function Learners() {
                   <button
                     type="button"
                     className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activelearnerStatus === 'Attempted'
-                      ? 'bg-[#0176D3] text-white border-[#0176D3]'
+                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
                       : 'bg-white text-black border-[#747474]'
                       }`}
                     onClick={() => handlelearnerStatusClick('Attempted')}
@@ -88,7 +88,7 @@ export default function Learners() {
                   <button
                     type="button"
                     className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activelearnerStatus === 'Warm Lead'
-                      ? 'bg-[#0176D3] text-white border-[#0176D3]'
+                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
                       : 'bg-white text-black border-[#747474]'
                       }`}
                     onClick={() => handlelearnerStatusClick('Warm Lead')}
@@ -100,7 +100,7 @@ export default function Learners() {
                   <button
                     type="button"
                     className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activelearnerStatus === 'Cold Lead'
-                      ? 'bg-[#0176D3] text-white border-[#0176D3]'
+                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
                       : 'bg-white text-black border-[#747474]'
                       }`}
                     onClick={() => handlelearnerStatusClick('Cold Lead')}
@@ -113,7 +113,7 @@ export default function Learners() {
                 <div className="inline-flex rounded-md shadow-sm">
                   <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-s-lg ${activeView === 'Table'
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-[#ab43c8] text-white'
                       : 'bg-white text-black border-[#747474]'
                       }`}
                     onClick={() => handleViewClick('Table')}
@@ -123,7 +123,7 @@ export default function Learners() {
                   </button>
                   <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-e-lg ${activeView === 'Kanban'
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-[#ab43c8] text-white'
                       : 'bg-white text-black border-[#747474]'
                       }`}
                     onClick={() => handleViewClick('Kanban')}
