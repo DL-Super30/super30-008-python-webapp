@@ -79,7 +79,7 @@ export default function OpportunityManagement() {
 
   useEffect(() => {
     fetchOpportunity()
-  }, [])
+  });
 
   useEffect(() => {
     let filteredData = Opportunity.filter((row) =>
