@@ -28,7 +28,7 @@ export default function NavbarSlide() {
         <AppsIcon style={{ fontSize: 26, color: 'blue' }} />
 
         <div className="flex w-[200px] h-[50px] items-center">
-        <img className="w-60 h-8" src="./Image/2.webp"></img>
+        <img className="w-60 h-8" src="./Image/2.webp" alt="image"></img>
         </div>
 
         </div>
