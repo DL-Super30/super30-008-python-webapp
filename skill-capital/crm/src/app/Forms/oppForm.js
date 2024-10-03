@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
-export default function opportunityForm({ closeForm }) {
+export default function OpportunityForm({ closeForm }) {
 
     // const [chance, setChance] = useState([]);
     const [formData, setFormData] = useState({
@@ -485,7 +485,7 @@ export default function opportunityForm({ closeForm }) {
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
                             <option value="" disabled>Select Lost opportunity Reason</option>
-                            <option value="None">None"</option>
+                            <option value="None">None</option>
                             <option value="Invalid Number">Invalid Number</option>
                             <option value="Not Interested">Not Interested</option>
                             <option value="Joined Other Institute">Joined Other Institute</option>

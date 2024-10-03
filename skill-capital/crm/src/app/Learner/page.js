@@ -80,7 +80,7 @@ export default function LearnManagement() {
 
   useEffect(() => {
     fetchLearner()
-  }, [])
+  });
 
   useEffect(() => {
     let filteredData = Learner.filter((row) =>

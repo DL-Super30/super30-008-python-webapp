@@ -78,7 +78,7 @@ export default function LeadManagement() {
 
   useEffect(() => {
     fetchLeads()
-  }, [])
+  });
 
   useEffect(() => {
     let filteredData = Leads.filter((row) =>

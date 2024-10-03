@@ -123,7 +123,7 @@ export default function LoginForm() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         // Send form data to the API
-        const response = await fetch(`${apiUrl}/login `, {
+        const response = await fetch(`${apiUrl}/login/ `, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ export default function LoginForm() {
 
       } catch (error) {
         console.error('Error fetching user data:', error);
-        alert('Error while logging in');
+        AlertMessage('Error while logging in', 'error');
       }
     }
     else {
@@ -242,9 +242,9 @@ export default function LoginForm() {
           >
             Login
           </button>
-          <a href="#" className="text-blue-600">
+          {/* <a href="#" className="text-blue-600">
             Forgot password
-          </a>
+          </a> */}
           <div className="flex justify-start w-96">
             <input
               type="checkbox" className="mr-2"
