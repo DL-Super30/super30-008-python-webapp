@@ -1,0 +1,256 @@
+{
+  "login": [
+    {
+      "username": "swarna",
+      "password": "Admin@123",
+      "id": "a49f"
+    }
+  ],
+  "leads": [
+    {
+      "id": "1727960488068",
+      "date": "03-10-2024",
+      "name": "kona shankar aditya",
+      "phone": "5584125854",
+      "email": "konashankaraditya@gmail.com",
+      "status": "Warm Lead",
+      "course": "GMAT",
+      "source": "Demo",
+      "stack": "HR",
+      "fee": "4555",
+      "classMode": "BLR ClassRoom",
+      "batchTimings": "2PM-3PM",
+      "nextFollowUp": "2024-10-16",
+      "description": "all hail"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "1727348392236",
+      "date": "26-09-2024",
+      "name": "Swarnalatha Tirumalasetti",
+      "phone": "6303547077",
+      "email": "swarnalatha0719@gmail.com",
+      "status": "Not Contacted",
+      "course": "",
+      "source": "",
+      "stack": "",
+      "fee": "",
+      "classMode": "",
+      "batchTimings": "",
+      "nextFollowUp": "",
+      "description": ""
+    },
+    {
+      "id": "1",
+      "date": "12/8/24",
+      "status": "Not Contacted",
+      "name": "Swarna",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "Python"
+    },
+    {
+      "id": "2",
+      "date": "14/8/24",
+      "status": "Attempted",
+      "name": "Latha",
+      "phone": 6303541477,
+      "stack": "Dev",
+      "course": "DevOps"
+    },
+    {
+      "id": "3",
+      "date": "12/8/24",
+      "status": "Warm Lead",
+      "name": "Swarnalatha",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "Java"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "4",
+      "date": "12/8/24",
+      "status": "Cold Lead",
+      "name": "Tirumala",
+      "phone": 6303541477,
+      "stack": "FullStack",
+      "course": "MERN"
+    },
+    {
+      "id": "1727179333637",
+      "date": "24-09-2024",
+      "name": "Sirisha",
+      "phone": "8987858987",
+      "email": "sirisha@gmail.com",
+      "status": "Warm Lead",
+      "course": "Communication Skills",
+      "source": "Website",
+      "stack": "Life Skills",
+      "fee": "20000",
+      "classMode": "HYD ClassRoom",
+      "batchTimings": "8AM-9AM",
+      "nextFollowUp": "2024-09-25",
+      "description": ""
+    },
+    {
+      "id": "1727179438268",
+      "date": "24-09-2024",
+      "name": "Reshma",
+      "phone": "6578942356",
+      "email": "reshma@gmail.com",
+      "status": "Warm Lead",
+      "course": "PTE",
+      "source": "Demo",
+      "stack": "Study Abroad",
+      "fee": "20000",
+      "classMode": "HYD ClassRoom",
+      "batchTimings": "7AM-8AM",
+      "nextFollowUp": "2024-09-24",
+      "description": ""
+    },
+    {
+      "id": "1727353712051",
+      "date": "26-09-2024",
+      "name": "swarna",
+      "phone": "6303547077",
+      "email": "swarnalatha@gmail.com",
+      "status": "Attempted",
+      "course": "PTE",
+      "source": "Demo",
+      "stack": "Study Abroad",
+      "fee": "25000",
+      "classMode": "HYD ClassRoom",
+      "batchTimings": "7AM-8AM",
+      "nextFollowUp": "2024-09-26",
+      "description": "First"
+    },
+    {
+      "id": "1727353818980",
+      "date": "26-09-2024",
+      "name": "Swarnalatha Tirumalasetti",
+      "phone": "6303547077",
+      "email": "swarnalatha@gmail.com",
+      "status": "Warm Lead",
+      "course": "PTE",
+      "source": "Inbound Call",
+      "stack": "Study Abroad",
+      "fee": "25000",
+      "classMode": "HYD ClassRoom",
+      "batchTimings": "7AM-8AM",
+      "nextFollowUp": "2024-09-26",
+      "description": "First"
+    },
+    {
+      "id": "1727354028405",
+      "date": "26-09-2024",
+      "name": "SAI VINAY",
+      "phone": "6303113002",
+      "email": "swarnalatha@gmail.com",
+      "status": "Attempted",
+      "course": "PTE",
+      "source": "Attempted",
+      "stack": "Study Abroad",
+      "fee": "30000",
+      "classMode": "India Online",
+      "batchTimings": "8AM-9AM",
+      "nextFollowUp": "2024-09-19",
+      "description": "HI"
+    },
+    {
+      "id": "1727354030730",
+      "date": "26-09-2024",
+      "name": "SAI VINAY",
+      "phone": "6303113002",
+      "email": "swarnalatha@gmail.com",
+      "status": "Attempted",
+      "course": "PTE",
+      "source": "Attempted",
+      "stack": "Study Abroad",
+      "fee": "30000",
+      "classMode": "India Online",
+      "batchTimings": "8AM-9AM",
+      "nextFollowUp": "2024-09-19",
+      "description": "HI"
+    },
+    {
+      "id": "1727504585707",
+      "date": "28-09-2024",
+      "name": "sasdsd",
+      "phone": "sdsd",
+      "email": "dsdsd@gmmail.com",
+      "status": "Not Contacted",
+      "course": "",
+      "source": "",
+      "stack": "",
+      "fee": "",
+      "classMode": "",
+      "batchTimings": "",
+      "nextFollowUp": "",
+      "description": ""
+    }
+  ]
+}

@@ -52,7 +52,7 @@ export default function LeadForm({ onClose }) {
 
 
     try {
-      const response = await axios.post("http://13.59.24.132:8000/api/leads/", updatedFormData);
+      const response = await axios.post("http://127.0.0.1:3001/leads/", updatedFormData);
       console.log("Server response:", response);
       if (response.status === 201) {
         setSuccessMessage("Lead created successfully!"); // Set success message

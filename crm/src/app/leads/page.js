@@ -21,7 +21,7 @@ export default function Leads() {
   useEffect(() => {
     async function fetchLeads() {
       try {
-        const response = await fetch('http://13.59.24.132:8000/api/leads/');
+        const response = await fetch('http://127.0.0.1:3001/leads');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setLeads(data);
@@ -85,7 +85,7 @@ export default function Leads() {
   const handleDeleteLead = async () => {
     try {
       for (const leadId of selectedLeads) {
-        const response = await fetch(`http://13.59.24.132:8000/api/leads/${leadId}`, {
+        const response = await fetch(`http://127.0.0.1:3001/leads/${leadId}`, {
           method: "DELETE",
         });
         if (!response.ok) throw new Error("Failed to delete lead");
@@ -205,7 +205,7 @@ export default function Leads() {
           </div>
         </div>
 
-        {showLeadForm && <LeadForm lead={Leads} />}
+        {showLeadForm && <LeadForm lead={Leads} onClose={() => setShowLeadForm(false)} />}
 
         {showUpdateForm && <UpdateLeadForm lead={leadToUpdate} onClose={() => setShowUpdateForm(false)} />}
 
@@ -214,7 +214,7 @@ export default function Leads() {
             <thead className="border-b font-medium">
               <tr>
                 <th scope="col" className="px-6 py-4">
-                  {/* <input
+                  <input
                     type="checkbox"
                     onChange={(e) =>
                       setSelectedLeads(
@@ -222,14 +222,14 @@ export default function Leads() {
                       )
                     }
                     checked={selectedLeads.length === leads.length && leads.length > 0}
-                  /> */}
+                  />
                 </th>
-                <th scope="col" className="px-6 py-4">Lead ID</th>
-                <th scope="col" className="px-6 py-4">Company</th>
-                <th scope="col" className="px-6 py-4">Contact Person</th>
-                <th scope="col" className="px-6 py-4">Position</th>
+                <th scope="col" className="px-6 py-4">ID</th>
+                <th scope="col" className="px-6 py-4">Name</th>
+                <th scope="col" className="px-6 py-4">Email</th>
                 <th scope="col" className="px-6 py-4">Phone Number</th>
-                <th scope="col" className="px-6 py-4">Location</th>
+                <th scope="col" className="px-6 py-4">course</th>
+                <th scope="col" className="px-6 py-4">fee</th>
               </tr>
             </thead>
             <tbody>
@@ -239,15 +239,17 @@ export default function Leads() {
                     <input
                       type="checkbox"
                       checked={selectedLeads.includes(lead.id)}
-                      onChange={() => handleCheckboxChange(lead.id)}
+                      onChange={(lead) => handleCheckboxChange(lead.id)}
                     />
                   </td>
                   <td className="px-6 py-4">{lead.id}</td>
-                  <td className="px-6 py-4">{lead.company}</td>
                   <td className="px-6 py-4">{lead.name}</td>
-                  <td className="px-6 py-4">{lead.position}</td>
+                  <td className="px-6 py-4">{lead.email}</td>
                   <td className="px-6 py-4">{lead.phone}</td>
-                  <td className="px-6 py-4">{lead.location}</td>
+                  <td className="px-6 py-4">{lead.course}</td>
+                  <td className="px-6 py-4">{lead.fee}</td>
+ 
+
                 </tr>
               ))}
             </tbody>

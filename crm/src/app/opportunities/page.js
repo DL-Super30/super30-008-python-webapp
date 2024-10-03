@@ -195,7 +195,7 @@ export default function Opportunities() {
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-gray-200 text-left">
-                    <th className="border px-4 py-2">Created on</th>
+                    <th className="border px-4 py-2">Name</th>
                     <th className="border px-4 py-2">Opportunity Status</th>
                     <th className="border px-4 py-2">Name</th>
                     <th className="border px-4 py-2">Phone</th>
