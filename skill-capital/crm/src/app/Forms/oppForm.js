@@ -9,29 +9,29 @@ export default function OpportunityForm({ closeForm }) {
 
     // const [chance, setChance] = useState([]);
     const [formData, setFormData] = useState({
-        name: '',
-        cc: '91',
-        contact_no: '',
-        email: '',
-        fee_coated: '',
-        batch_timing: '',
-        description: '',
-        lead_status: '',
-        lead_source: '',
-        TechStack: '',
+        Name: '',
+        CC: '91',
+        Contact_No: '',
+        Email: '',
+        Fee_Coated: '',
+        Batch_Timing: '',
+        Description: '',
+        Lead_Status: '',
+        Lead_Source: '',
+        Tech_Stack: '',
         Course: '',
-        class_mode: '',
-        opportunity_status: '',
-        opportunity_stage: '',
-        demoattended_stage: '',
-        visited_stage: '',
-        lostopportunity_reason: '',
-        date: '',
+        Class_Mode: '',
+        Opportunity_Status: '',
+        Opportunity_Stage: '',
+        Demoattended_Stage: '',
+        Visited_Stage: '',
+        Lost_Opportunity_Reason: '',
+        Date: '',
 
     });
 
 
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -40,31 +40,31 @@ export default function OpportunityForm({ closeForm }) {
 
     const AlertMessage = (message, type) => {
         if (type === 'success') {
-          toast.success(message, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+            toast.success(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         } else if (type === 'error') {
-          toast.error(message, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+            toast.error(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
-      };
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form behavior
-        setFormData({ name: "", contact_no: "", email: "", TechStack: "", Course: "" }); // Reset the form data
+        setFormData({ name: "", Contact_No: "", Email: "", Tech_Stack: "", Course: "" }); // Reset the form data
 
         // closeForm(); // Close the form
         // alert("Form data successfully submitted"); // Show confirmation
@@ -80,36 +80,36 @@ export default function OpportunityForm({ closeForm }) {
 
             const opportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await axios.post(`${opportunityApiUrl}/opportunities/`, formDataWithdatestamp ,
+            const response = await axios.post(`${opportunityApiUrl}/opportunities/`, formDataWithdatestamp,
                 {
-                headers: { 'Content-Type': 'application/json'}
-                    
-              
-            },);
+                    headers: { 'Content-Type': 'application/json' }
+
+
+                },);
 
             if (response.status >= 200 && response.status < 300) {
                 // Fetch the updated leads list after form submission
                 // fetchChance();
-               
+
                 setFormData({
-                    name: '',
-                    cc: '91',
-                    contact_no: '',
-                    email: '',
-                    fee_coated: '',
-                    batch_timing: '',
-                    description: '',
-                    lead_status: '',
-                    lead_source: '',
-                    TechStack: '',
+                    Name: '',
+                    CC: '91',
+                    Contact_No: '',
+                    Email: '',
+                    Fee_Coated: '',
+                    Batch_Timing: '',
+                    Description: '',
+                    Lead_Status: '',
+                    Lead_Source: '',
+                    Tech_Stack: '',
                     Course: '',
-                    class_mode: '',
-                    opportunity_status: '',
-                    opportunity_stage: '',
-                    demoattended_stage: '',
-                    visited_stage: '',
-                    lostopportunity_reason: '',
-                    date: '',
+                    Class_Mode: '',
+                    Opportunity_Status: '',
+                    Opportunity_Stage: '',
+                    Demoattended_Stage: '',
+                    Visited_Stage: '',
+                    Lost_Opportunity_Reason: '',
+                    Date: '',
                 });
                 AlertMessage('Opportunity created Successfully', 'success');
                 closeForm(); // Close the form
@@ -118,7 +118,7 @@ export default function OpportunityForm({ closeForm }) {
             }
         } catch (error) {
             console.error('Error submitting form data:', error);
-            AlertMessage('An error occurred while submitting the data.' , 'error');
+            AlertMessage('An error occurred while submitting the data.', 'error');
         }
 
     };
@@ -149,8 +149,8 @@ export default function OpportunityForm({ closeForm }) {
                         <label className="text-sm font-medium">Name</label>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="Name"
+                            value={formData.Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -159,28 +159,28 @@ export default function OpportunityForm({ closeForm }) {
 
                     {/* CC */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Cc</label>
+                        <label className="text-sm font-medium">CC</label>
                         <input
                             disabled
                             type="text"
-                            name="cc"
-                            value={formData.cc}
+                            name="CC"
+                            value={formData.CC}
                             onChange={handleChange}
                             placeholder="91"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* contact_no */}
+                    {/* Contact_No */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">contact_no</label>
+                        <label className="text-sm font-medium">Contact No</label>
                         <input
                             type="number"
                             pattern='[0-9]{10}'
-                            name="contact_no"
-                            value={formData.contact_no}
+                            name="Contact_No"
+                            value={formData.Contact_No}
                             onChange={handleChange}
-                            placeholder="contact_no"
+                            placeholder="Contact_No"
                             minLength="10"
                             maxLength="10"
                             required
@@ -193,8 +193,8 @@ export default function OpportunityForm({ closeForm }) {
                         <label className="text-sm font-medium">Email</label>
                         <input
                             type="email"
-                            name="email"
-                            value={formData.email}
+                            name="Email"
+                            value={formData.Email}
                             onChange={handleChange}
                             placeholder="Email"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -206,8 +206,8 @@ export default function OpportunityForm({ closeForm }) {
                         <label className="text-sm font-medium">Fee Quoted</label>
                         <input
                             type="text"
-                            name="fee_coated"
-                            value={formData.fee_coated}
+                            name="Fee_Coated"
+                            value={formData.Fee_Coated}
                             onChange={handleChange}
                             placeholder="Fee Quoted"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -219,8 +219,8 @@ export default function OpportunityForm({ closeForm }) {
                         <label className="text-sm font-medium">Batch Timing</label>
                         <select
 
-                            name="batch_timing"
-                            value={formData.batch_timing}
+                            name="Batch_Timing"
+                            value={formData.Batch_Timing}
                             onChange={handleChange}
                             placeholder="Batch Timing"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -249,8 +249,8 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Lead Status</label>
                         <select
-                            name="lead_status"
-                            value={formData.lead_status}
+                            name="Lead_Status"
+                            value={formData.Lead_Status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -266,8 +266,8 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Lead Source</label>
                         <select
-                            name="lead_source"
-                            value={formData.lead_source}
+                            name="Lead_Source"
+                            value={formData.Lead_Source}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -280,23 +280,23 @@ export default function OpportunityForm({ closeForm }) {
                             <option value="Inbound Call">Inbound Call</option>
                             <option value="Google Ad Words">Google Ad Words</option>
                             <option value="Web Site Chat">Web Site Chat</option>
-                            <option value="Facebook Ads">Facebook Ads</option> 
-                            <option value="Google My Business">Google My Business</option> 
+                            <option value="Facebook Ads">Facebook Ads</option>
+                            <option value="Google My Business">Google My Business</option>
                             <option value="WhatsApp Skill Capital">WhatsApp Skill Capital</option>
-                         
+
                         </select>
                     </div>
 
-                    {/* TechStack */}
+                    {/* Tech_Stack */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">TechStack</label>
                         <select
-                            name="TechStack"
-                            value={formData.TechStack}
+                            name="Tech_Stack"
+                            value={formData.Tech_Stack}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
-                            <option value="" disabled>Select TechStack</option>
+                            <option value="" disabled>Select Tech_Stack</option>
                             <option value="Life Skills">Life Skills</option>
                             <option value="Study Abroad">Study Abroad</option>
                             <option value="HR">HR</option>
@@ -341,8 +341,8 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Class Mode</label>
                         <select
-                            name="class_mode"
-                            value={formData.class_mode}
+                            name="Class_Mode"
+                            value={formData.Class_Mode}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -359,8 +359,8 @@ export default function OpportunityForm({ closeForm }) {
                         <label className="text-sm font-medium">Date</label>
                         <input
                             type="date"
-                            name="date"
-                            value={formData.date}
+                            name="Date"
+                            value={formData.Date}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -369,8 +369,8 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">opportunity Status</label>
                         <select
-                            name="opportunity_status"
-                            value={formData.opportunity_status}
+                            name="Opportunity_Status"
+                            value={formData.Opportunity_Status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -385,8 +385,8 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">opportunity Stage</label>
                         <select
-                            name="opportunity_stage"
-                            value={formData.opportunity_stage}
+                            name="Opportunity_Stage"
+                            value={formData.Opportunity_Stage}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -406,15 +406,15 @@ export default function OpportunityForm({ closeForm }) {
                             <option value="Closed Own Register">Closed Own Register</option>
                             <option value="Closed Lost">Closed Lost</option>
                             <option value="Special Requirements">Special Requirements</option>
-    
+
                         </select>
                     </div>
                     {/* Demo Attempted Stage */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Demo Attempted Stage</label>
                         <select
-                            name="demoattended_stage"
-                            value={formData.demoattended_stage}
+                            name="Demoattended_Stage"
+                            value={formData.Demoattended_Stage}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -434,15 +434,15 @@ export default function OpportunityForm({ closeForm }) {
                             <option value="Closed Own Register">Closed Own Register</option>
                             <option value="Closed Lost Cold Lead">Closed Lost Cold Lead</option>
                             <option value="Special Requirements">Special Requirements</option>
-    
+
                         </select>
                     </div>
                     {/* Visited Stage */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Visited Stage</label>
                         <select
-                            name="visited_stage"
-                            value={formData.visited_stage}
+                            name="Visited_Stage"
+                            value={formData.Visited_Stage}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -466,8 +466,8 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Lost opportunity Reason</label>
                         <select
-                            name="lostopportunity_reason"
-                            value={formData.lostopportunity_reason}
+                            name="Lost_Opportunity_Reason"
+                            value={formData.Lost_Opportunity_Reason}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -486,8 +486,8 @@ export default function OpportunityForm({ closeForm }) {
                         <label className="text-sm font-medium">Description</label>
                         <input
                             type="text"
-                            name="description"
-                            value={formData.description}
+                            name="Description"
+                            value={formData.Description}
                             onChange={handleChange}
                             placeholder="Description"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"

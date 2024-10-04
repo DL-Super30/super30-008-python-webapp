@@ -57,7 +57,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         try {
             // Send the updated data to the JSON server
             const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await axios.put(`${leadsApiUrl}/leads/${rowData.id}/`,formData,
+            const response = await axios.put(`${leadsApiUrl}/leads/${rowData.Id}/`,formData,
                 {
              
                 headers: {  'Content-Type': 'application/json'},
@@ -182,7 +182,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
                     {/* TechStack */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">TechStack</label>
+                        <label className="text-sm font-medium">Tech Stack</label>
                         <select
                             name="Tech_Stack"
                             value={formData.Tech_Stack}

@@ -92,16 +92,16 @@ export default function LeadManagement() {
 
   useEffect(() => {
     let filteredData = Leads.filter((row) =>
-      row?.name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (filterByLeadStatus === "" || row?.lead_status === filterByLeadStatus)
+      row?.Name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (filterByLeadStatus === "" || row?.Lead_Status === filterByLeadStatus)
     );
     setFilteredRows(filteredData);
 
     const updatedCounts = {
-      NotContacted: filteredData.filter(row => row.lead_status === "Not Contacted").length,
-      Attempted: filteredData.filter(row => row.lead_status === "Attempted").length,
-      WarmLead: filteredData.filter(row => row.lead_status === "Warm Lead").length,
-      ColdLead: filteredData.filter(row => row.lead_status === "Cold Lead").length,
+      NotContacted: filteredData.filter(row => row.Lead_Status === "Not Contacted").length,
+      Attempted: filteredData.filter(row => row.Lead_Status === "Attempted").length,
+      WarmLead: filteredData.filter(row => row.Lead_Status === "Warm Lead").length,
+      ColdLead: filteredData.filter(row => row.Lead_Status === "Cold Lead").length,
     };
 
     setCounts(updatedCounts);
@@ -137,12 +137,12 @@ export default function LeadManagement() {
     }
 };
 
-  const handleDelete = (id) => {
+  const handleDelete = (Id) => {
     const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
-    axios.delete(`${leadsApiUrl}/leads/${id}/`)
+    axios.delete(`${leadsApiUrl}/leads/${Id}/`)
       .then(response => {
-        if (response.status==200) {
-          setLeads(prevRows => prevRows.filter(row => row.id !== id));
+        if (response.status>=200 && response.status<300) {
+          setLeads(prevRows => prevRows.filter(row => row.Id !== Id));
           AlertMessage('Row Deleted Successfully', 'success');
         } else {
           AlertMessage('Row Deleted UnSuccessfully', 'error');
@@ -164,7 +164,7 @@ export default function LeadManagement() {
   }
 
   const renderKanbanColumn = (status) => {
-    const filteredLeads = filteredRows.filter(lead => lead.lead_status === status);
+    const filteredLeads = filteredRows.filter(lead => lead.Lead_Status === status);
 
     const getColorByStatus = () => {
       switch (status) {
@@ -193,14 +193,14 @@ export default function LeadManagement() {
             <p className="py-[80px]">No leads</p>
           ) : (
             filteredLeads.map((lead) => (
-              <div key={lead.id} className=" flex  flex-col  w-full bg-white p-2 mb-2 rounded-md text-sm shadow">
+              <div key={lead.Id} className=" flex  flex-col  w-full bg-white p-2 mb-2 rounded-md text-sm shadow">
                 <div className="flex items-baseline justify-between">
                 <p className="font-medium">{lead.Name}</p>
                 <p>{lead.Contact_No}</p>
                 </div>
                 <div className="flex items-baseline justify-between">
                 <p>{lead.Email}</p>
-                  <button onClick={() => handleDelete(lead.id)} className="text-red-600 flex items-center text-xs">
+                  <button onClick={() => handleDelete(lead.Id)} className="text-red-600 flex items-center text-xs">
                     <DeleteIcon className="w-4 h-4 mr-1" />
                   </button>
                 </div>
@@ -219,7 +219,7 @@ export default function LeadManagement() {
   const toggleSelectAll = (event) => {
     if (event.target.checked) {
       // Select all rows
-      setSelectedRows(filteredRows.map(row => row.id));
+      setSelectedRows(filteredRows.map(row => row.Id));
     } else {
       // Deselect all rows
       setSelectedRows([]);
@@ -455,13 +455,13 @@ export default function LeadManagement() {
                   </tr>
                 ) : (
                   currentRows.map((row) => (
-                    <tr key={row.id } className=" border-2 border-slate-100 rounded-md bg-indigo-100 text-xs text-gray-600 font-sans font-medium tracking-wide hover:bg-lime-50 ">
+                    <tr key={row.Id } className=" border-2 border-slate-100 rounded-md bg-indigo-100 text-xs text-gray-600 font-sans font-medium tracking-wide hover:bg-lime-50 ">
 
                       <td className="border-1 p-2">
                         <input
                           type="checkbox"
-                          checked={selectedRows.includes(row.id)}
-                          onChange={() => toggleSelectRow(row.id)}
+                          checked={selectedRows.includes(row.Id)}
+                          onChange={() => toggleSelectRow(row.Id)}
 
                         />
                       </td>
@@ -495,7 +495,7 @@ export default function LeadManagement() {
                       <td className='border-1 p-1'>
                         <div className="flex items-center justify-center">
                           <button
-                            onClick={() => handleDelete(row.id)}
+                            onClick={() => handleDelete(row.Id)}
                             className="w-[70px] justify-center items-center text-red-600 flex border-1 bg-gray-200 rounded-md"
                           >
                             <DeleteIcon className="w-[20px] h-[20px]" />

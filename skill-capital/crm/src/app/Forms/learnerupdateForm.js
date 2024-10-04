@@ -78,7 +78,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         try {
             // Send the updated data to the JSON server
             const learnersApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await axios.put(`${learnersApiUrl}/learners/${rowData.id}/`, formData,  {
+            const response = await axios.put(`${learnersApiUrl}/learners/${rowData.Id}/`, formData,  {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'},
@@ -121,8 +121,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <span>
                             <input
                                 type="text"
-                                name="name"
-                                value={formData.FirstName}
+                                name="First_Name"
+                                value={formData.First_Name}
                                 onChange={handleChange}
                                 placeholder="Name"
                                 className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -143,8 +143,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <label className="text-sm font-medium">Name</label>
                         <input
                             type="text"
-                            name="FirstName"
-                            value={formData.FirstName}
+                            name="First_Name"
+                            value={formData.First_Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -156,8 +156,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <label className="text-sm font-medium">Last Name</label>
                         <input
                             type="text"
-                            name="LastName"
-                            value={formData.LastName}
+                            name="Last_Name"
+                            value={formData.Last_Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -166,7 +166,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
 
                     {/* learner Status */}
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="text-sm font-medium">learner Status</label>
                         <select
                             name="learner_Status"
@@ -180,7 +180,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             <option value="On Hold">On Hold</option>
                             <option value="Completed">Completed</option>
                         </select>
-                    </div>
+                    </div> */}
 
                     {/* contact_no */}
                     <div className="flex flex-col">
@@ -188,10 +188,10 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <input
                             type="number"
                             pattern='[0-9]{10}'
-                            name="phone"
-                            value={formData.phone}
+                            name="Phone"
+                            value={formData.Phone}
                             onChange={handleChange}
-                            placeholder="contact_no"
+                            placeholder="Contact No"
                             minLength="10"
                             maxLength="10"
                             required
@@ -217,8 +217,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <label className="text-sm font-medium">TechStack</label>
                         <input
                             type='text'
-                            name="TechStack"
-                            value={formData.TechStack}
+                            name="Tech_Stack"
+                            value={formData.Tech_Stack}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -226,7 +226,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     </div>
 
                     {/* Total fee*/}
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="text-sm font-medium">Total Fee</label>
                         <input
                             type="text"
@@ -235,10 +235,10 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
-                    </div>
+                    </div> */}
 
                     {/* Fee paid*/}
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="text-sm font-medium"> Fee Paid</label>
                         <input
                             type="text"
@@ -247,10 +247,10 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
-                    </div>
+                    </div> */}
 
                     {/* Due Amount*/}
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="text-sm font-medium">Due Amount</label>
                         <input
                             type="text"
@@ -260,10 +260,10 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             readOnly
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
-                    </div>
+                    </div> */}
 
                     {/* Due Date*/}
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="text-sm font-medium">Due Date</label>
                         <input
                             type="date"
@@ -272,7 +272,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
-                    </div>
+                    </div> */}
 
 
 
@@ -280,9 +280,9 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Batch Timing</label>
                         <input
-                            type="time"
-                            name="batch_Timing"
-                            value={formData.batch_Timing}
+                            type="date"
+                            name="Batch_Timing"
+                            value={formData.Batch_Timing}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -293,8 +293,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <label className="text-sm font-medium">Mode Of Class</label>
                         <select
 
-                            name="mode_of_class"
-                            value={formData.mode_of_class}
+                            name="Mode_Of_Class"
+                            value={formData.Mode_Of_Class}
                             onChange={handleChange}
                             placeholder="Mode Of Class"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"

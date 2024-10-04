@@ -25,7 +25,7 @@ export default function CourseManagement() {
     const fetchCourses = async () => {
         const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const response = await axios.get(`${CourseApiUrl}/Courses/`);
+            const response = await axios.get(`${CourseApiUrl}/courses/`);
 
             const data = await response.data;
             console.log(data);
@@ -55,7 +55,7 @@ export default function CourseManagement() {
 
     useEffect(() => {
         const filteredData = courses.filter(row =>
-            row?.course_Name?.toLowerCase().includes(searchQuery.toLowerCase())
+            row?.Course_Name?.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredRows(filteredData);
         // console.log(filteredData);
@@ -92,9 +92,9 @@ export default function CourseManagement() {
 
     const handleDelete = (id) => {
         const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
-        axios.delete(`${CourseApiUrl}/Courses/${id}/`)
+        axios.delete(`${CourseApiUrl}/courses/${id}/`)
             .then(response => {
-                if (response.status==200) {
+                if (response.status>=200 && response.status<300) {
                     setCourses(prevRows => prevRows.filter(row => row.id !== id));
                     AlertMessage("Course Deleted Successfully",'success');
                 } else {
@@ -215,10 +215,10 @@ export default function CourseManagement() {
                                             onChange={() => toggleSelectRow(row.id)}
                                         />
                                     </td>
-                                    <td className='border-1 p-2'>{row.date}</td>
-                                    <td className='border-1 p-2'>{row.course_Name}</td>
-                                    <td className='border-1 p-2'>{row.course_Fee}</td>
-                                    <td className='border-1 p-2'>{row.course_Description}</td>
+                                    <td className='border-1 p-2'>{row.date|| '-'}</td>
+                                    <td className='border-1 p-2'>{row.Course_Name}</td>
+                                    <td className='border-1 p-2'>{row.Course_Fee}</td>
+                                    <td className='border-1 p-2'>{row.Description}</td>
                                     <td className='border-1 p-2'>
                                         <div className="flex items-center justify-center">
                                             <button

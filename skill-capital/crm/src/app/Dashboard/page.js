@@ -20,10 +20,10 @@ const statusKeyMap = {
 const calculateCounts = (leads) => {
   const counts = {
  
-    NotContacted: leads.filter(lead => lead.lead_status === "Not Contacted").length,
-    Attempted: leads.filter(lead => lead.lead_status === "Attempted").length,
-    WarmLead: leads.filter(lead => lead.lead_status === "Warm Lead").length,
-    ColdLead: leads.filter(lead => lead.lead_status === "Cold Lead").length,
+    NotContacted: leads.filter(lead => lead.Lead_Status === "Not Contacted").length,
+    Attempted: leads.filter(lead => lead.Lead_Status === "Attempted").length,
+    WarmLead: leads.filter(lead => lead.Lead_Status === "Warm Lead").length,
+    ColdLead: leads.filter(lead => lead.Lead_Status === "Cold Lead").length,
   };
   counts.Total= counts.NotContacted+ counts.Attempted + counts.WarmLead + counts.ColdLead;
   return counts;
@@ -84,7 +84,7 @@ export default function Dashboard() {
           if (isToday(leadDate)) {
             todayLeads.push(lead);
           } else {
-            previousLeads.push(lead);
+            previousLeads.push(lead);       
           }
         });
 

@@ -11,38 +11,38 @@ import axios from 'axios';
 export default function LearnForm({ closeForm, initialData }) {
 
     const [formData, setFormData] = useState(initialData || {
-        FirstName: '',
-        LastName: '',
+        First_Name: '',
+        Last_Name: '',
         Phone: '',
         Email: '',
-        IdProof: '',
-        DateofBirth: '',
+        Id_Proof: '',
+        Date_of_Birth: '',
         Description: '',
-        RegisteredDate: '',
+        Registered_Date: '',
         BatchId: '',
-        Alternatephone: '',
+        Alternate_Phone: '',
         total_fee: '',
        Source: '',
         Attended_Demo: '',
-        LearnerOwner: '',
+        Learner_Owner: '',
         Learner_Stage: '',
-        Leadcreatedtime: '',
+        Lead_Created_Time: '',
         fee_Paid: '',
-       CounselingDoneBY: '',
-        RegisteredCourse: '',
-        PreferableTime: '',
-        TechStack: '',
-        BatchTiming: '',
-        CourseComments: '',
-        ModeOfClass: '',
-        SlackAccess: '',
+       Counseling_Done_BY: '',
+        Registered_Course: '',
+        Preferable_Time: '',
+        Tech_Stack: '',
+        Batch_Timing: '',
+        Course_Comments: '',
+        Mode_Of_Class: '',
+        Slack_Access: '',
         Comment: '',
-        LMSAccess: '',
+        LMS_Access: '',
         due_Amount: '',
         due_date: '',
         learner_Status: '',
         Currency: '',
-        ExchangeRate:'',
+        Exchange_Rate:'',
         Location:'',
     });
 
@@ -130,20 +130,20 @@ export default function LearnForm({ closeForm, initialData }) {
                 AlertMessage('Learner Created Successfully', 'success');
 
                 setFormData({
-                    FirstName: '',
-                    LastName: '',
-                    RegisteredDate: '',
+                    First_Name: '',
+                    Last_Name: '',
+                    Registered_Date: '',
                     Phone: '',
                     Email: '',
-                    ModeOfClass: '',
-                    TechStack: '',
+                    Mode_Of_Class: '',
+                    Tech_Stack: '',
                     total_Fee: '',
                     fee_Paid: '',
                     due_Amount: '',
                     due_date: '',
                     learner_Status: '',
                     Currency:'',
-                    ExchangeRate:'',
+                    Exchange_Rate:'',
                     Location:'',
 
                 });
@@ -177,8 +177,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <div className="flex flex-col">
                             <input
                                 type="text"
-                                name="name"
-                                value={formData.FirstName}
+                                name="First_Name"
+                                value={formData.First_Name}
                                 onChange={handleChange}
                                 placeholder=" Full Name"
                                 className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -200,8 +200,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium"> First Name</label>
                         <input
                             type="text"
-                            name="FirstName"
-                            value={formData.FirstName}
+                            name="First_Name"
+                            value={formData.First_Name}
                             onChange={handleChange}
                             placeholder="First Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -213,8 +213,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium"> Last Name</label>
                         <input
                             type="text"
-                            name="LastName"
-                            value={formData.LastName}
+                            name="Last_Name"
+                            value={formData.Last_Name}
                             onChange={handleChange}
                             placeholder="Last Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -258,8 +258,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">IdProof</label>
                         <input
                             type="text"
-                            name="IdProof"
-                            value={formData.IdProof}
+                            name="Id_Proof"
+                            value={formData.Id_Proof}
                             onChange={handleChange}
                             placeholder="Id Proof"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -271,8 +271,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">DateofBirth</label>
                         <input
                             type="date"
-                            name="DateofBirth"
-                            value={formData.DateofBirth}
+                            name="Date_OF_Birth"
+                            value={formData.Date_OF_Birth}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -283,8 +283,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">RegisteredDate</label>
                         <input
                             type="date"
-                            name="RegisteredDate"
-                            value={formData.RegisteredDate}
+                            name="Registered_Date"
+                            value={formData.Registered_Date}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -295,20 +295,20 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">BatchId</label>
                         <input
                             type="text"
-                            name="BatchId"
-                            value={formData.BatchId}
+                            name="Batch_Id"
+                            value={formData.Batch_Id}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* AlternatePhone*/}
+                    {/* Alternate_Phone*/}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Alternatephone</label>
                         <input
                             type="text"
-                            name="Alternatephone"
-                            value={formData.Alternatephone}
+                            name="Alternate_Phone"
+                            value={formData.Alternate_Phone}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -343,8 +343,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">ExchangeRate</label>
                         <input
                             type="number"
-                            name="ExchangeRate"
-                            value={formData.ExchangeRate}
+                            name="Exchange_Rate"
+                            value={formData.Exchange_Rate}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -426,9 +426,9 @@ export default function LearnForm({ closeForm, initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Learner Owner</label>
                         <input
-                            type="text"
-                            name="LearnerOwner"
-                            value={formData.LearnerOwner}
+                            type="number"
+                            name="Learner_Owner"
+                            value={formData.Learner_Owner}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -524,8 +524,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Learner Created Time</label>
                         <input
                             type="date"
-                            name="Leadcreatedtime"
-                            value={formData.Leadcreatedtime}
+                            name="Lead_Created_Time"
+                            value={formData.Lead_Created_Time}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -536,8 +536,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Counselling Done By</label>
                         <select
                             type="number"
-                            name="CounselingDoneBY"
-                            value={formData.CounselingDoneBY}
+                            name="Counseling_Done_BY"
+                            value={formData.Counseling_Done_BY}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -567,8 +567,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Registered Courses Count</label>
                         <input
                             type="number"
-                            name="RegisteredCourse"
-                            value={formData.RegisteredCourse}
+                            name="Registered_Course"
+                            value={formData.Registered_Course}
                             onChange={handleChange}
                             placeholder="Registered Courses Count"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -580,8 +580,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Preferable Time</label>
                         <input
                             type="date"
-                            name="PreferableTime"
-                            value={formData.PreferableTime}
+                            name="Preferable_Time"
+                            value={formData.Preferable_Time}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -592,8 +592,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Tech Stack</label>
                         <input
                             type='text'
-                            name="TechStack"
-                            value={formData.TechStack}
+                            name="Tech_Stack"
+                            value={formData.Tech_Stack}
                             onChange={handleChange}
                             placeholder="Tech Stack"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -605,8 +605,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Batch Timing</label>
                         <input
                             type="date"
-                            name="BatchTiming"
-                            value={formData.BatchTiming}
+                            name="Batch_Timing"
+                            value={formData.Batch_Timing}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -617,8 +617,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Course Comments</label>
                         <input
                             type="text"
-                            name="CourseComments"
-                            value={formData.CourseComments}
+                            name="Course_Comments"
+                            value={formData.Course_Comments}
                             onChange={handleChange}
                             placeholder="Course Comments"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -629,8 +629,8 @@ export default function LearnForm({ closeForm, initialData }) {
                         <label className="text-sm font-medium">Mode Of Class</label>
                         <select
 
-                            name="ModeOfClass"
-                            value={formData.ModeOfClass}
+                            name="Mode_Of_Class"
+                            value={formData.Mode_Of_Class}
                             onChange={handleChange}
                             placeholder="Mode Of Class"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -645,8 +645,8 @@ export default function LearnForm({ closeForm, initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Slack Access</label>
                         <Select
-                            name="SlackAccess"
-                            value={formData.SlackAccess}
+                            name="Slack_Access"
+                            value={formData.Slack_Access}
                             onChange={handleChange}
                             placeholder="Slack Access"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -673,8 +673,8 @@ export default function LearnForm({ closeForm, initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">LMS Access</label>
                         <Select
-                            name="LMSAccess"
-                            value={formData.LMSAccess}
+                            name="LMS_Access"
+                            value={formData.LMS_Access}
                             onChange={handleChange}
                             placeholder="LMS Access"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"

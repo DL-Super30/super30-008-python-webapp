@@ -82,16 +82,16 @@ export default function OpportunityManagement() {
 
   useEffect(() => {
     let filteredData = Opportunity.filter((row) =>
-      row?.name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (filterByOpportunityStatus === "" || row?.opportunity_status === filterByOpportunityStatus)
+      row?.Name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (filterByOpportunityStatus === "" || row?.Opportunity_Status === filterByOpportunityStatus)
     );
     setFilteredRows(filteredData);
 
     const updatedCounts = {
-      Visiting: filteredData.filter(row => row.opportunity_status === "Visiting").length,
-      Visited: filteredData.filter(row => row.opportunity_status === "Visited").length,
-      DemoAttended: filteredData.filter(row => row.opportunity_status === "Demo Attended").length,
-      LostOpportunity: filteredData.filter(row => row.opportunity_status === "Lost Opportunity").length,
+      Visiting: filteredData.filter(row => row.Opportunity_Status === "Visiting").length,
+      Visited: filteredData.filter(row => row.Opportunity_Status === "Visited").length,
+      DemoAttended: filteredData.filter(row => row.Opportunity_Status === "Demo Attended").length,
+      LostOpportunity: filteredData.filter(row => row.Opportunity_Status === "Lost Opportunity").length,
     };
 
     setCounts(updatedCounts);
@@ -108,7 +108,7 @@ export default function OpportunityManagement() {
         toast.success(message, {
             position: 'top-right',
             autoClose: 5000,
-            hideProgressBar: false,
+            hIdeProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
@@ -118,7 +118,7 @@ export default function OpportunityManagement() {
         toast.error(message, {
             position: 'top-right',
             autoClose: 5000,
-            hideProgressBar: false,
+            hIdeProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
@@ -127,12 +127,12 @@ export default function OpportunityManagement() {
     }
 };
 
-  const handleDelete = (id) => {
+  const handleDelete = (Id) => {
     const OpportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
-    axios.delete(`${OpportunityApiUrl}/opportunities/${id}/`)
+    axios.delete(`${OpportunityApiUrl}/opportunities/${Id}/`)
       .then(response => {
-        if (response.status==200) {
-          setOpportunity(prevRows => prevRows.filter(row => row.id !== id));
+        if (response.status>=200 && response.status<300) {
+          setOpportunity(prevRows => prevRows.filter(row => row.Id !== Id));
           AlertMessage('Row Deleted Successfully', 'success');
         } else {
           AlertMessage('Row Deleted UnSuccessfully', 'error');
@@ -154,7 +154,7 @@ export default function OpportunityManagement() {
   }
 
   const renderKanbanColumn = (status) => {
-    const filteredOpportunity = filteredRows.filter(Opportunity => Opportunity.opportunity_status === status);
+    const filteredOpportunity = filteredRows.filter(Opportunity => Opportunity.Opportunity_Status === status);
 
     const getColorByStatus = () => {
       switch (status) {
@@ -170,7 +170,7 @@ export default function OpportunityManagement() {
 
     }
     return (
-      <div className="grid gap-3 text-center min-w-[280px] max-w-[300px]">
+      <div className="grId gap-3 text-center min-w-[280px] max-w-[300px]">
 
         <div className={`border-1  flex flex-col not-italic gap-2 rounded-lg text-sm p-2 ${getColorByStatus(status)}`}>
           <p>{status}</p>
@@ -183,15 +183,15 @@ export default function OpportunityManagement() {
             <p className="py-[80px]">No Opportunity</p>
           ) : (
             filteredOpportunity.map((Opportunity) => (
-              <div key={Opportunity.id} className="bg-white p-2 mb-2 rounded-md text-sm shadow">
+              <div key={Opportunity.Id} className="bg-white p-2 mb-2 rounded-md text-sm shadow">
                 <div className="flex items-baseline justify-between">
-                  <p className="font-bold">{Opportunity.name}</p>
-                  <p>{Opportunity.contact_no}</p>
+                  <p className="font-bold">{Opportunity.Name}</p>
+                  <p>{Opportunity.Contact_No}</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <p>{Opportunity.email}</p>
+                  <p>{Opportunity.Email}</p>
 
-                  <button onClick={() => handleDelete(Opportunity.id)} className="text-red-600 flex items-center text-xs">
+                  <button onClick={() => handleDelete(Opportunity.Id)} className="text-red-600 flex items-center text-xs">
                     <DeleteIcon className="w-4 h-6 mr-1" />
                   </button>
                 </div>
@@ -210,7 +210,7 @@ export default function OpportunityManagement() {
   const toggleSelectAll = (event) => {
     if (event.target.checked) {
       // Select all rows
-      setSelectedRows(filteredRows.map(row => row.id));
+      setSelectedRows(filteredRows.map(row => row.Id));
     } else {
       // Deselect all rows
       setSelectedRows([]);
@@ -221,7 +221,7 @@ export default function OpportunityManagement() {
     setSelectedRows(prevSelected => {
       if (prevSelected.includes(rowId)) {
         // Deselect the row
-        return prevSelected.filter(id => id !== rowId);
+        return prevSelected.filter(Id => Id !== rowId);
       } else {
         // Select the row
         return [...prevSelected, rowId];
@@ -427,11 +427,11 @@ export default function OpportunityManagement() {
                   </th >
                   <th className='border-1 p-2'>created On</th>
                   <th className='border-1 p-2'>Name</th>
-                  <th className='border-1 p-2'>Lead status</th>
+                  <th className='border-1 p-2'>Lead Status</th>
                   <th className='border-1 p-2'>Opportunity Status</th>
                   <th className='border-1 p-2'>Contact</th>
                   <th className='border-1 p-2'>Email</th>
-                  <th className='border-1 p-2'>TechStack</th>
+                  <th className='border-1 p-2'>Tech Stack</th>
                   <th className='border-1 p-2'>Course</th>
                   <th className='border-1 p-2'>Update</th>
                   <th className='border-1 p-2'>Delete</th>
@@ -444,24 +444,24 @@ export default function OpportunityManagement() {
                   </tr>
                 ) : (
                   currentRows.map((row) => (
-                    <tr key={row.id} className=" border-2 border-slate-100 rounded-md text-xs  text-gray-600 font-medium font-sans bg-indigo-100  hover:bg-lime-50 tracking-wide">
+                    <tr key={row.Id} className=" border-2 border-slate-100 rounded-md text-xs  text-gray-600 font-medium font-sans bg-indigo-100  hover:bg-lime-50 tracking-wIde">
 
                       <td className="border-1 p-2">
                         <input
                           type="checkbox"
-                          checked={selectedRows.includes(row.id)}
-                          onChange={() => toggleSelectRow(row.id)}
+                          checked={selectedRows.includes(row.Id)}
+                          onChange={() => toggleSelectRow(row.Id)}
 
                         />
                       </td>
 
-                      <td className="border-1 p-2">{row.date}</td>
-                      <td className='border-1 p-2'>{row.name}</td>
-                      <td className='border-1 p-2'>{row.lead_status}</td>
-                      <td className='border-1 p-2'>{row.opportunity_status}</td>
-                      <td className='border-1 p-2'>{row.contact_no}</td>
-                      <td className='border-1 p-2'>{row.email}</td>
-                      <td className='border-1 p-2'>{row.TechStack}</td>
+                      <td className="border-1 p-2">{row.Date}</td>
+                      <td className='border-1 p-2'>{row.Name}</td>
+                      <td className='border-1 p-2'>{row.Lead_Status}</td>
+                      <td className='border-1 p-2'>{row.Opportunity_Status}</td>
+                      <td className='border-1 p-2'>{row.Contact_No}</td>
+                      <td className='border-1 p-2'>{row.Email}</td>
+                      <td className='border-1 p-2'>{row.Tech_Stack}</td>
                       <td className='border-1 p-2'>{row.Course}</td>
                       <td className=' border-1 p-2'>
                         <div className="flex items-center justify-center">
@@ -486,7 +486,7 @@ export default function OpportunityManagement() {
                       <td className='border-1 p-2'>
                         <div className="flex items-center justify-center">
                           <button
-                            onClick={() => handleDelete(row.id)}
+                            onClick={() => handleDelete(row.Id)}
                             className="w-[70px] justify-center items-center text-red-600 flex border-1 bg-gray-200 rounded-md"
                           >
                             <DeleteIcon className="w-[20px] h-[20px]" />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
@@ -7,223 +7,188 @@ import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-
-export default function CourseForm({ closeForm }) {
-
-    const [image, setImage] = useState(null);
-
+export default function CourseForm({ closeForm, courseData }) {
+    // State for storing the form data and the image preview
     const [formData, setFormData] = useState({
-        course_Name: '',
-
-        course_Fee: '',
-
-        course_Description: '',
-
-        date: '',
-
+        Course_Name: '',
+        Course_Fee: '',
+        Description: '',
+        Course_Image: '',
+        Course_Brochure: '',
+        date: ''
     });
+    const [imagePreview, setImagePreview] = useState(null);
 
-
-
+    // Initialize the form with the existing course data (if available)
+    useEffect(() => {
+        if (courseData) {
+            setFormData({
+                Course_Name: courseData.Course_Name || '',
+                Course_Fee: courseData.Course_Fee || '',
+                Description: courseData.Description || '',
+                Course_Image: courseData.Course_Image || '',  // URL from backend
+                Course_Brochure: courseData.Course_Brochure || '', // URL from backend
+                date: courseData.date || ''
+            });
+            setImagePreview(courseData.Course_Image);  // Show the current course image
+        }
+    }, [courseData]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+        const { name, value, files } = e.target;
 
-    const AlertMessage = (message, type) => {
-        if (type === 'success') {
-            toast.success(message, {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
+        // Handle file inputs separately
+        if (files && files.length > 0) {
+            setFormData({
+                ...formData,
+                [name]: files[0]  // Store the file object
             });
-        } else if (type === 'error') {
-            toast.error(message, {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
+
+            if (name === 'Course_Image') {
+                const imageUrl = URL.createObjectURL(files[0]);
+                setImagePreview(imageUrl);  // Show preview of the uploaded image
+            }
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value  // Handle text input changes
             });
         }
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent default form behavior
+        e.preventDefault();
 
-        const dateOnly = formData.date;  // Get the 'YYYY-MM-DD' part
+        const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const formDataToSend = new FormData();
 
-        // Prepare the data to be sent, ensuring the date is in the correct format
-        const formDataWithDateOnly = { ...formData, date: dateOnly };
+        formDataToSend.append('Course_Name', formData.Course_Name);
+        formDataToSend.append('Course_Fee', formData.Course_Fee);
+        formDataToSend.append('Description', formData.Description);
+        formDataToSend.append('date', formData.date);
 
+        // Append new files if they are uploaded
+        if (formData.Course_Image instanceof File) {
+            formDataToSend.append('Course_Image', formData.Course_Image);
+        }
+        if (formData.Course_Brochure instanceof File) {
+            formDataToSend.append('Course_Brochure', formData.Course_Brochure);
+        }
 
         try {
-
-            const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-            const response = await axios.post(`${CourseApiUrl}/Courses/`, formDataWithDateOnly,
-                {
-
-                    headers: { 'Content-Type': 'applicatiopn/json' }
-
-                })
+            const response = await axios.post(`${CourseApiUrl}/courses/`, formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
 
             if (response.status >= 200 && response.status < 300) {
-
-                
-                AlertMessage("Course Created Successfylly", "success"); // Show confirmation
-
-                
-
+                toast.success("Course Created Successfully");
                 setFormData({
-
-                    course_Name: '',
-
-                    course_Fee: '',
-
-                    course_Description: ''
-
-                }); // Reset the form data
-
-               // Close the form
-               closeForm(); 
-
+                    Course_Name: '',
+                    Course_Fee: '',
+                    Description: '',
+                    Course_Image: '',
+                    Course_Brochure: '',
+                    date: ''
+                });
+                setImagePreview(null);  // Reset the image preview
+                closeForm();  // Close the form on success
+            } else {
+                toast.error("Failed to Create Course. Please Try Again!");
             }
-
-            else {
-                AlertMessage("Failed to Create Lead Please Try again!", "error");
-            }
-
         } catch (error) {
-            console.error("form submitted error", error);
+            console.error("Error submitting the form:", error);
+            toast.error("An error occurred. Please try again.");
         }
     };
-
-
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
-        }
-    };
-
-
-
-
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="bg-white w-full max-w-xl  max-h-[90vh] p-8 rounded-lg shadow-lg mx-auto mt-5 overscroll-contain overflow-y-auto">
-                {/* Form Header */}
+            <div className="bg-white w-full max-w-xl max-h-[90vh] p-8 rounded-lg shadow-lg mx-auto mt-5 overscroll-contain overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center space-x-2">
                         <div className="bg-blue-600 p-2 rounded-md">
-                            <FontAwesomeIcon icon={faIdCard} className=" flex bg-blue-600 text-white justify-center items-center w-[30px] h-[20px]" />
+                            <FontAwesomeIcon icon={faIdCard} className="flex bg-blue-600 text-white justify-center items-center w-[30px] h-[20px]" />
                         </div>
                         <p className="text-lg font-bold">Create Course</p>
                     </div>
-                    <div>
-                        <button className="text-gray-600 hover:text-gray-900" onClick={closeForm}>
-                            <CloseIcon />
-                        </button>
-                    </div>
+                    <button className="text-gray-600 hover:text-gray-900" onClick={closeForm}>
+                        <CloseIcon />
+                    </button>
                 </div>
 
-                {/* Form Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <p className='font-semibold text-sm capitalize pb-8'>course image</p><br />
-
-                    <div className='flex gap-3 items-center'>
-                        <div
-                            className='flex items-center w-[90px] h-[90px] border-2 rounded-full'
-                            style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                        >
-                            {!image && <PersonIcon className='w-full h-full' />} {/* Display default icon if no image */}
+                    <p className="font-semibold text-sm capitalize pb-8">Course Image</p>
+                    <div className="flex gap-3 items-center">
+                        <div className="flex items-center w-[90px] h-[90px] border-2 rounded-full"
+                            style={{ backgroundImage: `url(${imagePreview})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                            {!imagePreview && <PersonIcon className="w-full h-full" />}
                         </div>
                         <div>
-                            <label htmlFor='file-upload'>
+                            <label htmlFor="file-upload">
                                 <EditIcon />
                             </label>
                             <input
-                                id='file-upload'
-                                type='file'
-                                className='hidden'
-                                onChange={handleFileChange}
+                                id="file-upload"
+                                type="file"
+                                className="hidden"
+                                name="Course_Image"
+                                onChange={handleChange}
                             />
                         </div>
-                    </div><br />
+                    </div>
 
-                    <p className='font-semibold text-sm capitalize'>course information</p><br />
-
-                    {/* Name */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium"> Course Name</label>
+                        <label className="text-sm font-medium">Course Name</label>
                         <input
                             type="text"
-                            name="course_Name"
-                            value={formData.course_Name}
+                            name="Course_Name"
+                            value={formData.Course_Name}
                             onChange={handleChange}
-                            placeholder="Name"
+                            placeholder="Course Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* Course Fee*/}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Course Fee</label>
                         <input
                             type="text"
-                            name="course_Fee"
-                            value={formData.course_Fee}
+                            name="Course_Fee"
+                            value={formData.Course_Fee}
                             onChange={handleChange}
                             placeholder="Course Fee"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
-                    {/* Description */}
+
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Description</label>
                         <input
                             type="text"
-                            name="course_Description"
-                            value={formData.course_Description}
+                            name="Description"
+                            value={formData.Description}
                             onChange={handleChange}
                             placeholder="Description"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
-                    {/*Course Brochure */}
+
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Course Brochure</label>
                         <input
-                            type="text"
-                            name="courseBrochure"
-                            value={formData.courseBrochure}
+                            type="file"
+                            name="Course_Brochure"
                             onChange={handleChange}
-                            placeholder="Course Brochure"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
-
-
-
-
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex justify-between space-x-4 mt-6">
                     <button onClick={closeForm} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md">Cancel</button>
-                    <button type='submit' className="px-4 py-2 bg-blue-600 text-white rounded-md">Create</button>
+                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Create</button>
                 </div>
             </div>
         </form>

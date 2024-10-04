@@ -83,7 +83,7 @@ export default function LearnManagement() {
 
   useEffect(() => {
     let filteredData = Learner.filter((row) =>
-      row?.name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      row?.First_Name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
       (FilterByLearnerStatus === "" || row?.learner_Status === FilterByLearnerStatus)
     );
     setFilteredRows(filteredData);
@@ -186,7 +186,7 @@ export default function LearnManagement() {
             filteredLearner.map((Learn) => (
               <div key={Learn.id} className="bg-white p-2 mb-2 rounded-md text-sm shadow">
                 <div className="flex items-baseline justify-between">
-                <p className="font-bold">{Learn.name}</p>
+                <p className="font-bold">{Learn.First_Name+" "+ Learn.Last_Name}</p>
                 <p>{Learn.Phone}</p> 
                 </div>
                 
@@ -414,7 +414,7 @@ export default function LearnManagement() {
       <div>
         {isTableVisible && (
           <div className="flex flex-col items-center justify-center w-full h-full m-auto p-1 border-1 border-gray-100 rounded-2xl  overflow-x-auto">
-            <table className=' min-w-[100%] block  text-center table-auto  text-xs capitalize  font-light rounded-3xl  w-full  '>
+            <table className=' min-w-full   text-center table-auto  text-xs capitalize  font-light rounded-3xl  w-full  '>
               <thead>
                 <tr className='border-2  bg-teal-500 p-2 font-thin '>
                   <th className="border-1 p-2" >
@@ -426,18 +426,18 @@ export default function LearnManagement() {
                     />
 
                   </th >
-                  <th className='border-1 px-3'>created&nbsp;On</th>
+                  <th className='border-1 px-3'>created On</th>
                   <th className='border-1 px-3'>Name</th>
-                  <th className='border-1 px-3'>Registered&nbsp;Date</th>
-                  <th className='border-1 px-3'>learner&nbsp;Status</th>
+                  <th className='border-1 px-3'>Registered Date</th>
+                  {/* <th className='border-1 px-3'>learner&nbsp;Status</th> */}
                   <th className='border-1 px-3'>Phone</th>
                   <th className='border-1 px-3'>Email</th>
-                  <th className='border-1 px-3'>Mode&nbsp;Of&nbsp;Class</th>
-                  <th className='border-1 px-3'>Tech&nbsp;Stack</th>
-                  <th className='border-1 px-3'>Total&nbsp;Fee</th>
+                  <th className='border-1 px-3'>Mode Of Class</th>
+                  <th className='border-1 px-3'>Tech Stack</th>
+                  {/* <th className='border-1 px-3'>Total&nbsp;Fee</th>
                   <th className='border-1 px-3'>Fee&nbsp;Paid</th>
                   <th className='border-1 px-3'>Due&nbsp;Amount</th>
-                  <th className='border-1 px-3'>Due&nbsp;Date</th>
+                  <th className='border-1 px-3'>Due&nbsp;Date</th> */}
                   <th className='border-1 px-3'>Update</th>
                   <th className='border-1 px-3'>Delete</th>
                 </tr>
@@ -460,18 +460,18 @@ export default function LearnManagement() {
                         />
                       </td>
 
-                      <td className="border-1 p-1 text-sm">{row.Leadcreatedtime}</td>
-                      <td className='border-1 p-1'>{row.name}</td>
-                      <td className="border-1 p-1">{row.RegisteredDate}</td>
-                      <td className="border-1 p-1">{row.learner_Status}</td>
+                      <td className="border-1 p-1 text-sm">{row.Lead_Created_Time}</td>
+                      <td className='border-1 p-1'>{row.First_Name+''+row.Last_Name}</td>
+                      <td className="border-1 p-1">{row.Registered_Date}</td>
+                      {/* <td className="border-1 p-1">{row.learner_Status}</td> */}
                       <td className='border-1 p-1'>{row.Phone}</td>
                       <td className='border-1 p-1'>{row.Email}</td>
-                      <td className='border-1 p-1'>{row.ModeOfClass}</td>
-                      <td className='border-1 p-1'>{row.TechStack}</td>
-                      <td className='border-1 p-1'>{row.total_fee}</td>
+                      <td className='border-1 p-1'>{row.Mode_Of_Class}</td>
+                      <td className='border-1 p-1'>{row.Tech_Stack}</td>
+                      {/* <td className='border-1 p-1'>{row.total_fee}</td>
                       <td className='border-1 p-1'>{row.fee_Paid}</td>
                       <td className='border-1 p-1'>{row.due_Amount}</td>
-                      <td className='border-1 p-1'>{row.due_date}</td>
+                      <td className='border-1 p-1'>{row.due_date}</td> */}
                       <td className=' border-1 p-1'>
                         <div className="flex items-center justify-center">
                           <button
