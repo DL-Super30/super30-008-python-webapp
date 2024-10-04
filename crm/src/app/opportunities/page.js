@@ -21,7 +21,7 @@ export default function Opportunities() {
   useEffect(() => {
     async function fetchOpportunities() {
       try {
-        const response = await fetch('http://13.59.24.132:8000/api/opportunities/');
+        const response = await fetch('http://127.0.0.1:3001/opportunities');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setOpportunities(data);
@@ -71,7 +71,7 @@ export default function Opportunities() {
 
   const handleDeleteOpportunity = async (opportunityId) => {
     try {
-      const response = await fetch(`http://13.59.24.132:8000/api/opportunities/${opportunityId}`, {
+      const response = await fetch(`http://127.0.0.1:3001/opportunities${opportunityId}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete opportunity");

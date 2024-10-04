@@ -14,96 +14,127 @@ export default function Leads() {
   const [leads, setLeads] = useState([]);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [leadToUpdate, setLeadToUpdate] = useState(null);
-  const [selectedLeads, setSelectedLeads] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState([]);
+
+
 
   // Fetch leads from API
   useEffect(() => {
     async function fetchLeads() {
       try {
-        const response = await fetch('http://127.0.0.1:3001/leads');
-        if (!response.ok) throw new Error('Network response was not ok');
+        const response = await fetch(`http://18.224.180.46:8000/api/leads/`);
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setLeads(data);
       } catch (error) {
-        console.error('Error fetching leads data:', error);
+        console.error("Error fetching leads data:", error);
       }
     }
     fetchLeads();
-  }, []);
 
-  // Handle checkbox change for selecting leads
-  const handleCheckboxChange = (leadId) => {
-    setSelectedLeads((prevSelectedLeads) => {
-      if (prevSelectedLeads.includes(leadId)) {
-        return prevSelectedLeads.filter(id => id !== leadId);
-      } else {
-        return [...prevSelectedLeads, leadId];
-      }
-    });
+    
+  }, );
+
+  const addLead = (newLead) => {
+    setLeads((prevLeads) => [...prevLeads, newLead]);
   };
 
-  // Filter leads based on status and search query
   const getFilteredLeads = () => {
     let filtered = leads;
-
-    // Apply status filter
     if (activeLeadStatus !== "All Leads") {
-      filtered = filtered.filter(lead => lead.status === activeLeadStatus);
-    }
-
-    // Apply search query filter
-    if (searchQuery) {
-      filtered = filtered.filter(lead =>
-        lead.name.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (lead) => lead.Lead_Status === activeLeadStatus
       );
     }
-
+    if (searchQuery) {
+      filtered = filtered.filter((lead) =>
+        lead.Name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
     return filtered;
   };
 
-  // Get the count of leads by status
-  const getLeadsCountByStatus = (status) => {
-    return leads.filter(lead => status === "All Leads" || lead.status === status).length;
+  const getLeadsCountByStatus = (Lead_Status) => {
+    return leads.filter(
+      (lead) => Lead_Status === "All Leads" || lead.Lead_Status === Lead_Status
+    ).length;
   };
 
   const handleViewClick = (viewType) => {
     setView(viewType);
   };
 
-  const handleLeadStatusClick = (status) => {
-    setActiveLeadStatus(status);
+  const handleLeadStatusClick = (Lead_Status) => {
+    setActiveLeadStatus(Lead_Status);
   };
 
   const toggleLeadForm = () => {
-    setShowLeadForm(prev => !prev);
+    setShowLeadForm((prev) => !prev);
   };
+
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
 
   const handleDeleteLead = async () => {
     try {
-      for (const leadId of selectedLeads) {
-        const response = await fetch(`http://127.0.0.1:3001/leads/${leadId}`, {
+      const deleteRequests = selectedLeads.map(async (leadId) => {
+        const response = await fetch(`http://18.224.180.46:8000/api/leads/${leadId}`, {
           method: "DELETE",
         });
         if (!response.ok) throw new Error("Failed to delete lead");
-      }
-      setLeads(leads.filter(lead => !selectedLeads.includes(lead.id))); // Update leads after deletion
-      setSelectedLeads([]); // Clear the selection
+      });
+
+      await Promise.all(deleteRequests);
+
+      setLeads(leads.filter((lead) => !selectedLeads.includes(lead.id)));
+      setSelectedLeads([]); // Clear selection after deletion
+      setShowDropdown(false);
     } catch (error) {
       console.error("Error deleting lead:", error);
     }
   };
 
-  // Function to open the update form with the selected lead
   const handleEditLead = () => {
-    const lead = leads.find((lead) => lead.id === selectedLeads[0]); // Allow editing only the first selected lead
-    if (lead) {
-      setLeadToUpdate(lead);
-      setShowUpdateForm(true);
+    const lead = leads.find((lead) => lead.id === selectedLeads[0]); // Get the first selected lead for editing
+    setLeadToUpdate(lead);
+    setShowUpdateForm(true);
+    setShowDropdown(false);
+  };
+
+  const updateLead = (updatedLead) => {
+    setLeads((prevLeads) =>
+      prevLeads.map((lead) => (lead.id === updatedLead.id ? updatedLead : lead))
+    );
+    setSelectedLeads([]); // Clear selected leads after update
+  };
+
+  const [selectAll, setSelectAll] = useState(false);
+
+  const handleSelectAll = () => {
+    const newSelectAll = !selectAll;
+    setSelectAll(newSelectAll);
+
+    if (newSelectAll) {
+      const allLeadIds = getFilteredLeads().map((lead) => lead.id);
+      setSelectedLeads(allLeadIds);
+    } else {
+      setSelectedLeads([]);
     }
+  };
+
+  const handleSelectLead = (leadId) => {
+    setSelectedLeads((prevSelected) =>
+      prevSelected.includes(leadId)
+        ? prevSelected.filter((id) => id !== leadId)
+        : [...prevSelected, leadId]
+    );
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Adjust format as needed
   };
 
   return (
@@ -114,7 +145,7 @@ export default function Leads() {
             <div className="flex items-center gap-3">
               <Image src="/images/employee_contact.2d215fd6.svg" alt="logo" width={44} height={44} />
               <h2 className="text-2xl font-medium text-black flex items-center gap-2">
-                All Leads <FontAwesomeIcon icon={faAngleDown} />
+                All Leads  <FontAwesomeIcon icon={faAngleDown} className="fa fa-sm" />
               </h2>
             </div>
             <div className="flex gap-2">
@@ -122,32 +153,40 @@ export default function Leads() {
                 onClick={toggleLeadForm}
                 className="bg-[#ab43c8] text-white text-sm rounded-lg border-black px-4 p-1 leading-6 gap-2"
               >
-                {showLeadForm ? "Close Lead Form" : "Create Lead"}{" "}
-                <FontAwesomeIcon icon={showLeadForm ? faAngleUp : faAngleDown} className="mt-2" />
+                {showLeadForm ? "Close Lead Form" : "Create Lead"} <FontAwesomeIcon
+                    icon={showLeadForm ? faAngleUp : faAngleDown}
+                    className="mt-2"
+                  />
               </button>
-              <div className="relative">
-                <button onClick={toggleDropdown} className="bg-white   text-black text-sm rounded-md border border-neutral-400 px-4 p-1 leading-6 gap-2">
-                  Actions <FontAwesomeIcon icon={faChevronDown} className="mt-2 ml-1" />
+
+              <div className="relative  text-left">
+                <button
+                  onClick={toggleDropdown}
+                  className="bg-white text-black text-sm rounded-md border border-neutral-400 px-4 p-1 leading-6 gap-2"
+                >
+                  Actions<FontAwesomeIcon icon={faChevronDown} className="mt-2 ml-1" />
+                  
                 </button>
-                {showDropdown &&(
-                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-                  <button
-                    className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-200"
-                    onClick={handleEditLead}
-                    disabled={selectedLeads.length !== 1} // Allow editing only one selected lead
-                  >
-                    <FontAwesomeIcon icon={faPen} /> Update Lead
-                  </button>
-                  <button
-                    className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-200"
-                    onClick={handleDeleteLead}
-                    disabled={selectedLeads.length === 0}
-                  >
-                    <FontAwesomeIcon icon={faTrash} /> Delete Lead(s)
-                  </button>
-                </div>
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg text-sm bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="py-1">
+                      <button
+                        className="px-3 py-2 w-full text-left"
+                        onClick={handleEditLead}
+                        disabled={selectedLeads.length !== 1}
+                      >
+                        Update
+                      </button>
+                      <hr />
+                      <button
+                        className="px-3 py-2 w-full text-left"
+                        onClick={handleDeleteLead}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 )}
-                
               </div>
             </div>
           </div>
@@ -155,46 +194,62 @@ export default function Leads() {
           <div className="flex justify-between items-center px-5 py-2">
             <div className="flex flex-wrap gap-3 items-center">
               <div className="relative w-72">
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                />
+              <FontAwesomeIcon
+                    icon={faSearch}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                 <input
                   type="search"
                   className="w-full h-8 rounded-md border border-[#969492] pl-10 p-1.5 text-gray-900"
-                  placeholder="Search"
+                  placeholder="Search By Name"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <div className="inline-flex rounded-md shadow-sm">
-                {["All Leads", "Not Contacted", "Attempted", "Warm Lead", "Cold Lead"].map((status) => (
+                {[
+                  "All Leads",
+                  "Not Contacted",
+                  "Attempted",
+                  "Warm Lead",
+                  "Cold Lead",
+                ].map((Lead_Status) => (
                   <button
-                    key={status}
+                    key={Lead_Status}
                     type="button"
-                    className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activeLeadStatus === status
-                      ? "bg-[#ab43c8] text-white border-[#ab43c8]"
-                      : "bg-white text-black border-[#747474]"
-                      }`}
-                    onClick={() => handleLeadStatusClick(status)}
+                    className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 mr-1 rounded-lg ${
+                      activeLeadStatus === Lead_Status
+                        ? "bg-[#ab43c8] text-white border-[#0176D3]"
+                        : "bg-white text-black border-[#747474]"
+                    }`}
+                    onClick={() => handleLeadStatusClick(Lead_Status)}
                   >
-                    {status}
-                    <p className="bg-slate-500 py-1 px-2.5 rounded-full">
-                      {getLeadsCountByStatus(status)}
+                    {Lead_Status}
+                    <p className="bg-slate-400 py-1 px-2.5 rounded-full">
+                      {getLeadsCountByStatus(Lead_Status)}
                     </p>
                   </button>
                 ))}
               </div>
               <div className="inline-flex rounded-md shadow-sm">
                 <button
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-s-lg ${view === "Table" ? "bg-[#ab43c8] text-white" : "bg-white text-black border-[#747474]"}`}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-s-lg 
+                    ${
+                      view === "Table"
+                        ? "bg-[#ab43c8] text-white"
+                        : "bg-white text-black border-[#747474]"
+                    }`}
                   onClick={() => handleViewClick("Table")}
                 >
                   <FontAwesomeIcon icon={faTable} />
                   Table
                 </button>
                 <button
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-e-lg ${view === "Kanban" ? "bg-[#ab43c8] text-white" : "bg-white text-black border-[#747474]"}`}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-e-lg ${
+                    view === "Kanban"
+                      ? "bg-[#ab43c8] text-white"
+                      : "bg-white text-black border-[#747474]"
+                  }`}
                   onClick={() => handleViewClick("Kanban")}
                 >
                   <FontAwesomeIcon icon={faColumns} />
@@ -203,59 +258,155 @@ export default function Leads() {
               </div>
             </div>
           </div>
-        </div>
 
-        {showLeadForm && <LeadForm lead={Leads} onClose={() => setShowLeadForm(false)} />}
-
-        {showUpdateForm && <UpdateLeadForm lead={leadToUpdate} onClose={() => setShowUpdateForm(false)} />}
-
-        <div className="overflow-x-auto mx-5">
-          <table className="min-w-full text-left text-sm font-light">
-            <thead className="border-b font-medium">
-              <tr>
-                <th scope="col" className="px-6 py-4">
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      setSelectedLeads(
-                        e.target.checked ? leads.map((lead) => lead.id) : []
-                      )
-                    }
-                    checked={selectedLeads.length === leads.length && leads.length > 0}
-                  />
-                </th>
-                <th scope="col" className="px-6 py-4">ID</th>
-                <th scope="col" className="px-6 py-4">Name</th>
-                <th scope="col" className="px-6 py-4">Email</th>
-                <th scope="col" className="px-6 py-4">Phone Number</th>
-                <th scope="col" className="px-6 py-4">course</th>
-                <th scope="col" className="px-6 py-4">fee</th>
-              </tr>
-            </thead>
-            <tbody>
-              {getFilteredLeads().map((lead) => (
-                <tr key={lead.id} className="border-b">
-                  <td className="px-6 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedLeads.includes(lead.id)}
-                      onChange={(lead) => handleCheckboxChange(lead.id)}
-                    />
-                  </td>
-                  <td className="px-6 py-4">{lead.id}</td>
-                  <td className="px-6 py-4">{lead.name}</td>
-                  <td className="px-6 py-4">{lead.email}</td>
-                  <td className="px-6 py-4">{lead.phone}</td>
-                  <td className="px-6 py-4">{lead.course}</td>
-                  <td className="px-6 py-4">{lead.fee}</td>
- 
-
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {view === "Table" ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto border-collapse">
+                <thead>
+                  <tr className="bg-gray-200 text-left">
+                    <th className="border px-4 py-2">
+                      <input
+                        type="checkbox"
+                        onChange={handleSelectAll}
+                        checked={selectAll}
+                      />
+                    </th>
+                    <th className="border px-4 py-2">Created on</th>
+                    <th className="border px-4 py-2">Lead Status</th>
+                    <th className="border px-4 py-2">Name</th>
+                    <th className="border px-4 py-2">Phone</th>
+                    <th className="border px-4 py-2">Stack</th>
+                    <th className="border px-4 py-2">Course</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getFilteredLeads().length > 0 ? (
+                    getFilteredLeads().map((lead) => (
+                      <tr
+                        key={lead.id}
+                        className="bg-white border hover:bg-gray-50"
+                      >
+                        <td className="border px-4 py-2">
+                          <input
+                            type="checkbox"
+                            onChange={() => handleSelectLead(lead.id)}
+                            checked={selectedLeads.includes(lead.id)}
+                          />
+                        </td>
+                        <td className="border px-4 py-2">{lead.Date}</td>
+                        <td className="border px-4 py-2">{lead.Lead_Status}</td>
+                        <td className="border px-4 py-2">{lead.Name}</td>
+                        <td className="border px-4 py-2">{lead.Contact_No}</td>
+                        <td className="border px-4 py-2">{lead.Tech_Stack}</td>
+                        <td className="border px-4 py-2">{lead.Course}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center py-4">
+                        No leads found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="w-[100%] overflow-auto px-5 h-full">
+              <div className="flex gap-3">
+                {["Not Contacted", "Attempted", "Warm Lead", "Cold Lead"].map(
+                  (Lead_Status) => (
+                    <div key={Lead_Status} className="h-full grid gap-4">
+                      <div
+                        className={`${
+                          Lead_Status === "Not Contacted"
+                            ? "bg-green-200 border-t-green-400"
+                            : Lead_Status === "Attempted"
+                            ? "bg-blue-200 border-t-blue-400"
+                            : Lead_Status === "Warm Lead"
+                            ? "bg-orange-200 border-t-orange-400"
+                            : "bg-red-200 border-t-red-400"
+                        } border-t-4 rounded-t-md h-20 min-w-96 py-3 px-5`}
+                      >
+                        <h3 className="text-md font-medium text-black">
+                          {Lead_Status}
+                        </h3>
+                      </div>
+                      <div className=" bg-gray-200 flex-1 px-0.5 max-w-96 flex flex-col items-center justify-start rounded min-h-[100vh] h-full">
+                        {getFilteredLeads().filter(
+                          (lead) => lead.Lead_Status === Lead_Status
+                        ).length > 0 ? (
+                          getFilteredLeads()
+                            .filter((lead) => lead.Lead_Status === Lead_Status)
+                            .map((lead) => (
+                              <div
+                                key={lead.id}
+                                className="bg-white m-2 p-2 w-full rounded shadow-md"
+                              >
+                                <p>
+                                  <strong>Name:</strong> {lead.Name}
+                                </p>
+                                <p>
+                                  <strong>Phone:</strong> {lead.Phone}
+                                </p>
+                                <p>
+                                  <strong>Created On:</strong> {formatDate(lead.Datetime)}
+                                </p>
+                                <p>
+                                  <strong>Status:</strong> {lead.Lead_Status}
+                                </p>
+                                <p>
+                                  <strong>Stack:</strong> {lead.Stack}
+                                </p>
+                                <p>
+                                  <strong>Course:</strong> {lead.Course}
+                                </p>
+                                {/* <div className="flex gap-2 mt-2">
+                                  <button
+                                    className="text-blue-500 p-1"
+                                    onClick={() => handleEditLead(lead)}
+                                  >
+                                    <FontAwesomeIcon icon={faPen} /> Edit
+                                  </button>
+                                  <button
+                                    className="text-red-500 p-1"
+                                    onClick={() => handleDeleteLead(lead.id)}
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} /> Delete
+                                  </button>
+                                </div> */}
+                              </div>
+                            ))
+                        ) : (
+                          <span className="text-sm font-medium">
+                            No Leads Found
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {showLeadForm && (
+        <div className="mt-4">
+          <LeadForm onClose={() => setShowLeadForm(false)} addLead={addLead} />
+        </div>
+      )}
+
+      {showUpdateForm && leadToUpdate && (
+        <div className="mt-4">
+          <UpdateLeadForm
+            lead={leadToUpdate}
+            onClose={() => setShowUpdateForm(false)}
+            onUpdate={updateLead}
+          />
+        </div>
+      )}
     </div>
   );
 }

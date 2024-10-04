@@ -1,73 +1,76 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-export default function LeadForm({ onClose }) {
+const LeadForm = ({ onClose, addLead }) => {
   const [formData, setFormData] = useState({
-    id: "", // will be generated on submit
-    date: "", // will be set on submit
-    name: "",
-    phone: "",
-    email: "",
-    status: "Not Contacted", // was leadStatus
-    course: "",
-    source: "",
-    stack: "",
-    fee: "", // was feeQuoted
-    classMode: "",
-    batchTimings: "", // new
-    nextFollowUp: "", // new
-    description: "",
+    Name: '',
+    Contact_No: '',
+    CC: '91',
+    Email: '',
+    Lead_Status: 'Not Contacted',
+    Course: '',
+    Lead_Source: '',
+    Tech_Stack: '',
+    Fee_Quoted: 0,
+    Class_Mode: '',
+    Batch_Timing: '',
+    Description: '',
   });
 
   const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name) newErrors.name = "Name is required.";
-    if (!formData.phone) newErrors.phone = "Phone number is required.";
-    if (!formData.email) newErrors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid.";
-    // Add more validations as needed
+    if (!formData.Name) newErrors.Name = 'Name is required.';
+    if (!formData.Contact_No) newErrors.Contact_No = 'Phone number is required.';
+    if (!formData.Email) newErrors.Email = 'Email is required.';
+    else if (!/\S+@\S+\.\S+/.test(formData.Email)) newErrors.Email = 'Email is invalid.';
+    if (!formData.Course) newErrors.Course = 'Course is required.';
+    if (!formData.Tech_Stack) newErrors.Tech_Stack = 'Tech Stack is required.';
+    if (!formData.Class_Mode) newErrors.Class_Mode = 'Class Mode is required.';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === 'Fee_Quoted' ? parseFloat(value) || 0 : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    // Generate unique ID and current date
-    const id = Date.now().toString();
-    const currentDate = new Date().toLocaleDateString('en-GB'); // Formats as DD/MM/YYYY
+    const dataToSend = {
+      ...formData,
+      Contact_No: parseInt(formData.Contact_No, 10),
+      CC: parseInt(formData.CC, 10),
+    };
 
-    const updatedFormData = { ...formData, id, date: currentDate.replace(/\//g, '-') };
-
-    console.log("Submitting form data:", updatedFormData);
-
+    setLoading(true);
 
     try {
-      const response = await axios.post("http://127.0.0.1:3001/leads/", updatedFormData);
-      console.log("Server response:", response);
+      const response = await axios.post('http://18.224.180.46:8000/api/leads/', dataToSend);
       if (response.status === 201) {
-        setSuccessMessage("Lead created successfully!"); // Set success message
+        addLead(response.data);
+        setSuccessMessage('Lead created successfully!');
         setTimeout(() => {
-          setSuccessMessage(""); // Clear message after 3 seconds
-          onClose(); // Close form after success message
-        }, 3000);
+          setSuccessMessage('');
+          onClose();
+        }, 2000);
       } else {
-        console.error("Unexpected response status:", response.status);
-        alert("Unexpected server response. Please try again.");
+        alert('Unexpected server response. Please try again.');
       }
     } catch (error) {
-      console.error("Error creating lead:", error);
-      const errorMessage = error.response?.data?.message || error.message || "Unknown error occurred.";
-      alert(`There was an error submitting the form: ${errorMessage}`);
+      const errorMessage = error.response?.data?.message || error.message || 'Unknown error occurred.';
+      alert(`Error submitting the form: ${errorMessage}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,84 +78,89 @@ export default function LeadForm({ onClose }) {
     <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl h-[100vh] flex flex-col">
         <div className="flex gap-4 items-center justify-between p-4 md:p-5 border-b rounded-t">
-          <image alt="header image" width="44" height="44" class="w-10 h-9" src="https://crm.skillcapital.ai/_next/static/media/employee_contact.2d215fd6.svg" />
+          <img alt="header image" width="44" height="44" className="w-10 h-9" src="https://crm.skillcapital.ai/_next/static/media/employee_contact.2d215fd6.svg" />
           <h2 className="text-2xl font-semibold">Create Lead</h2>
-          <button type="button" onClick={onClose} class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
-            </svg><span class="sr-only">Close modal</span>
+          <button type="button" onClick={onClose} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+            </svg>
+            <span className="sr-only">Close modal</span>
           </button>
         </div>
         <div className="overflow-y-auto flex-1 p-6">
-          {/* Display success message */}
           {successMessage && (
             <div className="mb-4 p-4 bg-green-200 text-green-800 rounded">
               {successMessage}
             </div>
           )}
           <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-            {/* Form Inputs */}
             <div className="flex flex-col">
-              <label className="font-medium text-base">Name</label>
+              <label htmlFor="Name" className="font-medium text-base">Name</label>
               <input
+                id="Name"
                 type="text"
-                name="name"
-                value={formData.name}
+                name="Name"
+                value={formData.Name}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 placeholder="Name"
               />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+              {errors.Name && <p className="text-red-500 text-sm">{errors.Name}</p>}
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Phone</label>
+              <label htmlFor="Contact_No" className="font-medium text-base">Phone</label>
               <input
+                id="Contact_No"
                 type="text"
-                name="phone"
-                value={formData.phone}
+                name="Contact_No"
+                value={formData.Contact_No}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 placeholder="Phone"
+                maxLength={10}
               />
-              {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+              {errors.Contact_No && <p className="text-red-500 text-sm">{errors.Contact_No}</p>}
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Email</label>
+              <label htmlFor="Email" className="font-medium text-base">Email</label>
               <input
+                id="Email"
                 type="email"
-                name="email"
-                value={formData.email}
+                name="Email"
+                value={formData.Email}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 placeholder="Email"
               />
-              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+              {errors.Email && <p className="text-red-500 text-sm">{errors.Email}</p>}
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Fee Quoted</label>
+              <label htmlFor="Fee_Quoted" className="font-medium text-base">Fee Quoted</label>
               <input
+                id="Fee_Quoted"
                 type="text"
-                name="fee"
-                value={formData.fee}
+                name="Fee_Quoted"
+                value={formData.Fee_Quoted}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 placeholder="Fee Quoted"
               />
+              {errors.Fee_Quoted && <p className="text-red-500 text-sm">{errors.Fee_Quoted}</p>}
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Batch Timings</label>
+              <label htmlFor="Batch_Timing" className="font-medium text-base">Batch Timings</label>
               <select
-                name="batchTimings"
-                value={formData.batchTimings}
+                id="Batch_Timing"
+                name="Batch_Timing"
+                value={formData.Batch_Timing}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               >
-                <option value="">Select</option>
-                <option value="selected">Select</option>
+                <option value="">Please select</option>
                 <option value="7AM-8AM">7AM-8AM</option>
                 <option value="8AM-9AM">8AM-9AM</option>
                 <option value="9AM-10AM">9AM-10AM</option>
@@ -171,10 +179,11 @@ export default function LeadForm({ onClose }) {
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Lead Status</label>
+              <label htmlFor="Lead_Status" className="font-medium text-base">Lead Status</label>
               <select
-                name="status"
-                value={formData.status}
+                id="Lead_Status"
+                name="Lead_Status"
+                value={formData.Lead_Status}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               >
@@ -186,17 +195,18 @@ export default function LeadForm({ onClose }) {
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Lead Source</label>
+              <label htmlFor="Lead_Source" className="font-medium text-base">Lead Source</label>
               <select
-                name="source"
-                value={formData.source}
+                id="Lead_Source"
+                name="Lead_Source"
+                value={formData.Lead_Source}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               >
-                <option value="selected">Select Lead Source</option>
+                <option value="">Select Lead Source</option>
                 <option value="None">None</option>
-                <option value="Attempted">Walk In</option>
-                <option value="Student Refferral">Student Refferral</option>
+                <option value="Walk In">Walk In</option>
+                <option value="Student Referral">Student Referral</option>
                 <option value="Demo">Demo</option>
                 <option value="Website">Website</option>
                 <option value="Website Chat">Website Chat</option>
@@ -204,34 +214,37 @@ export default function LeadForm({ onClose }) {
                 <option value="Google AdWords">Google AdWords</option>
                 <option value="Facebook Ads">Facebook Ads</option>
                 <option value="Google My Business">Google My Business</option>
-                <option value="Whatsapp-Skill Captial">Whatsapp-Skill Captial</option>
+                <option value="Whatsapp Skill Capital">Whatsapp-Skill Capital</option>
               </select>
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Stack</label>
+              <label htmlFor="Tech_Stack" className="font-medium text-base">Tech Stack</label>
               <select
-                name="stack"
-                value={formData.stack}
+                id="Tech_Stack"
+                name="Tech_Stack"
+                value={formData.Tech_Stack}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               >
-                <option value="selected">Select Stack</option>
+                <option value="">Select Stack</option>
                 <option value="Life Skills">Life Skills</option>
                 <option value="Study Abroad">Study Abroad</option>
                 <option value="HR">HR</option>
               </select>
+              {errors.Tech_Stack && <p className="text-red-500 text-sm">{errors.Tech_Stack}</p>}
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Course</label>
+              <label htmlFor="Course" className="font-medium text-base">Course</label>
               <select
-                name="course"
-                value={formData.course}
+                id="Course"
+                name="Course"
+                value={formData.Course}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               >
-                <option value="selected">Select course</option>
+                <option value="">Select course</option>
                 <option value="HR Business Partner">HR Business Partner</option>
                 <option value="HR Generalist Core HR">HR Generalist Core HR</option>
                 <option value="HR Analytics">HR Analytics</option>
@@ -242,7 +255,7 @@ export default function LeadForm({ onClose }) {
                 <option value="Personality Development">Personality Development</option>
                 <option value="Aptitude">Aptitude</option>
                 <option value="IELTS">IELTS</option>
-                <option value="TOEFLl">TOEFL</option>
+                <option value="TOEFL">TOEFL</option>
                 <option value="PTE">PTE</option>
                 <option value="GRE">GRE</option>
                 <option value="GMAT">GMAT</option>
@@ -253,40 +266,33 @@ export default function LeadForm({ onClose }) {
                 <option value="Competitive Exams">Competitive Exams</option>
                 <option value="HR Manager">HR Manager</option>
               </select>
+              {errors.Course && <p className="text-red-500 text-sm">{errors.Course}</p>}
             </div>
 
             <div className="flex flex-col">
-              <label className="font-medium text-base">Class Mode</label>
+              <label htmlFor="Class_Mode" className="font-medium text-base">Class Mode</label>
               <select
-                name="classMode"
-                value={formData.classMode}
+                id="Class_Mode"
+                name="Class_Mode"
+                value={formData.Class_Mode}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               >
-                <option value="selected">Select Class Mode</option>
+                <option value="">Select Class Mode</option>
                 <option value="International Online">International Online</option>
                 <option value="India Online">India Online</option>
                 <option value="BLR ClassRoom">BLR ClassRoom</option>
                 <option value="HYD ClassRoom">HYD ClassRoom</option>
               </select>
-            </div>
-
-            <div className="flex flex-col">
-              <label className="font-medium text-base">Next Follow-Up</label>
-              <input
-                type="date"
-                name="nextFollowUp"
-                value={formData.nextFollowUp}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-              />
+              {errors.Class_Mode && <p className="text-red-500 text-sm">{errors.Class_Mode}</p>}
             </div>
 
             <div className="col-span-2">
-              <label className="font-medium text-base">Description</label>
+              <label htmlFor="Description" className="font-medium text-base">Description</label>
               <textarea
-                name="description"
-                value={formData.description}
+                id="Description"
+                name="Description"
+                value={formData.Description}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 placeholder="Description"
@@ -304,8 +310,9 @@ export default function LeadForm({ onClose }) {
               <button
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded"
+                disabled={loading}
               >
-                Create
+                {loading ? "Creating..." : "Create"}
               </button>
             </div>
           </form>
@@ -313,4 +320,6 @@ export default function LeadForm({ onClose }) {
       </div>
     </div>
   );
-}
+};
+
+export default LeadForm;
