@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { Password, Tune } from "@mui/icons-material";
-
+import axios from "axios";
 export default function StartForm({ closeForm }) {
 
   const [isButtonDisabled, SetIsButtonDisabled] = useState(true);
@@ -44,11 +44,9 @@ export default function StartForm({ closeForm }) {
     try {
       const apiUrl=process.env.NEXT_PUBLIC_API_URL;
 
-      const response = await fetch(`${apiUrl}/signUp`,
+      const response = await axios.post(`${apiUrl}/signUp`, formData,
         {
-          method: 'POST',
           headers: { 'Content-Type': 'application/json', },
-          body: JSON.stringify(formData),
         }
       );
 

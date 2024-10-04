@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 
 
@@ -123,21 +124,20 @@ export default function LoginForm() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         // Send form data to the API
-        const response = await fetch(`${apiUrl}/login/ `, {
-          method: 'POST',
+        const response = await axios.post(`${apiUrl}/login/`,  { username, password },
+          {
           headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
+            'Content-Type': 'application/json'},
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status:${response.status}`);
-        }
+        // if (!response.ok) {
+        //   throw new Error(`HTTP error! status:${response.status}`);
+        // }
 
-        const result = await response.json();
+        const result =  response.data;
 
-        if (result && result.token) {
+        if (result) {
+
           if (rememberMe) {
             localStorage.setItem('rememberedUsername', username);
           } else {
@@ -145,7 +145,7 @@ export default function LoginForm() {
           }
 
           // Save token in localStorage
-          localStorage.setItem('token', result.token);
+          // localStorage.setItem('token', result.token);
 
           // Show success toast
           AlertMessage('Login successful!', 'success');
@@ -156,8 +156,6 @@ export default function LoginForm() {
         else {
 
           AlertMessage('Invalid username or password', 'error');
-
-          AlertMessage('Error while logging in. Please try again later.', 'error');
         }
 
       } catch (error) {

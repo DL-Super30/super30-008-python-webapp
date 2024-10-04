@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { Select } from '@headlessui/react';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 
 
@@ -111,17 +112,22 @@ export default function LearnForm({ closeForm, initialData }) {
 
         try {
             const LearnApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${LearnApiUrl}/learners/`, {
-                method: "POST",
+            const response = await axios.post(`${LearnApiUrl}/learners/`, formData , {
+          
                 headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData),
+                    'Content-Type': 'application/json'},
             });
 
 
-            if (response.ok) {
-                AlertMessage("Learner Created Successfully", 'success');
+            // if (response.status!==200) {
+            //     // Handle server errors
+            //     throw new Error(`Failed to create learner: ${response.statusText}`);
+            // }
+
+
+            if (response.status >= 200 && response.status < 300) {
+
+                AlertMessage('Learner Created Successfully', 'success');
 
                 setFormData({
                     FirstName: '',
@@ -145,11 +151,11 @@ export default function LearnForm({ closeForm, initialData }) {
                 closeForm(); // Close the form
             }
             else {
-                AlertMessage("failed to create a Learner" , 'error');
+                AlertMessage('failed to create a Learner' , 'error');
             }
         } catch (error) {
             console.error("Learn Lead Unscessfully ", error);
-            AlertMessage("Error to create a Learner" , 'error');
+            AlertMessage('Error to create a Learner' , 'error');
         }
 
     };
@@ -585,6 +591,7 @@ export default function LearnForm({ closeForm, initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Tech Stack</label>
                         <input
+                            type='text'
                             name="TechStack"
                             value={formData.TechStack}
                             onChange={handleChange}

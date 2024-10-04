@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function OpportunityForm({ closeForm }) {
 
@@ -30,21 +31,7 @@ export default function OpportunityForm({ closeForm }) {
     });
 
 
-    // Fetching data from server json
-    // const fetchChance = async () => {
-    //     try {
-
-    //         const response = await fetch('http://localhost:3002/opportunities');
-    //         const data = await response.json();
-    //         setChance(data);
-    //     }
-
-    //     catch (error) {
-    //         console.error('Fetching oppourtunites error:', error);
-
-    //     }
-    // };
-
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -85,26 +72,25 @@ export default function OpportunityForm({ closeForm }) {
         try {
             const now = new Date();
             const date = now.toLocaleDateString('en-GB'); // Adjust the locale for the desired format
-            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const datestamp = `${date} ${time}`; // Combine date and time
+            // const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const datestamp = `${date}`; // Combine date and time
 
             // Add datestamp to formData
             const formDataWithdatestamp = { ...formData, date: datestamp };
 
             const opportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await fetch(`${opportunityApiUrl}/opportunities/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formDataWithdatestamp),
-            });
+            const response = await axios.post(`${opportunityApiUrl}/opportunities/`, formDataWithdatestamp ,
+                {
+                headers: { 'Content-Type': 'application/json'}
+                    
+              
+            },);
 
-            if (response.ok) {
+            if (response.status >= 200 && response.status < 300) {
                 // Fetch the updated leads list after form submission
                 // fetchChance();
-                AlertMessage('Opportunity created Successfully', 'success');
+               
                 setFormData({
                     name: '',
                     cc: '91',
@@ -125,6 +111,7 @@ export default function OpportunityForm({ closeForm }) {
                     lostopportunity_reason: '',
                     date: '',
                 });
+                AlertMessage('Opportunity created Successfully', 'success');
                 closeForm(); // Close the form
             } else {
                 AlertMessage('Failed to submit data. Please try again.', 'error');
@@ -371,7 +358,7 @@ export default function OpportunityForm({ closeForm }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Date</label>
                         <input
-                            type="datetime-local"
+                            type="date"
                             name="date"
                             value={formData.date}
                             onChange={handleChange}

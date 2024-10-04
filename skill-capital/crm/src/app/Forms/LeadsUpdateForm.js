@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
@@ -56,19 +57,17 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         try {
             // Send the updated data to the JSON server
             const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${leadsApiUrl}/leads/${rowData.id}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(formData), // Make sure formData is correctly structured
+            const response = await axios.put(`${leadsApiUrl}/leads/${rowData.id}/`,formData,
+                {
+             
+                headers: {  'Content-Type': 'application/json'},
+                
             });
     
-            if (!response.ok) {
+            if (response.status!==200) {
                 // Handle server errors
-                const errorDetails = await response.text();  // Get the error details
-                throw new Error(`Failed to update lead: ${response.statusText} - ${errorDetails}`);
+                  // Get the error details
+                throw new Error(`Failed to update lead: ${response.status}`);
             }
     
             AlertMessage("Lead Updated Successful","success");
@@ -103,8 +102,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <span>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="Name"
+                            value={formData.Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -125,8 +124,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <label className="text-sm font-medium">Name</label>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="Name"
+                            value={formData.Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -138,8 +137,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Lead Status</label>
                         <select
-                            name="lead_status"
-                            value={formData.lead_status}
+                            name="Lead_Status"
+                            value={formData.Lead_Status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -153,14 +152,14 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
                     {/* contact_no */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">contact_no</label>
+                        <label className="text-sm font-medium">Contact No</label>
                         <input
                             type="number"
                             pattern='[0-9]{10}'
-                            name="contact_no"
-                            value={formData.contact_no}
+                            name="Contact_No"
+                            value={formData.Contact_No}
                             onChange={handleChange}
-                            placeholder="contact_no"
+                            placeholder="contact no"
                             minLength="10"
                             maxLength="10"
                             required
@@ -173,8 +172,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                         <label className="text-sm font-medium">Email</label>
                         <input
                             type="email"
-                            name="email"
-                            value={formData.email}
+                            name="Email"
+                            value={formData.Email}
                             onChange={handleChange}
                             placeholder="Email"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -185,8 +184,8 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">TechStack</label>
                         <select
-                            name="TechStack"
-                            value={formData.TechStack}
+                            name="Tech_Stack"
+                            value={formData.Tech_Stack}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >

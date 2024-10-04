@@ -5,6 +5,7 @@ import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 
 export default function CourseForm({ closeForm }) {
@@ -67,15 +68,19 @@ export default function CourseForm({ closeForm }) {
 
             const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await fetch(`${CourseApiUrl}/Courses/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'applicatiopn/json' },
-                body: JSON.stringify(formDataWithDateOnly),
-            })
+            const response = await axios.post(`${CourseApiUrl}/Courses/`, formDataWithDateOnly,
+                {
 
-            if (response.ok) {
+                    headers: { 'Content-Type': 'applicatiopn/json' }
 
-                AlertMessage("Course Created Successfylly", 'success'); // Show confirmation
+                })
+
+            if (response.status >= 200 && response.status < 300) {
+
+                
+                AlertMessage("Course Created Successfylly", "success"); // Show confirmation
+
+                
 
                 setFormData({
 
@@ -87,9 +92,11 @@ export default function CourseForm({ closeForm }) {
 
                 }); // Reset the form data
 
-                closeForm(); // Close the form
+               // Close the form
+               closeForm(); 
 
             }
+
             else {
                 AlertMessage("Failed to Create Lead Please Try again!", "error");
             }

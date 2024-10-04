@@ -15,6 +15,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import OpportunityForm from "../Forms/oppForm";
 import OppUpdateForm from "../Forms/oppUpdateForm";
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 
 
@@ -51,10 +52,8 @@ export default function OpportunityManagement() {
   const fetchOpportunity = async () => {
     const OpportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
     try {
-      const response = await fetch(`${OpportunityApiUrl}/opportunities/`, {
-        method: 'GET'
-      });
-      const data = await response.json()
+      const response = await axios.get(`${OpportunityApiUrl}/opportunities/`);
+      const data = response.data;
       setOpportunity(data);
       handleCreateOpportunity(data);
       console.log(data);
@@ -79,7 +78,7 @@ export default function OpportunityManagement() {
 
   useEffect(() => {
     fetchOpportunity()
-  });
+  },[]);
 
   useEffect(() => {
     let filteredData = Opportunity.filter((row) =>
@@ -130,11 +129,9 @@ export default function OpportunityManagement() {
 
   const handleDelete = (id) => {
     const OpportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
-    fetch(`${OpportunityApiUrl}/opportunities/${id}/`, {
-      method: 'DELETE',
-    })
+    axios.delete(`${OpportunityApiUrl}/opportunities/${id}/`)
       .then(response => {
-        if (response.ok) {
+        if (response.status==200) {
           setOpportunity(prevRows => prevRows.filter(row => row.id !== id));
           AlertMessage('Row Deleted Successfully', 'success');
         } else {
@@ -381,10 +378,10 @@ export default function OpportunityManagement() {
               <div>
                 <MenuButton
                   onClick={() => setFilterByOpportunityStatus(status)}
-                  className={`inline-flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${filterByOpportunityStatus === status ? 'bg-blue-500 text-white' : 'bg-white'}`}
+                  className={`inline-flex w-full justify-center items-center gap-1.5 rounded-md px-3  text-xs font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${filterByOpportunityStatus === status ? 'bg-blue-800 text-slate-200 border-2 border-white' : 'bg-white'}`}
                 >
                   {status}
-                  <div className="flex w-[28px] h-[28px] items-center bg-red-600 justify-center rounded-full text-sm">
+                  <div className="flex w-[24px] h-[24px] items-center bg-red-600 justify-center rounded-full text-sm my-1">
                     {counts[status.replace(' ', '')]}
                   </div>
                 </MenuButton>
@@ -416,9 +413,9 @@ export default function OpportunityManagement() {
       <div>
         {isTableVisible && (
           <div className="flex flex-col items-center justify-center w-full h-full m-auto p-2 border-2 border-gray-100 rounded-2xl overflow-x-auto">
-            <table className=' min-w-full border-2 text-center table-auto text-sm capitalize text-medium w-full rounded-3xl  '>
+            <table className=' min-w-full border-2 text-center table-auto text-xs  font-light capitalize  w-full rounded-3xl  '>
               <thead>
-                <tr className='border-2  bg-teal-500 p-5 font-semibold  rounded-3xl'>
+                <tr className='border-2  bg-teal-500 p-5 font-thin  rounded-3xl'>
                   <th className="border-1 p-2" >
 
                     <input
@@ -447,7 +444,7 @@ export default function OpportunityManagement() {
                   </tr>
                 ) : (
                   currentRows.map((row) => (
-                    <tr key={row.id} className=" border-2 border-slate-100 rounded-md bg-red-100 ">
+                    <tr key={row.id} className=" border-2 border-slate-100 rounded-md text-xs  text-gray-600 font-medium font-sans bg-indigo-100  hover:bg-lime-50 tracking-wide">
 
                       <td className="border-1 p-2">
                         <input

@@ -15,6 +15,8 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import LeadForm from "../Forms/leadform";
 import UpdateForm from "../Forms/LeadsUpdateForm";
 import { toast } from 'react-toastify';
+import axios from 'axios';
+
 
 
 
@@ -50,16 +52,19 @@ export default function LeadManagement() {
   const fetchLeads = async () => {
     const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
     try {
-      const response = await fetch(`${leadsApiUrl}/leads/`, {
-        method: 'GET'
-      });
-      const data = await response.json()
-      setLeads(data);
-      handleCreateLead(data);
+      const response = await axios.get(`${leadsApiUrl}/leads/`);
+
+      const data= response.data;
       console.log(data);
+
+      setLeads(data);
+
+      handleCreateLead(data);
+     
       setFilteredRows(data);
     } catch (error) {
       console.error('Error fetching leads:', error)
+      AlertMessage('Failed to fetch leads. Please try again later.', 'error');
     }
   }
 
@@ -77,8 +82,13 @@ export default function LeadManagement() {
   };
 
   useEffect(() => {
-    fetchLeads()
-  });
+    fetchLeads();
+  },[]);
+
+  // updates the setfilteredRows when lead changes:
+  useEffect(()=>{
+    setFilteredRows(Leads);
+  },[Leads]);
 
   useEffect(() => {
     let filteredData = Leads.filter((row) =>
@@ -129,11 +139,9 @@ export default function LeadManagement() {
 
   const handleDelete = (id) => {
     const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
-    fetch(`${leadsApiUrl}/leads/${id}/`, {
-      method: 'DELETE',
-    })
+    axios.delete(`${leadsApiUrl}/leads/${id}/`)
       .then(response => {
-        if (response.ok) {
+        if (response.status==200) {
           setLeads(prevRows => prevRows.filter(row => row.id !== id));
           AlertMessage('Row Deleted Successfully', 'success');
         } else {
@@ -187,11 +195,11 @@ export default function LeadManagement() {
             filteredLeads.map((lead) => (
               <div key={lead.id} className=" flex  flex-col  w-full bg-white p-2 mb-2 rounded-md text-sm shadow">
                 <div className="flex items-baseline justify-between">
-                <p className="font-medium">{lead.name}</p>
-                <p>{lead.contact_no}</p>
+                <p className="font-medium">{lead.Name}</p>
+                <p>{lead.Contact_No}</p>
                 </div>
                 <div className="flex items-baseline justify-between">
-                <p>{lead.email}</p>
+                <p>{lead.Email}</p>
                   <button onClick={() => handleDelete(lead.id)} className="text-red-600 flex items-center text-xs">
                     <DeleteIcon className="w-4 h-4 mr-1" />
                   </button>
@@ -242,13 +250,15 @@ export default function LeadManagement() {
 
   const [currentPage, setCurrentPage] = useState(1); // Track current page
   const rowsPerPage = 7; // Number of rows per page
-  const totalPages = Math.ceil(filteredRows.length / rowsPerPage); // Total number of pages
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+ // Total number of pages
 
   // Get current rows based on pagination
-  const currentRows = filteredRows.slice(
+  const currentRows = (filteredRows).slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
+  
 
   // Function to navigate to next page
   const nextPage = () => {
@@ -379,10 +389,10 @@ export default function LeadManagement() {
               <div>
                 <MenuButton
                   onClick={() => setFilterByLeadStatus(status)}
-                  className={`inline-flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${filterByLeadStatus === status ? 'bg-blue-500 text-white' : 'bg-white'}`}
+                  className={`inline-flex w-full justify-center items-center gap-1.5 rounded-md px-3  text-xs font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${filterByLeadStatus === status ? 'bg-blue-800 text-slate-200 border-2 border-white' : 'bg-white'}`}
                 >
                   {status}
-                  <div className="flex w-[28px] h-[28px] items-center bg-red-600 justify-center rounded-full text-sm">
+                  <div className="flex w-[24px] h-[24px] items-center bg-red-600 justify-center rounded-full text-sm my-1">
                     {counts[status.replace(' ', '')]}
                   </div>
                 </MenuButton>
@@ -414,24 +424,25 @@ export default function LeadManagement() {
       <div>
         {isTableVisible && (
           <div className="flex flex-col items-center justify-center w-full h-full m-auto p-2 border-2 border-gray-100 rounded-2xl overflow-x-auto">
-            <table className=' min-w-full border-2 text-center table-auto text-sm capitalize text-medium w-full rounded-3xl  '>
+            <table className=' min-w-full border-2 text-center table-auto text-xs capitalize font-light w-full rounded-3xl  '>
               <thead>
-                <tr className='border-2  bg-teal-500 p-5 font-semibold  rounded-3xl'>
+                <tr className='border-2  bg-teal-500 p-5 font-thin  rounded-3xl'>
                   <th className="border-1 p-2" >
 
                     <input
                       type="checkbox"
                       onChange={toggleSelectAll}
                       checked={filteredRows.length > 0 && selectedRows.length === filteredRows.length}
+
                     />
 
                   </th >
-                  <th className='border-1 p-1'>created&nbsp;On</th>
+                  <th className='border-1 p-1'>created On</th>
                   <th className='border-1 p-1'>Name</th>
-                  <th className='border-1 p-1'>Lead&nbsp;Status</th>
+                  <th className='border-1 p-1'>Lead Status</th>
                   <th className='border-1 p-1'>Contact</th>
                   <th className='border-1 p-1'>Email</th>
-                  <th className='border-1 p-1'>Tech&nbsp;Stack</th>
+                  <th className='border-1 p-1'>Tech Stack</th>
                   <th className='border-1 p-1'>Course</th>
                   <th className='border-1 p-1'>Update</th>
                   <th className='border-1 p-1'>Delete</th>
@@ -440,11 +451,11 @@ export default function LeadManagement() {
               <tbody>
                 {currentRows.length === 0 ? (
                   <tr>
-                    <td colSpan="9">No data available</td>
+                    <td colSpan="11">No data available</td>
                   </tr>
                 ) : (
                   currentRows.map((row) => (
-                    <tr key={row.id} className=" border-2 border-slate-100 rounded-md bg-red-100 ">
+                    <tr key={row.id } className=" border-2 border-slate-100 rounded-md bg-indigo-100 text-xs text-gray-600 font-sans font-medium tracking-wide hover:bg-lime-50 ">
 
                       <td className="border-1 p-2">
                         <input
@@ -454,13 +465,12 @@ export default function LeadManagement() {
 
                         />
                       </td>
-
-                      <td className="border-1 p-1">{row.date}</td>
-                      <td className='border-1 p-1'>{row.name}</td>
-                      <td className='border-1 p-1'>{row.lead_status}</td>
-                      <td className='border-1 p-1'>{row.contact_no}</td>
-                      <td className='border-1 p-1'>{row.email}</td>
-                      <td className='border-1 p-1'>{row.TechStack}</td>
+                      <td className="border-1 p-1">{row.Date}</td>
+                      <td className='border-1 p-1'>{row.Name}</td>
+                      <td className='border-1 p-1'>{row.Lead_Status}</td>
+                      <td className='border-1 p-1'>{row.Contact_No}</td>
+                      <td className='border-1 p-1'>{row.Email}</td>
+                      <td className='border-1 p-1'>{row.Tech_Stack}</td>
                       <td className='border-1 p-1'>{row.Course}</td>
                       <td className=' border-1 p-1'>
                         <div className="flex items-center justify-center">

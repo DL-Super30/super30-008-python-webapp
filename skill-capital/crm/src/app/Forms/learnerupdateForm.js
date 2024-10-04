@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
@@ -77,22 +78,18 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         try {
             // Send the updated data to the JSON server
             const learnersApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${learnersApiUrl}/learners/${rowData.id}/`, {
+            const response = await axios.put(`${learnersApiUrl}/learners/${rowData.id}/`, formData,  {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(formData), // Make sure formData is correctly structured
-            });
+                    'Content-Type': 'application/json'},
+                 });
 
-            if (!response.ok) {
-                // Handle server errors
-                const errorDetails = await response.text();  // Get the error details
-                throw new Error(`Failed to update learner: ${response.statusText} - ${errorDetails}`);
+            if (response.status!==200) {
+                // Handle server error
+                throw new Error(`Failed to update learner: ${response.statusText}`);
             }
 
-            AlertMessage("Learner Updated Successfully" , 'success');
+            AlertMessage('Learner Updated Successfully' , 'success');
 
             // Call the update function to refresh the table
             onUpdate();

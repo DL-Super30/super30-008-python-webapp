@@ -3,22 +3,23 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
-export default function LeadForm({ closeForm,  initialData }) {
-    const [formData, setFormData] = useState( initialData || {
-        name: '',
-        cc: '91',
-        contact_no: '',
-        email: '',
-        fee_coated: '',
-        batch_timing: '',
-        description: '',
-        lead_status: '',
-        lead_source: '',
-        TechStack: '',
+export default function LeadForm({ closeForm, initialData }) {
+    const [formData, setFormData] = useState(initialData || {
+        Name: '',
+        CC: '91',
+        Contact_No: '',
+        Email: '',
+        Fee_Coated: '',
+        Batch_Timing: '',
+        Description: '',
+        Lead_Status: '',
+        Lead_Source: '',
+        Tech_Stack: '',
         Course: '',
-        class_mode: '',
-        date: '',
+        Class_Mode: '',
+        Date: '',
     });
 
     useEffect(() => {
@@ -29,84 +30,83 @@ export default function LeadForm({ closeForm,  initialData }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-    
-        setFormData((prevData) => ({ 
-            ...prevData, 
-            [name]: value 
+
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
         }));
     };
 
     const AlertMessage = (message, type) => {
         if (type === 'success') {
-          toast.success(message, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+            toast.success(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         } else if (type === 'error') {
-          toast.error(message, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+            toast.error(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
-      };
-    
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form behavior
         // handleCreateLead(formData);
-        
+
         // Prepare the data with a datestamp in yyyy-mm-dd format with time
         // Extract only the date part (YYYY-MM-DD) from the datetime-local input
-    const dateOnly = formData.date;  // Get the 'YYYY-MM-DD' part
-    
-    // Prepare the data to be sent, ensuring the date is in the correct format
-    const formDataWithDateOnly = { ...formData, date: dateOnly };
+        const dateOnly = formData.date;  // Get the 'YYYY-MM-DD' part
+
+        // Prepare the data to be sent, ensuring the date is in the correct format
+        const formDataWithDateOnly = { ...formData, date: dateOnly };
 
         try {
             const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${leadsApiUrl}/leads/`, {
-                method: 'POST',
-                headers: {  
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formDataWithDateOnly),
-            });
+            const response = await axios.post(`${leadsApiUrl}/leads/`, formDataWithDateOnly,
+                {
+                    headers: { 'Content-Type': 'application/json', },
 
-            if (response.ok) {
+                });
+
+                if (response.status >= 200 && response.status < 300) {
+                    
                 AlertMessage("Lead Created Sucessfully", "success");
                 // Clear the form data
                 setFormData({
-                    name: '',
-                    cc: '91',
-                    contact_no: '',
-                    email: '',
-                    fee_coated: '',
-                    batch_timing: '',
-                    description: '',
-                    lead_status: '',
-                    lead_source: '',
-                    TechStack: '',
+                    Name: '',
+                    CC: '91',
+                    Contact_No: '',
+                    Email: '',
+                    Fee_Coated: '',
+                    Batch_Timing: '',
+                    Description: '',
+                    Lead_Status: '',
+                    Lead_Source: '',
+                    Tech_Stack: '',
                     Course: '',
-                    class_mode: '',
-                    date: ''
+                    Class_Mode: '',
+                    Date: ''
                 });
                 closeForm();
-               
+
             } else {
                 AlertMessage("Failed to Create Lead Please Try again!", "error");
             }
         } catch (error) {
             console.error('Error submitting form data:', error);
-            AlertMessage('An error occurred while submitting the data.','error');
+            AlertMessage('An error occurred while submitting the data.', 'error');
         }
     };
 
@@ -143,21 +143,21 @@ export default function LeadForm({ closeForm,  initialData }) {
                         <label className="text-sm font-medium">Name</label>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="Name"
+                            value={formData.Name}
                             onChange={handleChange}
                             placeholder="Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
 
-                    {/* CC */}
+                    {/*CC */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Cc</label>
                         <input
                             type="text"
                             name="cc"
-                            value={formData.cc}
+                            value={formData.CC}
                             onChange={handleChange}
                             placeholder="91"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -165,16 +165,16 @@ export default function LeadForm({ closeForm,  initialData }) {
                         />
                     </div>
 
-                    {/* contact_no */}
+                    {/* Contact_No */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Contact no</label>
                         <input
                             type="number"
                             pattern='[0-9]{10}'
-                            name="contact_no"
-                            value={formData.contact_no}
+                            name="Contact_No"
+                            value={formData.Contact_No}
                             onChange={handleChange}
-                            placeholder="contact_no"
+                            placeholder="Contact_No"
                             minLength="10"
                             maxLength="10"
                             required
@@ -186,9 +186,9 @@ export default function LeadForm({ closeForm,  initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Email</label>
                         <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
+                            type="Email"
+                            name="Email"
+                            value={formData.Email}
                             onChange={handleChange}
                             placeholder="Email"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -200,8 +200,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                         <label className="text-sm font-medium">Fee coated</label>
                         <input
                             type="text"
-                            name="fee_coated"
-                            value={formData.fee_coated}
+                            name="Fee_Coated"
+                            value={formData.Fee_Coated}
                             onChange={handleChange}
                             placeholder="Fee Quoted"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -213,8 +213,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                         <label className="text-sm font-medium">Batch timing</label>
                         <select
                             type="text"
-                            name="batch_timing"
-                            value={formData.batch_timing}
+                            name="Batch_Timing"
+                            value={formData.Batch_Timing}
                             onChange={handleChange}
                             placeholder="Batch Timing"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -234,7 +234,7 @@ export default function LeadForm({ closeForm,  initialData }) {
                             <option value="6PM-7PM" >6PM-7PM</option>
                             <option value="7PM-8PM" >7PM-8PM</option>
                             <option value="8PM-9PM" >8PM-9PM</option>
- 
+
                         </select>
                     </div>
 
@@ -243,8 +243,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Lead status</label>
                         <select
-                            name="lead_status"
-                            value={formData.lead_status}
+                            name="Lead_Status"
+                            value={formData.Lead_Status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -260,8 +260,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Lead source</label>
                         <select
-                            name="lead_source"
-                            value={formData.lead_source}
+                            name="Lead_Source"
+                            value={formData.Lead_Source}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -274,22 +274,22 @@ export default function LeadForm({ closeForm,  initialData }) {
                             <option value="Inbound Call">Inbound Call</option>
                             <option value="Google Ad Words">Google Ad Words</option>
                             <option value="Web Site Chat">Web Site Chat</option>
-                            <option value="Facebook Ads">Facebook Ads</option> 
-                            <option value="Google My Business">Google My Business</option> 
+                            <option value="Facebook Ads">Facebook Ads</option>
+                            <option value="Google My Business">Google My Business</option>
                             <option value="WhatsApp Skill Capital">WhatsApp Skill Capital</option>
                         </select>
                     </div>
 
-                    {/* TechStack */}
+                    {/* Tech_Stack */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">TechStack</label>
                         <select
-                            name="TechStack"
-                            value={formData.TechStack}
+                            name="Tech_Stack"
+                            value={formData.Tech_Stack}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
-                            <option value="" disabled>Select TechStack</option>
+                            <option value="" disabled>Select Tech Stack</option>
                             <option value="Life Skills">Life Skills</option>
                             <option value="Study Abroad">Study Abroad</option>
                             <option value="HR">HR</option>
@@ -336,8 +336,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Class mode</label>
                         <select
-                            name="class_mode"
-                            value={formData.class_mode}
+                            name="Class_Mode"
+                            value={formData.Class_Mode}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
@@ -354,8 +354,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                         <label className="text-sm font-medium">Date</label>
                         <input
                             type="date"
-                            name="date"
-                            value={formData.date}
+                            name="Date"
+                            value={formData.Date}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
@@ -366,8 +366,8 @@ export default function LeadForm({ closeForm,  initialData }) {
                         <label className="text-sm font-medium">Description</label>
                         <input
                             type="text"
-                            name="description"
-                            value={formData.description}
+                            name="Description"
+                            value={formData.Description}
                             onChange={handleChange}
                             placeholder="Description"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"

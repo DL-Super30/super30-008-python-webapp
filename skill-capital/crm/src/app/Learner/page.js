@@ -15,6 +15,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import LearnForm from "../Forms/learnForm";
 import UpdateForm from "../Forms/learnerupdateForm";
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 
 
@@ -52,10 +53,8 @@ export default function LearnManagement() {
   const fetchLearner = async () => {
     const LearnerApiUrl = process.env.NEXT_PUBLIC_API_URL;
     try {
-      const response = await fetch(`${LearnerApiUrl}/learners/`, {
-        method: 'GET'
-      });
-      const data = await response.json()
+      const response = await axios.get(`${LearnerApiUrl}/learners/`);
+      const {data} =  response;
       setLearner(data);
       handleCreateLearn(data);
       console.log(data);
@@ -80,7 +79,7 @@ export default function LearnManagement() {
 
   useEffect(() => {
     fetchLearner()
-  });
+  },[]);
 
   useEffect(() => {
     let filteredData = Learner.filter((row) =>
@@ -131,11 +130,9 @@ export default function LearnManagement() {
 
   const handleDelete = (id) => {
     const LearnerApiUrl = process.env.NEXT_PUBLIC_API_URL;
-    fetch(`${LearnerApiUrl}/learners/${id}/`, {
-      method: 'DELETE',
-    })
+    axios.delete(`${LearnerApiUrl}/learners/${id}/`)
       .then(response => {
-        if (response.ok) {
+        if (response.status==200) {
           setLearner(prevRows => prevRows.filter(row => row.id !== id));
           AlertMessage('Row Deleted Successfully', 'success');
         } else {
@@ -190,11 +187,11 @@ export default function LearnManagement() {
               <div key={Learn.id} className="bg-white p-2 mb-2 rounded-md text-sm shadow">
                 <div className="flex items-baseline justify-between">
                 <p className="font-bold">{Learn.name}</p>
-                <p>{Learn.contact_no}</p> 
+                <p>{Learn.Phone}</p> 
                 </div>
                 
                 <div className="flex items-center justify-between">
-                <p>{Learn.email}</p>
+                <p>{Learn.Email}</p>
                   <button onClick={() => handleDelete(Learn.id)} className="text-red-600 flex items-center text-xs">
                     <DeleteIcon className="w-4 h-4 mr-1" />
                   </button>
@@ -382,10 +379,10 @@ export default function LearnManagement() {
               <div>
                 <MenuButton
                   onClick={() => setFilterByLearnerStatus(status)}
-                  className={`inline-flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${FilterByLearnerStatus === status ? 'bg-blue-500 text-white' : 'bg-white'}`}
+                  className={`inline-flex w-full justify-center items-center gap-1.5 rounded-md px-3  text-xs font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-300 ${FilterByLearnerStatus === status ? 'bg-blue-800 text-slate-200 border-2 border-white' : 'bg-white'}`}
                 >
                   {status}
-                  <div className="flex w-[28px] h-[28px] items-center bg-red-400 justify-center rounded-full text-sm">
+                  <div className="flex w-[24px] h-[24px] items-center bg-red-600 justify-center rounded-full text-sm my-1">
                     {counts[status.replace(' ', '')]}
                   </div>
                 </MenuButton>
@@ -417,9 +414,9 @@ export default function LearnManagement() {
       <div>
         {isTableVisible && (
           <div className="flex flex-col items-center justify-center w-full h-full m-auto p-1 border-1 border-gray-100 rounded-2xl  overflow-x-auto">
-            <table className=' min-w-[100%] block  text-center table-auto text-sm capitalize rounded-3xl  w-full  '>
+            <table className=' min-w-[100%] block  text-center table-auto  text-xs capitalize  font-light rounded-3xl  w-full  '>
               <thead>
-                <tr className='border-2  bg-teal-500 p-2 font-semibold text-sm '>
+                <tr className='border-2  bg-teal-500 p-2 font-thin '>
                   <th className="border-1 p-2" >
 
                     <input
@@ -452,7 +449,7 @@ export default function LearnManagement() {
                   </tr>
                 ) : (
                   currentRows.map((row) => (
-                    <tr key={row.id} className=" border-2 border-slate-100 bg-red-100  text-sm ">
+                    <tr key={row.id} className=" border-2 border-slate-100 bg-indigo-100  text-xs font-medium font-sans text-gray-600 tracking-wide hover:bg-lime-50">
 
                       <td className="border-1 p-2">
                         <input
@@ -464,7 +461,7 @@ export default function LearnManagement() {
                       </td>
 
                       <td className="border-1 p-1 text-sm">{row.Leadcreatedtime}</td>
-                      <td className='border-1 p-1'>{row.FirstName + ' ' + row.LastName}</td>
+                      <td className='border-1 p-1'>{row.name}</td>
                       <td className="border-1 p-1">{row.RegisteredDate}</td>
                       <td className="border-1 p-1">{row.learner_Status}</td>
                       <td className='border-1 p-1'>{row.Phone}</td>

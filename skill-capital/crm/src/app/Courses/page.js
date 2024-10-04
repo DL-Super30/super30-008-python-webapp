@@ -9,6 +9,8 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import CourseForm from "../Forms/courseForm";
+import { toast } from 'react-toastify';
+import axios from "axios";
 
 
 export default function CourseManagement() {
@@ -23,10 +25,9 @@ export default function CourseManagement() {
     const fetchCourses = async () => {
         const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-            const response = await fetch(`${CourseApiUrl}/Courses/`, {
-                method: 'GET'
-            });
-            const data = await response.json();
+            const response = await axios.get(`${CourseApiUrl}/Courses/`);
+
+            const data = await response.data;
             console.log(data);
             setCourses(data);
             setFilteredRows(data);
@@ -64,14 +65,40 @@ export default function CourseManagement() {
         setSearchQuery(e.target.value.toLowerCase());
     };
 
+
+    const AlertMessage = (message, type) => {
+        if (type === 'success') {
+            toast.success(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else if (type === 'error') {
+            toast.error(message, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    };
+
     const handleDelete = (id) => {
         const CourseApiUrl = process.env.NEXT_PUBLIC_API_URL;
-        fetch(`${CourseApiUrl}/Courses/${id}/`, { method: 'DELETE' })
+        axios.delete(`${CourseApiUrl}/Courses/${id}/`)
             .then(response => {
-                if (response.ok) {
+                if (response.status==200) {
                     setCourses(prevRows => prevRows.filter(row => row.id !== id));
+                    AlertMessage("Course Deleted Successfully",'success');
                 } else {
-                    console.error('Error deleting the row');
+                   AlertMessage('Error deleting the row','error');
                 }
             })
             .catch(error => console.error('Error in delete request:', error));
@@ -156,9 +183,9 @@ export default function CourseManagement() {
                 </div>
             </div>
             <div className="flex flex-col items-center justify-center w-full h-full m-auto p-2 border-2 border-gray-100 rounded-2xl overflow-x-auto">
-                <table className='min-w-full border-2 text-center table-auto text-sm capitalize text-medium w-full rounded-3xl'>
+                <table className='min-w-full border-2 text-center table-auto text-xs capitalize font-light w-full rounded-3xl'>
                     <thead>
-                        <tr className='border-2 bg-teal-500 p-5 font-semibold rounded-3xl'>
+                        <tr className='border-2 bg-teal-500 p-5 font-thin rounded-3xl'>
                             <th className="border-1 p-2">
                                 <input
                                     type="checkbox"
@@ -180,7 +207,7 @@ export default function CourseManagement() {
                             </tr>
                         ) : (
                             currentRows.map((row) => (
-                                <tr key={row.id} className="border-2 border-slate-100 hover:bg-gray-100">
+                                <tr key={row.id} className="border-2 border-slate-100 bg-indigo-100 text-xs font-sans font-medium text-gray-600 tracking-wide hover:bg-lime-50">
                                     <td className='border-1 p-2'>
                                         <input
                                             type="checkbox"

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@mui/material';
 import DoughnutChart from '../Dashboard/DoughnutChart';
 import LineChart from '../Dashboard/LineChart';
 import { parseISO, isToday, getHours } from 'date-fns';
+import axios from 'axios';
 
 const leadStatuses = ["Not Contacted", "Attempted", "Warm Lead", "Cold Lead","Total"];
 
@@ -68,10 +69,8 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const leadsApiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const response = await fetch(`${leadsApiUrl}/leads/`, {
-          method: 'GET',
-        });
-        const data = await response.json();
+        const response = await axios.get(`${leadsApiUrl}/leads/`);
+        const data = await response.data;
 
         // All leads counts
         setCounts(calculateCounts(data));

@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function OppUpdateForm({ rowData, onClose, onUpdate }) {
 
@@ -54,15 +55,14 @@ export default function OppUpdateForm({ rowData, onClose, onUpdate }) {
         const OpportunityApiUrl= process.env.NEXT_PUBLIC_API_URL;
         try {
             // Send the updated data to the JSON server
-            const response = await fetch(`${OpportunityApiUrl}/opportunities/${rowData.id}/`, {
-                method: 'PUT',
+            const response = await axios.put(`${OpportunityApiUrl}/opportunities/${rowData.id}/`, formData ,
+                {
+
                 headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData), // Make sure formData is correctly structured
+                    'Content-Type': 'application/json'}
             });
     
-            if (!response.ok) {
+            if (response.status!==200) {
                 // Handle server errors
                 const errorDetails = await response.text();  // Get the error details
                 throw new Error(`Failed to update Opportunity: ${response.statusText}- ${errorDetails}`);
@@ -136,8 +136,8 @@ export default function OppUpdateForm({ rowData, onClose, onUpdate }) {
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">Opportunity status</label>
                         <select
-                            name="Opportunity_status"
-                            value={formData.Opportunity_status}
+                            name="opportunity_status"
+                            value={formData.opportunity_status}
                             onChange={handleChange}
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         >
