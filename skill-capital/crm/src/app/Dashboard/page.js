@@ -7,14 +7,14 @@ import LineChart from '../Dashboard/LineChart';
 import { parseISO, isToday, getHours } from 'date-fns';
 import axios from 'axios';
 
-const leadStatuses = ["Not Contacted", "Attempted", "Warm Lead", "Cold Lead","Total"];
+const leadStatuses = ["Not Contacted", "Attempted", "Warm Lead", "Cold Lead","TotalLeads"];
 
 const statusKeyMap = {
   "Not Contacted": "NotContacted",
   "Attempted": "Attempted",
   "Warm Lead": "WarmLead",
   "Cold Lead": "ColdLead",
-  "Total":"Total",
+  "TotalLeads":"Total",
 };
 
 const calculateCounts = (leads) => {
@@ -25,14 +25,14 @@ const calculateCounts = (leads) => {
     WarmLead: leads.filter(lead => lead.Lead_Status === "Warm Lead").length,
     ColdLead: leads.filter(lead => lead.Lead_Status === "Cold Lead").length,
   };
-  counts.Total= counts.NotContacted+ counts.Attempted + counts.WarmLead + counts.ColdLead;
+  counts.TotalLeads= counts.NotContacted+ counts.Attempted + counts.WarmLead + counts.ColdLead;
   return counts;
 };
 
 const generateHourlyCounts = (leads) => {
   const hourlyCounts = new Array(24).fill(0);
   leads.forEach(lead => {
-    const leadDate = parseISO(lead.date);
+    const leadDate = parseISO(lead.Date);
     if (isToday(leadDate)) {
       const hour = getHours(leadDate);
       hourlyCounts[hour] += 1; // Increment the count for that hour
@@ -80,7 +80,7 @@ export default function Dashboard() {
         const previousLeads = [];
 
         data.forEach((lead) => {
-          const leadDate = parseISO(lead.date);
+          const leadDate = parseISO(lead.Date);
           if (isToday(leadDate)) {
             todayLeads.push(lead);
           } else {
@@ -111,7 +111,7 @@ export default function Dashboard() {
         return "bg-pink-100 border-t-pink-500";
       case "Cold Lead":
         return "bg-rose-100 border-t-rose-500";
-      case "Total":
+      case "TotalLeads":
         return "bg-orange-100 border-t-orange-500";
       default:
         return "";
@@ -139,17 +139,18 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="w-full flex items-center justify-between py-4">
+      <div className="w-full h-full flex items-center justify-around py-4 bg-rose-50">
         {/* Line chart for today's leads count by hour */}
-        <div className="w-1/3 h-fit bg-white border-1 rounded-md z-1">
+        <div className="w-max h-max bg-white border-1 rounded-md z-3 shadow font-sans ">
           <LineChart hourlyCounts={hourlyTodayCounts} />
         </div>
 
         {/* Doughnut chart for status-based distribution */}
-        <div className="w-1/3 h-fit bg-white border-1 rounded-md z-1">
-          <h2 className='capitalize text-center'>today&apos;s & Previous Leads</h2>
+        <div className="w-max h-max bg-white border-1 rounded-md  shadow  font-sans z-3">
+          <h2 className='capitalize text-center text-slate-700 font-semibold py-2'>today&apos;s & Previous Leads</h2>
           <DoughnutChart counts={counts} todayCounts={todayCounts} previousCounts={previousCounts} />
         </div>
+
       </div>
     </section>
   );

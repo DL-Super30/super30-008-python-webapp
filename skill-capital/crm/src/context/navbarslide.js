@@ -22,8 +22,6 @@ export default function NavbarSlide() {
     { label: 'Opportunities', href: '/Opportunities' },
     { label: 'Learners', href: '/Learner' },
     { label: 'Courses', href: '/Courses' },
-    { label: 'Activities', href: '/Activities' },
-    { label: 'Analytics', href: '/Analytics' },
   ];
 
   return (
@@ -48,7 +46,7 @@ export default function NavbarSlide() {
             <Link href="#"><FontAwesomeIcon icon={faStar} size="1x" aria-label="Favorites" /></Link>
             <Link href="#"><FontAwesomeIcon icon={faBell} size="1x" aria-label="Notifications" /></Link>
             <Link href="#"><FontAwesomeIcon icon={faUser} size="1x" aria-label="User" /></Link>
-            <Link href="http://localhost:3000"><LogoutIcon /></Link>
+            <Link href="https://crm.rajeshcrm.xyz/"><LogoutIcon /></Link>
           </div>
         </div>
       </div>
