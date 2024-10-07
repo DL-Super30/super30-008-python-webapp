@@ -132,7 +132,7 @@ export default function LearnManagement() {
     const LearnerApiUrl = process.env.NEXT_PUBLIC_API_URL;
     axios.delete(`${LearnerApiUrl}/learners/${id}/`)
       .then(response => {
-        if (response.status==200) {
+        if (response.status>=200 && response.status<300) {
           setLearner(prevRows => prevRows.filter(row => row.id !== id));
           AlertMessage('Row Deleted Successfully', 'success');
         } else {

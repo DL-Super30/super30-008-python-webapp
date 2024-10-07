@@ -78,7 +78,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
         try {
             // Send the updated data to the JSON server
             const learnersApiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await axios.put(`${learnersApiUrl}/learners/${rowData.Id}/`, formData,  {
+            const response = await axios.put(`${learnersApiUrl}/learners/${rowData.id}/`, formData,  {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'},
@@ -140,13 +140,13 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
                     {/* First Name */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">Name</label>
+                        <label className="text-sm font-medium"> First Name</label>
                         <input
                             type="text"
                             name="First_Name"
                             value={formData.First_Name}
                             onChange={handleChange}
-                            placeholder="Name"
+                            placeholder=" First Name"
                             className="border border-gray-300 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                     </div>
@@ -214,7 +214,7 @@ export default function UpdateForm({ rowData, onClose, onUpdate }) {
 
                     {/* TechStack */}
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium">TechStack</label>
+                        <label className="text-sm font-medium">Tech Stack</label>
                         <input
                             type='text'
                             name="Tech_Stack"
