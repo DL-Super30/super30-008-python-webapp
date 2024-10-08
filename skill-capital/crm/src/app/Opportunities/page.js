@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TableChartIcon from '@mui/icons-material/TableChart';
-import OpportunityerboardIcon from '@mui/icons-material/Leaderboard';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import OpportunityForm from "../Forms/oppForm";
@@ -29,6 +29,7 @@ export default function OpportunityManagement() {
   const [isKanbanVisible, setIsKanbanVisible] = useState(false);
   const [isFormVisible, setISFormVIsible] = useState(false);
   const [Opportunity, setOpportunity] = useState([]);
+  const [Learner, setLearner] = useState([]);
 
 
 
@@ -68,11 +69,11 @@ export default function OpportunityManagement() {
     // Add the new Opportunity to the state and sort by date (most recent first)
     setOpportunity((prevOpportunity) => {
       const updatedOpportunity = [newOpportunity, ...prevOpportunity]; // Add the new Opportunity at the top
-      return updatedOpportunity.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return updatedOpportunity.sort((a, b) => new Date(b.Date) - new Date(a.Date));
     });
     setFilteredRows((prevOpportunity) => {
       const updatedOpportunity = [newOpportunity, ...prevOpportunity];
-      return updatedOpportunity.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return updatedOpportunity.sort((a, b) => new Date(b.Date) - new Date(a.Date));
     });
   };
 
@@ -140,6 +141,8 @@ export default function OpportunityManagement() {
       })
       .catch(error => console.error('Error in delete request:', error));
   };
+
+
 
 
 
@@ -275,8 +278,91 @@ export default function OpportunityManagement() {
   };
 
 
-  // for Dashboard:
+  // for Convertion to Learner:
 
+  const handleConvert = () => {
+    try {
+      const selectedOpportunity = currentRows.filter(row => selectedRows.includes(row.Id));
+  
+      if (selectedOpportunity.length === 0) {
+        AlertMessage('No rows selected. Please select at least one row.', 'error');
+        return;
+      }
+  
+      const mappedLearner = selectedOpportunity.map(Opportunity => {
+        // Check required fields
+        if (!Opportunity.Name || !Opportunity.Contact_No || !Opportunity.Email || !Opportunity.Fee_Coated || !Opportunity.Description || !Opportunity.Date) {
+          throw new Error('All required fields must be filled');
+        }
+  
+        // Provide default values for missing fields or fetch from user input
+        const Learner = {
+          Id: Opportunity.Id,
+          First_Name: Opportunity.Name,
+          Last_Name: Opportunity.Last_Name || '-', // Add default value if missing
+          Id_Proof: Opportunity.Id_Proof || 'N/A', // Add default value if missing
+          Phone: Opportunity.Contact_No,
+          Email: Opportunity.Email,
+          Currency: Opportunity.Fee_Coated,
+          Description: Opportunity.Description,
+          Lead_Created_Time: Opportunity.Date,
+          Batch_Id: Opportunity.Batch_Id || '0', // Default if Batch_Id missing
+          Alternate_Phone: Opportunity.Alternate_Phone || '123',
+          Source: Opportunity.Source || 'Unknown',
+          Learner_Owner: Opportunity.Learner_Owner || 1, // Default value
+          Exchange_Rate: Opportunity.Exchange_Rate || '1.000',
+          Registered_Course: Opportunity.Registered_Course || 1, // Default course ID
+          Course_Comments: Opportunity.Course_Comments || 'N/A',
+          Slack_Access: Opportunity.Slack_Access || 'N/A',
+          LMS_Access: Opportunity.LMS_Access || 'N/A',
+          Comment: Opportunity.Comment || 'No Comment',
+          Tech_Stack: Opportunity.Tech_Stack,
+          Mode_Of_Class: Opportunity.Class_Mode,
+          Attended_Demo: Opportunity.Demoattended_Stage || 'Not Attended',
+          Learner_Stage: Opportunity.Opportunity_Stage || 'New',
+          Location: Opportunity. Visited_Stage|| 'N/A',
+          Counseling_Done_By: false,  // Default value
+        };
+  
+        // Convert the Batch_Timing to the required YYYY-MM-DD format or use a default date
+        Learner.Batch_Timing = Opportunity.Batch_Timing ? "2024-10-01" : "2024-10-01"; // Adjust this as per your logic
+        
+        return Learner;
+      });
+  
+      const LearnApiUrl  = process.env.NEXT_PUBLIC_API_URL;
+  
+      // Post each learner individually to the server
+      mappedLearner.forEach(learner => {
+        axios.post(`${LearnApiUrl}/learners/`, learner)
+          .then(response => {
+            setLearner(prevLearner => [...prevLearner, learner]);
+  
+            // Delete the converted opportunity after successful learner creation
+            const opportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
+            selectedOpportunity.forEach(Opportunity => {
+              axios.delete(`${opportunityApiUrl}/opportunities/${Opportunity.Id}/`)
+                .then(deleteResponse => {
+                  setLearner(prevLearner => prevLearner.filter(l => l.Id !== Opportunity.Id)); // Remove deleted opportunity from state
+                })
+                .catch(deleteError => {
+                  AlertMessage("Error deleting Opportunity", 'error');
+                });
+            });
+  
+            setSelectedRows([]);
+            AlertMessage("Opportunity converted & deleted successfully", 'success');
+          })
+          .catch(error => {
+            console.log('error',error);
+            AlertMessage("Error converting Opportunity", 'error');
+          });
+      });
+    } catch (error) {
+      AlertMessage(error.message || "Error while converting", 'error');
+    }
+  };
+  
 
 
 
@@ -291,7 +377,7 @@ export default function OpportunityManagement() {
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-teal-400 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                  <OpportunityerboardIcon />
+                  <LeaderboardIcon/>
                   All Opportunity
                   <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
                 </MenuButton>
@@ -352,7 +438,9 @@ export default function OpportunityManagement() {
               </div>
               <div className="py-1">
                 <MenuItem >
-                  <button className="w-full  block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900">Convert</button>
+                  <button 
+                  onClick={handleConvert}
+                  className="w-full  block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900">Convert</button>
                 </MenuItem>
               </div>
             </MenuItems>
@@ -427,7 +515,7 @@ export default function OpportunityManagement() {
                   </th >
                   <th className='border-1 p-2'>created On</th>
                   <th className='border-1 p-2'>Name</th>
-                  <th className='border-1 p-2'>Lead Status</th>
+                  <th className='border-1 p-2'>Opportunity Status</th>
                   <th className='border-1 p-2'>Opportunity Status</th>
                   <th className='border-1 p-2'>Contact</th>
                   <th className='border-1 p-2'>Email</th>
@@ -457,7 +545,7 @@ export default function OpportunityManagement() {
 
                       <td className="border-1 p-2">{row.Date}</td>
                       <td className='border-1 p-2'>{row.Name}</td>
-                      <td className='border-1 p-2'>{row.Lead_Status}</td>
+                      <td className='border-1 p-2'>{row.Opportunity_Status}</td>
                       <td className='border-1 p-2'>{row.Opportunity_Status}</td>
                       <td className='border-1 p-2'>{row.Contact_No}</td>
                       <td className='border-1 p-2'>{row.Email}</td>

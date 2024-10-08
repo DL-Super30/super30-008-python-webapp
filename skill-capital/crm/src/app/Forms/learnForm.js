@@ -149,6 +149,7 @@ export default function LearnForm({ closeForm, initialData }) {
                 });
 
                 closeForm(); // Close the form
+                window.location.reload();
             }
             else {
                 AlertMessage('failed to create a Learner' , 'error');

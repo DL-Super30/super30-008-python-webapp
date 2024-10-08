@@ -100,6 +100,7 @@ export default function LeadForm({ closeForm, initialData }) {
                     Date: ''
                 });
                 closeForm();
+                window.location.reload();
 
             } else {
                 AlertMessage("Failed to Create Lead Please Try again!", "error");

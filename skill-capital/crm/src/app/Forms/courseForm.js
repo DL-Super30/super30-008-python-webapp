@@ -94,6 +94,7 @@ export default function CourseForm({ closeForm, courseData }) {
                 });
                 setImagePreview(null);  // Reset the image preview
                 closeForm();  // Close the form on success
+                window.location.reload();
             } else {
                 toast.error("Failed to Create Course. Please Try Again!");
             }

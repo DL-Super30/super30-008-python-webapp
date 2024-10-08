@@ -30,6 +30,7 @@ export default function LeadManagement() {
   const [isKanbanVisible, setIsKanbanVisible] = useState(false);
   const [isFormVisible, setISFormVIsible] = useState(false);
   const [Leads, setLeads] = useState([]);
+  const [Opportunity, setOpportunity] = useState([]);
 
 
 
@@ -73,11 +74,11 @@ export default function LeadManagement() {
     // Add the new lead to the state and sort by date (most recent first)
     setLeads((prevLeads) => {
       const updatedLeads = [newLead, ...prevLeads]; // Add the new lead at the top
-      return updatedLeads.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return updatedLeads.sort((a, b) => new Date(b.Date) - new Date(a.Date));
     });
     setFilteredRows((prevLeads) => {
       const updatedLeads = [newLead, ...prevLeads];
-      return updatedLeads.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return updatedLeads.sort((a, b) => new Date(b.Date) - new Date(a.Date));
     });
   };
 
@@ -286,7 +287,81 @@ export default function LeadManagement() {
   };
 
 
-  // for Dashboard:
+  // for Convertion:
+  const handleConvert = () => {
+    try {
+      const selectedLeads = currentRows.filter(row => selectedRows.includes(row.Id));
+  
+      if (selectedLeads.length === 0) {
+        AlertMessage('No rows selected. Please select at least one row.', 'error');
+        return;
+      }
+  
+      const mappedOpportunities = selectedLeads.map(lead => {
+        if (!lead.Name || !lead.CC || !lead.Contact_No || !lead.Email || !lead.Fee_Coated || !lead.Description || !lead.Date) {
+          throw new Error('All required fields must be filled');
+        }
+  
+        const opportunity = {
+          Id: lead.Id,
+          Name: lead.Name,
+          CC: lead.CC,
+          Contact_No: lead.Contact_No,
+          Email: lead.Email,
+          Fee_Coated: lead.Fee_Coated,
+          Description: lead.Description,
+          Date: lead.Date,
+          Batch_Timing: lead.Batch_Timing,
+          Lead_Status: lead.Lead_Status,
+          Lead_Source: lead.Lead_Source,
+          Tech_Stack: lead.Tech_Stack,
+          Course: lead.Course,
+          Class_Mode: lead.Class_Mode,
+        };
+  
+        // Conditionally add optional fields if they have values
+        if (lead.Opportunity_Status) opportunity.Opportunity_Status = lead.Opportunity_Status;
+        if (lead.Opportunity_Stage) opportunity.Opportunity_Stage = lead.Opportunity_Stage;
+        if (lead.Demoattended_Stage) opportunity.Demoattended_Stage = lead.Demoattended_Stage;
+        if (lead.Visited_Stage) opportunity.Visited_Stage = lead.Visited_Stage;
+        if (lead.Lost_Opportunity_Reason) opportunity.Lost_Opportunity_Reason = lead.Lost_Opportunity_Reason;
+  
+        return opportunity;
+      });
+  
+      const OpportunityApiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+      // Post each opportunity individually to the server
+      mappedOpportunities.forEach(opportunity => {
+        axios.post(`${OpportunityApiUrl}/opportunities/`, opportunity)
+          .then(response => {
+            setOpportunity(prevOpportunities => [...prevOpportunities, opportunity]);
+            selectedLeads.forEach(lead => {
+              axios.delete(`${OpportunityApiUrl}/leads/${lead.Id}/`)
+                .then(deleteResponse => {
+                  setLeads(prevLeads => prevLeads.filter(l => l.Id !== lead.Id)); // Remove deleted leads from state
+                  // AlertMessage("Lead deleted successfully", 'success');
+                })
+                .catch(deleteError => {
+                  AlertMessage("Error deleting lead", 'error');
+                });
+            });
+            setSelectedRows([]);
+            AlertMessage("Lead converted & Delete successfully", 'success');
+          })
+          .catch(error => {
+            AlertMessage("Error converting lead", 'error');
+          });
+      });
+    } catch (error) {
+      AlertMessage(error.message || "Error while converting", 'error');
+    }
+  };
+  
+  
+  
+
+
 
 
 
@@ -363,7 +438,9 @@ export default function LeadManagement() {
               </div>
               <div className="py-1">
                 <MenuItem >
-                  <button className="w-full  block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900">Convert</button>
+                  <button
+                  onClick={ handleConvert}
+                   className="w-full  block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900">Convert</button>
                 </MenuItem>
               </div>
             </MenuItems>

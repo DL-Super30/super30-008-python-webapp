@@ -113,6 +113,7 @@ export default function OpportunityForm({ closeForm }) {
                 });
                 AlertMessage('Opportunity created Successfully', 'success');
                 closeForm(); // Close the form
+                window.location.reload();
             } else {
                 AlertMessage('Failed to submit data. Please try again.', 'error');
             }
