@@ -1,5 +1,5 @@
 'use client';
-export default function kanban(){
+export default function KanbanLeads(){
     return(
         <div className="mt-5"> 
             <div className="w-full h-[90vh] ">

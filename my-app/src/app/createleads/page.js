@@ -42,7 +42,7 @@ export default function LeadCreationForm({ setShowCreateLead }) {
         setError(null);
 
         try {
-            const response = await axios.post('http://crm.rajeshcrm.xyz:8000/api/leads/', formData);
+            const response = await axios.post('http://20.205.130.55:8000/api/leads/', formData);
             console.log('Lead created successfully:', response.data);
             alert('Lead created successfully!');
             setFormData({
@@ -140,8 +140,8 @@ export default function LeadCreationForm({ setShowCreateLead }) {
                                     <option value="Walk In">Walk In</option>
                                     <option value="Student Referral">Student Referral</option>
                                     <option value="Demo">Demo</option>
-                                    <option value="Web site">Website</option>
-                                    <option value="Web site Chat">Website Chat</option>
+                                    <option value="Web Site">Web site</option>
+                                    <option value="Web Site Chat">Web site Chat</option>
                                     <option value="Inbound Call">Inbound Call</option>
                                     <option value="Google Ad Words">Google AdWords</option>
                                     <option value="Facebook Ads">Facebook Ads</option>

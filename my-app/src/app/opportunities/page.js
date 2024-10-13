@@ -22,7 +22,7 @@ export default function Opportunities() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://crm.rajeshcrm.xyz:8000/api/opportunities/");
+      const response = await fetch("http://20.205.130.55:8000/api/opportunities/");
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -123,7 +123,7 @@ export default function Opportunities() {
             <table className="w-full border-collapse">
               <thead className="bg-gray-100">
                 <tr>
-                  {['Id','Created On', 'Lead_Status', 'Name', 'Phone', 'Email', 'Course'].map((header) => (
+                  {['Created On', 'Lead_Status', 'Name', 'Phone', 'Email', 'Course'].map((header) => (
                     <th key={header} className="p-3 text-left text-gray-600">{header}</th>
                   ))}
                 </tr>
@@ -137,7 +137,7 @@ export default function Opportunities() {
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="border-b hover:bg-gray-50"
                   >
-                    <td className="p-3">{record.Id}</td>
+                    
                     <td className="p-3">{record.Date}</td>
                     <td className="p-3">{record.Lead_Status || '-'}</td>
                     <td className="p-3">{record.Name || '-'}</td>
@@ -150,7 +150,7 @@ export default function Opportunities() {
             </table>
           </div>
         )}
-        {setShowCreateOpportunity&& (
+        {showCreateOpportunity&& (
           <CreateOpportunity setShowCreateOpportunity={setShowCreateOpportunity} />
         )}
       </motion.div>

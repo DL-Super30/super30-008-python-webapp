@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import {  faIdCard, faPaperPlane, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faIdCard, faPaperPlane, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function CreateOpportunity(props) {
-    const {setShowCreateOpportunity} = props;
+export default function Editopportunity(props) {
+    const {ShowEditopportunity} = props;
     const [formData, setFormData] = useState({
         Name: '',
         CC: 91,
@@ -45,7 +45,7 @@ export default function CreateOpportunity(props) {
         setError(null);
     
         try {
-            const response = await axios.post('http://20.205.130.55:8000/api/opportunities/', formData);
+            const response = await axios.post('http://18.224.180.46:8000/api/opportunities/', formData);
             console.log('Opportunity created:', response.data);
             alert('Opportunity created successfully!');
             setFormData({
@@ -78,36 +78,12 @@ export default function CreateOpportunity(props) {
         } finally {
             setIsLoading(false);
         }
-        const handleCancel = () => {
-        // Clear the form data if needed
-        setFormData({
-            Name: '',
-            CC: 91,
-            Contact_No: '',
-            Email: '',
-            Fee_Coated: '',
-            Description: '',
-            Date: '',
-            Batch_Timing: '',
-            Lead_Status: '',
-            Lead_Source: '',
-            Tech_Stack: '',
-            Course: '',
-            Class_Mode: '',
-            Opportunity_Status: '',
-            Opportunity_Stage: '',
-            Demoattended_Stage: '',
-            Visited_Stage: '',
-            Lost_Opportunity_Reason: ''
-        });
-        setShowCreateOpportunity(false);
-    };
     };
 
     return (
-        <div className=' w-full h-[100vh]  absolute top-0 left-0  bg-black bg-opacity-50 flex items-center justify-center p-4 '>
-        <div className="w-full max-w-4xl  bg-white shadow-lg rounded-lg overflow-hidden ">
-            <div className='h-[600px] overflow-y-auto'>
+        <div className=' fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 '>
+        <div className="w-full max-w-4xl mx-auto mt-8 bg-white shadow-lg rounded-lg overflow-hidden ">
+            <div className='max-h-[90vh] overflow-y-auto'>
             <div className="px-4 sm:px-6 py-4">
                 <div className="flex items-center gap-4 border-b-2 border-gray-200 pb-4 mb-6">
                     <FontAwesomeIcon icon={faIdCard} className="text-blue-500 text-3xl" />
@@ -115,7 +91,7 @@ export default function CreateOpportunity(props) {
                 </div>
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                         <input type="text" name="Name" value={formData.Name} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
@@ -136,87 +112,57 @@ export default function CreateOpportunity(props) {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Opportunity Stage</label>
                         <select name="Opportunity_Stage" value={formData.Opportunity_Stage} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             <option value="">Select Opportunity Stage</option>
-                            <option value="Advanced Disscussion">Advanced Disscussion</option>
-                            <option value="Ready To Join">Ready To Join</option>
-                            <option value="Call Not Answered">Call Not Answered</option>
-                            <option value="Visiting">Visiting</option>
-                            <option value="Fees Negotiation ">Fees Negotiation </option>
-                            <option value="Batch Allocation">Batch Allocation</option>
                             <option value="Need Time This Week">Need Time This Week</option>
                             <option value="Need Time Next Week">Need Time Next Week</option>
                             <option value="Need Time This Month">Need Time This Month</option>
                             <option value="Need Time Next Month">Need Time Next Month</option>
-                            <option value="Special Requirements">Special Requirements</option>
-                            <option value="Need Time Next Month">Closed Own Regisiter</option>
-                            <option value="Busy Asked A Call Back">Busy Asked A Call Back</option>
-                            <option value="Closed Lost">Closed Lost</option>
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                         <input type="tel" name="Contact_No" value={formData.Contact_No} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Demo Attended Stage</label>
-                        <select name="Demoattended_Stage" value={formData.Demoattended_Stage} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"required >
+                        <select name="Demoattended_Stage" value={formData.Demoattended_Stage} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select Demo Attended Stage</option>
-                            <option value="Advanced Disscussion">Advanced Disscussion</option>
-                            <option value="Ready To Join">Ready To Join</option>
-                            <option value="Call Not Answered">Call Not Answered</option>
-                            <option value="Visiting">Visiting</option>
-                            <option value="Fees Negotiation ">Fees Negotiation </option>
-                            <option value="Batch Allocation">Batch Allocation</option>
                             <option value="Need Time This Week">Need Time This Week</option>
                             <option value="Need Time Next Week">Need Time Next Week</option>
                             <option value="Need Time This Month">Need Time This Month</option>
                             <option value="Need Time Next Month">Need Time Next Month</option>
-                            <option value="Special Requirements">Special Requirements</option>
-                            <option value="Need Time Next Month">Closed Own Regisiter</option>
-                            <option value="Busy Asked A Call Back">Busy Asked A Call Back</option>
-                            <option value="Closed Lost">Closed Lost</option>
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input type="email" name="Email" value={formData.Email} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Visited Stage</label>
                         <select name="Visited_Stage" value={formData.Visited_Stage} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select Visited Stage</option>
-                            <option value="Advanced Disscussion">Advanced Disscussion</option>
-                            <option value="Ready To Join">Ready To Join</option>
-                            <option value="Call Not Answered">Call Not Answered</option>
-                            <option value="Visiting">Visiting</option>
-                            <option value="Fees Negotiation ">Fees Negotiation </option>
-                            <option value="Batch Allocation">Batch Allocation</option>
                             <option value="Need Time This Week">Need Time This Week</option>
                             <option value="Need Time Next Week">Need Time Next Week</option>
                             <option value="Need Time This Month">Need Time This Month</option>
                             <option value="Need Time Next Month">Need Time Next Month</option>
-                            <option value="Special Requirements">Special Requirements</option>
-                            <option value="Need Time Next Month">Closed Own Regisiter</option>
-                            <option value="Busy Asked A Call Back">Busy Asked A Call Back</option>
-                            <option value="Closed Lost">Closed Lost</option>
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Fee Quoted * </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Fee Quoted</label>
                         <input type="number" name="Fee_Coated" value={formData.Fee_Coated} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Lost Opportunity Reason </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Lost Opportunity Reason</label>
                         <select name="Lost_Opportunity_Reason" value={formData.Lost_Opportunity_Reason} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select Lost Opportunity Reason</option>
                             <option value="Not Interested">Not Interested</option>
                             <option value="Invalid Number">Invalid Number</option>
-                            <option value="Joined Other Institute">Joined Other Institute</option>
+                            <option value="Joined Another Institute">Joined Another Institute</option>
                             <option value="Asking Free Course">Asking Free Course</option>
                             <option value="Pay After Placement">Pay After Placement</option>
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Batch Timing *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Batch Timing</label>
                         <select name="Batch_Timing" value={formData.Batch_Timing} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             <option value="">Select Batch Timing</option>
                             <option value="7AM-8AM">7AM - 8AM</option>
@@ -232,7 +178,7 @@ export default function CreateOpportunity(props) {
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Next Follow Up *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Next Follow Up</label>
                         <input type="date" name="Date" value={formData.Date} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
@@ -247,14 +193,14 @@ export default function CreateOpportunity(props) {
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Lead Source</label>
-                        <select name="Lead_Source" value={formData.Lead_Source} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
+                        <select name="Lead_Source" value={formData.Lead_Source} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             <option value="">Select Lead Source</option>
                             <option value="Google Ad Words">Google AdWords</option>
                             <option value="Walk In">Walk In</option>
                             <option value="Student Referral">Student Referral</option>
                             <option value="Demo">Demo</option>
-                            <option value="Web site">Web site</option>
-                            <option value="Web site Chat">Web site Chat</option>
+                            <option value="Web site">Website</option>
+                            <option value="Web site Chat">Website Chat</option>
                             <option value="Inbound Call">Inbound Call</option>
                             <option value="Facebook Ads">Facebook Ads</option>
                             <option value="Google My Business">Google My Business</option>
@@ -263,7 +209,7 @@ export default function CreateOpportunity(props) {
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Tech Stack</label>
-                        <select name="Tech_Stack" value={formData.Tech_Stack} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
+                        <select name="Tech_Stack" value={formData.Tech_Stack} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             <option value="">Select Tech Stack</option>
                             <option value="HR">HR</option>
                             <option value="Life Skills">Life Skills</option>
@@ -271,7 +217,7 @@ export default function CreateOpportunity(props) {
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Course *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
                         <select name="Course" value={formData.Course} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             <option value="">Select Course</option>
                             <option value="HR Business Partner">HR Business Partner</option>
@@ -293,7 +239,7 @@ export default function CreateOpportunity(props) {
                         </select>
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Class Mode *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Class Mode</label>
                         <select name="Class_Mode" value={formData.Class_Mode} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             <option value="">Select Class Mode</option>
                             <option value="India Online">India Online</option>
@@ -312,10 +258,29 @@ export default function CreateOpportunity(props) {
                         <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
                         {isLoading ? 'Creating...' : 'CREATE'}
                     </button>
-                    <button onClick={() => setShowCreateOpportunity(false)} className="w-full sm:w-auto px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center justify-center">
-                    <FontAwesomeIcon icon={faTimes} className="mr-2" />
-                    CANCEL
-                </button>
+                    <button onClick={() => setFormData({
+                        Name: '',
+                        CC: 91,
+                        Contact_No: '',
+                        Email: '',
+                        Fee_Coated: '',
+                        Description: '',
+                        Date: '',
+                        Batch_Timing: '',
+                        Lead_Status: '',
+                        Lead_Source: '',
+                        Tech_Stack: '',
+                        Course: '',
+                        Class_Mode: '',
+                        Opportunity_Status: '',
+                        Opportunity_Stage: '',
+                        Demoattended_Stage: '',
+                        Visited_Stage: '',
+                        Lost_Opportunity_Reason: ''
+                    })} className="w-full sm:w-auto px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center justify-center">
+                        <FontAwesomeIcon icon={faTimes} className="mr-2" />
+                        CANCEL
+                    </button>
                 </div>
                 {error && <p className="text-red-500 text-center mt-4">{error}</p>}
             </div>

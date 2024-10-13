@@ -6,11 +6,11 @@ import { motion } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faTable, faColumns, faIdCard } from "@fortawesome/free-solid-svg-icons"
 
-export default function Leads() {
+export default function Courses() {
   const [records, setRecords] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [selectedStatus, setSelectedStatus] = useState('All Learners')
+  const [selectedStatus, setSelectedStatus] = useState('Courses')
 
   useEffect(() => {
     fetchData()
@@ -19,7 +19,7 @@ export default function Leads() {
   const fetchData = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch("http://3.129.13.33:8000/api/courses/")
+      const response = await fetch("http://20.205.130.55:8000/api/courses/")
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }
@@ -27,14 +27,14 @@ export default function Leads() {
       setRecords(data)
     } catch (error) {
       console.error("Failed to fetch data:", error)
-      setError('Failed to load learners. Please try again.')
+      setError('Failed to load courses. Please try again.')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const statusOptions = ['Courses', "IELTS","HR", "Life Skills", ]
-  const learnerStatuses = ['Up Coming', 'On Going', 'On Hold', 'Completed']
+  const statusOptions = ['Courses', "IELTS", "HR", "Life Skills"]
+  const courseStatuses = ['Up Coming', 'On Going', 'On Hold', 'Completed']
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 sm:p-6 lg:p-8">
@@ -58,13 +58,13 @@ export default function Leads() {
             </select>
           </div>
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-            <Link href="/createlearners" className="w-full sm:w-auto">
+            <Link href="/createcourse" className="w-full sm:w-auto">
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200"
               >
-                <h4>CREATE Courses <FontAwesomeIcon icon={faChevronDown} className="ml-2 h-4 w-4" /></h4>
+                <h4>CREATE Course <FontAwesomeIcon icon={faChevronDown} className="ml-2 h-4 w-4" /></h4>
               </motion.button>
             </Link>
             <motion.button 
@@ -80,12 +80,12 @@ export default function Leads() {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
           <input 
             type="search" 
-            placeholder="Search learners..." 
+            placeholder="Search courses..." 
             className="w-full lg:w-80 px-4 py-2 rounded-lg border-2 border-purple-200 focus:border-purple-500 outline-none transition-colors duration-200"
           />
 
           <div className="flex flex-wrap justify-start lg:justify-center gap-2 mt-4 lg:mt-0">
-            {learnerStatuses.map((status) => (
+            {courseStatuses.map((status) => (
               <motion.button
                 key={status}
                 whileHover={{ scale: 1.05 }}
@@ -118,7 +118,7 @@ export default function Leads() {
         </div>
 
         {isLoading ? (
-          <div className="text-center text-xl text-gray-600">Loading learners...</div>
+          <div className="text-center text-xl text-gray-600">Loading courses...</div>
         ) : error ? (
           <div className="text-center text-xl text-red-600">{error}</div>
         ) : (
@@ -126,7 +126,7 @@ export default function Leads() {
             <table className="w-full border-collapse">
               <thead className="bg-gray-100">
                 <tr>
-                  {['Created On', 'Registered Date', 'Name', 'Phone', 'Email', 'Course', 'Learner Stage'].map((header) => (
+                  {['Course Image', 'Course Name', 'Course Fee', 'Description', 'Course Brochure'].map((header) => (
                     <th key={header} className="p-3 text-left text-gray-600">{header}</th>
                   ))}
                 </tr>
@@ -140,13 +140,21 @@ export default function Leads() {
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="border-b hover:bg-gray-50"
                   >
-                    <td className="p-3">{record.created_at || '-'}</td>
-                    <td className="p-3">{record.registered_date || '-'}</td>
-                    <td className="p-3">{record.name || '-'}</td>
-                    <td className="p-3">{record.contact_no || '-'}</td>
-                    <td className="p-3">{record.email || '-'}</td>
-                    <td className="p-3">{record.Course || '-'}</td>
-                    <td className="p-3">{record.learner_stage || '-'}</td>
+                    <td className="p-3">
+                      {record.course_image ? (
+                        <img src={record.course_image} alt={record.course_name} className="w-16 h-16 object-cover rounded" />
+                      ) : '-'}
+                    </td>
+                    <td className="p-3">{record.course_name || '-'}</td>
+                    <td className="p-3">{record.course_fee || '-'}</td>
+                    <td className="p-3">{record.description || '-'}</td>
+                    <td className="p-3">
+                      {record.course_brochure ? (
+                        <a href={record.course_brochure} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                          View Brochure
+                        </a>
+                      ) : '-'}
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>

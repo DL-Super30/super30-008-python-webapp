@@ -33,7 +33,7 @@ export default function Login() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post("http://crm.rajeshcrm.xyz:8000/api/login/", { username, password });
+            const response = await axios.post("http://18.222.30.158:8000/api/login/", { username, password });
             
             if (response) {
                 console.log("Login successful");

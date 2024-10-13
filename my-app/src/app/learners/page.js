@@ -19,7 +19,7 @@ export default function Leads() {
   const fetchData = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch("http://crm.rajeshcrm.xyz:8000/api/learners/");
+      const response = await fetch("http://20.205.130.55:8000/api/learners/");
       
       if (!response.ok) {
         throw new Error('Network response was not ok')

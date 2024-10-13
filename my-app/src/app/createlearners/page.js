@@ -52,7 +52,7 @@ export default function CreateLearner({ onClose }) {
         setError(null)
 
         try {
-            const response = await axios.post('http://crm.rajeshcrm.xyz:8000/api/learners/', formData)
+            const response = await axios.post('http://20.205.130.55:8000/api/learners/', formData)
             console.log('Learner created successfully:', response.data)
             alert('Learner created successfully!')
             onClose()
