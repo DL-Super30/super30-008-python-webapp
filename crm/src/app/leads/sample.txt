@@ -4,93 +4,100 @@ import { useState, useEffect } from 'react'
 import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleDown, faAngleUp, faTable, faColumns, faSearch, faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons"
-import OpportunityForm from "@/components/createopportunities"
-import UpdateOpportunityForm from '@/components/updateopportform'
+import LeadForm from "@/components/leadform"
+import UpdateLeadForm from "@/components/updateleads"
 
-const statusColors = {
+const leadStatusColors = {
   "Not Contacted": "bg-pink-500 text-white",
   "Attempted": "bg-amber-500 text-white",
-  "Warm Opportunity": "bg-emerald-500 text-white",
-  "Cold Opportunity": "bg-sky-500 text-white",
+  "Warm Lead": "bg-emerald-500 text-white",
+  "Cold Lead": "bg-sky-500 text-white",
 }
 
-export default function Opportunities() {
-  const [activeOpportunityStatus, setActiveOpportunityStatus] = useState("All Opportunities")
+export default function Leads() {
+  const [activeLeadStatus, setActiveLeadStatus] = useState("All Leads")
   const [searchQuery, setSearchQuery] = useState("")
-  const [showOpportunityForm, setShowOpportunityForm] = useState(false)
+  const [showLeadForm, setShowLeadForm] = useState(false)
   const [view, setView] = useState("Table")
-  const [opportunities, setOpportunities] = useState([])
+  const [leads, setLeads] = useState([])
   const [showUpdateForm, setShowUpdateForm] = useState(false)
-  const [opportunityToUpdate, setOpportunityToUpdate] = useState(null)
+  const [leadToUpdate, setLeadToUpdate] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
-    fetchOpportunities()
+    fetchLeads()
   }, [])
 
-  async function fetchOpportunities() {
+  async function fetchLeads() {
     setIsLoading(true)
     try {
-      const response = await fetch('http://127.0.0.1:3001/opportunities')
-      if (!response.ok) throw new Error('Network response was not ok')
+      const response = await fetch("http://3.140.199.145:8000/api/leads/")
+      if (!response.ok) throw new Error("Network response was not ok")
       const data = await response.json()
-      setOpportunities(data)
+      setLeads(data)
     } catch (error) {
-      console.error('Error fetching opportunities data:', error)
-      // Optionally, set an error state here to display to the user
+      console.error("Error fetching leads data:", error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const getFilteredOpportunities = () => {
-    let filtered = opportunities
-    if (activeOpportunityStatus !== "All Opportunities") {
-      filtered = filtered.filter(opportunity => opportunity.status === activeOpportunityStatus)
+  const getFilteredLeads = () => {
+    let filtered = leads
+    if (activeLeadStatus !== "All Leads") {
+      filtered = filtered.filter((lead) => lead.Lead_Status === activeLeadStatus)
     }
     if (searchQuery) {
-      filtered = filtered.filter(opportunity =>
-        opportunity.name.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter((lead) =>
+        lead.Name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
     return filtered
   }
 
-  const getOpportunitiesCountByStatus = (status) => {
-    return opportunities.filter(opportunity => status === "All Opportunities" || opportunity.status === status).length
+  const getLeadsCountByStatus = (Lead_Status) => {
+    return leads.filter(
+      (lead) => Lead_Status === "All Leads" || lead.Lead_Status === Lead_Status
+    ).length
   }
 
   const handleViewClick = (viewType) => {
     setView(viewType)
   }
 
-  const handleOpportunityStatusClick = (status) => {
-    setActiveOpportunityStatus(status)
+  const handleLeadStatusClick = (Lead_Status) => {
+    setActiveLeadStatus(Lead_Status)
   }
 
-  const toggleOpportunityForm = () => {
-    setShowOpportunityForm(prev => !prev)
+  const toggleLeadForm = () => {
+    setShowLeadForm((prev) => !prev)
   }
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
 
-  const handleDeleteOpportunity = async (opportunityId) => {
+  const handleDeleteLead = async (leadId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:3001/opportunities/${opportunityId}`, {
+      const response = await fetch(`http://18.217.221.233:8000/api/leads/${leadId}`, {
         method: "DELETE",
       })
-      if (!response.ok) throw new Error("Failed to delete opportunity")
-      setOpportunities(opportunities.filter((opportunity) => opportunity.id !== opportunityId))
+      if (!response.ok) throw new Error("Failed to delete lead")
+      setLeads(leads.filter((lead) => lead.id !== leadId))
     } catch (error) {
-      console.error("Error deleting opportunity:", error)
+      console.error("Error deleting lead:", error)
     }
   }
 
-  const handleEditOpportunity = (opportunity) => {
-    setOpportunityToUpdate(opportunity)
+  const handleEditLead = (lead) => {
+    setLeadToUpdate(lead)
     setShowUpdateForm(true)
   }
 
-  const getOpportunitiesByStatus = (status) => {
-    return opportunities.filter(opportunity => opportunity.status === status)
+  const updateLead = (updatedLead) => {
+    setLeads((prevLeads) =>
+      prevLeads.map((lead) => (lead.id === updatedLead.id ? updatedLead : lead))
+    )
   }
 
   const formatDate = (dateString) => {
@@ -105,21 +112,21 @@ export default function Opportunities() {
           <div className="flex items-center gap-3 mb-4 md:mb-0">
             <Image src="/images/employee_contact.2d215fd6.svg" alt="logo" width={44} height={44} className="rounded-full bg-indigo-100 p-2 transition-transform duration-300 hover:scale-110" />
             <h2 className="text-3xl font-bold text-indigo-800 flex items-center gap-2">
-              All Opportunities <FontAwesomeIcon icon={faAngleDown} className="text-indigo-500" />
+              All Leads <FontAwesomeIcon icon={faAngleDown} className="text-indigo-500" />
             </h2>
           </div>
           <div className="flex items-center space-x-2">
             <button
-              onClick={toggleOpportunityForm}
+              onClick={toggleLeadForm}
               className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center gap-2 shadow-md hover:shadow-lg"
             >
-              {showOpportunityForm ? (
+              {showLeadForm ? (
                 <>
                   Close Form <FontAwesomeIcon icon={faAngleUp} />
                 </>
               ) : (
                 <>
-                  Create Opportunity <FontAwesomeIcon icon={faPlus} />
+                  Create Lead <FontAwesomeIcon icon={faPlus} />
                 </>
               )}
             </button>
@@ -131,33 +138,33 @@ export default function Opportunities() {
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <div className="relative w-full md:w-64 mb-4 md:mb-0">
-            <label htmlFor="search-opportunities" className="sr-only">Search opportunities</label>
+            <label htmlFor="search-leads" className="sr-only">Search leads</label>
             <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-400" />
             <input
-              id="search-opportunities"
+              id="search-leads"
               type="search"
-              placeholder="Search opportunities"
+              placeholder="Search leads"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300"
             />
           </div>
           <div className="flex flex-wrap justify-center md:justify-end gap-2">
-            {["All Opportunities", "Not Contacted", "Attempted", "Warm Opportunity", "Cold Opportunity"].map((status) => (
+            {["All Leads", "Not Contacted", "Attempted", "Warm Lead", "Cold Lead"].map((Lead_Status) => (
               <button
-                key={status}
-                onClick={() => handleOpportunityStatusClick(status)}
+                key={Lead_Status}
+                onClick={() => handleLeadStatusClick(Lead_Status)}
                 className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ease-in-out ${
-                  activeOpportunityStatus === status
+                  activeLeadStatus === Lead_Status
                     ? "bg-indigo-600 text-white shadow-md"
                     : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
                 }`}
               >
-                {status}
+                {Lead_Status}
                 <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
-                  activeOpportunityStatus === status ? "bg-white text-indigo-600" : "bg-indigo-600 text-white"
+                  activeLeadStatus === Lead_Status ? "bg-white text-indigo-600" : "bg-indigo-600 text-white"
                 }`}>
-                  {getOpportunitiesCountByStatus(status)}
+                  {getLeadsCountByStatus(Lead_Status)}
                 </span>
               </button>
             ))}
@@ -187,7 +194,7 @@ export default function Opportunities() {
 
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-            <p className="text-lg text-gray-600">Loading opportunities...</p>
+            <p className="text-lg text-gray-600">Loading leads...</p>
           </div>
         ) : (
           view === "Table" ? (
@@ -204,29 +211,29 @@ export default function Opportunities() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-indigo-100">
-                  {getFilteredOpportunities().map((opportunity) => (
-                    <tr key={opportunity.id} className="hover:bg-indigo-50 transition duration-300">
-                      <td className="py-4 px-4 whitespace-nowrap">{opportunity.name}</td>
+                  {getFilteredLeads().map((lead) => (
+                    <tr key={lead.id} className="hover:bg-indigo-50 transition duration-300">
+                      <td className="py-4 px-4 whitespace-nowrap">{lead.Name}</td>
                       <td className="py-4 px-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[opportunity.status]}`}>
-                          {opportunity.status}
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${leadStatusColors[lead.Lead_Status]}`}>
+                          {lead.Lead_Status}
                         </span>
                       </td>
-                      <td className="py-4 px-4 whitespace-nowrap">{opportunity.phone}</td>
-                      <td className="py-4 px-4 whitespace-nowrap">{opportunity.stack}</td>
-                      <td className="py-4 px-4 whitespace-nowrap">{opportunity.course}</td>
+                      <td className="py-4 px-4 whitespace-nowrap">{lead.Contact_No}</td>
+                      <td className="py-4 px-4 whitespace-nowrap">{lead.Tech_Stack}</td>
+                      <td className="py-4 px-4 whitespace-nowrap">{lead.Course}</td>
                       <td className="py-4 px-4 whitespace-nowrap text-sm font-medium">
                         <button
-                          onClick={() => handleEditOpportunity(opportunity)}
+                          onClick={() => handleEditLead(lead)}
                           className="text-indigo-600 hover:text-indigo-900 mr-3 transition duration-300"
-                          aria-label={`Edit ${opportunity.name}`}
+                          aria-label={`Edit ${lead.Name}`}
                         >
                           <FontAwesomeIcon icon={faPen} />
                         </button>
                         <button
-                          onClick={() => handleDeleteOpportunity(opportunity.id)}
+                          onClick={() => handleDeleteLead(lead.id)}
                           className="text-red-600 hover:text-red-900 transition duration-300"
-                          aria-label={`Delete ${opportunity.name}`}
+                          aria-label={`Delete ${lead.Name}`}
                         >
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
@@ -238,29 +245,29 @@ export default function Opportunities() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {["Not Contacted", "Attempted", "Warm Opportunity", "Cold Opportunity"].map((status) => (
+              {["Not Contacted", "Attempted", "Warm Lead", "Cold Lead"].map((status) => (
                 <div key={status} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <h3 className={`font-bold text-lg p-4 ${statusColors[status]}`}>{status}</h3>
+                  <h3 className={`font-bold text-lg p-4 ${leadStatusColors[status]}`}>{status}</h3>
                   <div className="p-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto">
-                    {getOpportunitiesByStatus(status).map((opportunity) => (
-                      <div key={opportunity.id} className="bg-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300">
-                        <p className="font-bold text-lg text-indigo-800">{opportunity.name}</p>
-                        <p className="text-sm text-indigo-600">{opportunity.phone}</p>
-                        <p className="text-sm text-indigo-600">Stack: {opportunity.stack}</p>
-                        <p className="text-sm text-indigo-600">Course: {opportunity.course}</p>
-                        <p className="text-sm text-indigo-400">Created: {formatDate(opportunity.created_on)}</p>
+                    {getFilteredLeads().filter(lead => lead.Lead_Status === status).map((lead) => (
+                      <div key={lead.id} className="bg-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300">
+                        <p className="font-bold text-lg text-indigo-800">{lead.Name}</p>
+                        <p className="text-sm text-indigo-600">{lead.Contact_No}</p>
+                        <p className="text-sm text-indigo-600">Stack: {lead.Tech_Stack}</p>
+                        <p className="text-sm text-indigo-600">Course: {lead.Course}</p>
+                        <p className="text-sm text-indigo-400">Created: {formatDate(lead.Date)}</p>
                         <div className="mt-2 flex justify-end space-x-2">
                           <button
-                            onClick={() => handleEditOpportunity(opportunity)}
+                            onClick={() => handleEditLead(lead)}
                             className="text-indigo-600 hover:text-indigo-800 transition duration-300"
-                            aria-label={`Edit ${opportunity.name}`}
+                            aria-label={`Edit ${lead.Name}`}
                           >
                             <FontAwesomeIcon icon={faPen} />
                           </button>
                           <button
-                            onClick={() => handleDeleteOpportunity(opportunity.id)}
+                            onClick={() => handleDeleteLead(lead.id)}
                             className="text-red-600 hover:text-red-800 transition duration-300"
-                            aria-label={`Delete ${opportunity.name}`}
+                            aria-label={`Delete ${lead.Name}`}
                           >
                             <FontAwesomeIcon icon={faTrash} />
                           </button>
@@ -275,18 +282,18 @@ export default function Opportunities() {
         )}
       </div>
 
-      {showOpportunityForm && (
+      {showLeadForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-2xl w-full">
-            <OpportunityForm setShowOpportunityForm={setShowOpportunityForm} />
+          <div className="bg-white p-6 rounded-lg max-w-2xl  w-full">
+            <LeadForm onClose={() => setShowLeadForm(false)} addLead={(newLead) => setLeads([...leads, newLead])} />
           </div>
         </div>
       )}
 
-      {showUpdateForm && opportunityToUpdate && (
+      {showUpdateForm && leadToUpdate && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-2xl w-full">
-            <UpdateOpportunityForm opportunity={opportunityToUpdate} onClose={() => setShowUpdateForm(false)} />
+            <UpdateLeadForm lead={leadToUpdate} onClose={() => setShowUpdateForm(false)} onUpdate={updateLead} />
           </div>
         </div>
       )}

@@ -13,13 +13,13 @@ export default function Header() {
     pathId === pathName ? 'bg-[#ab43c8] text-white  px-5 rounded font-semi-bold' : 'text-black';
   return (
     <nav className="bg- blue shadow rounded-md border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between px-4 h-20">
+      <div className="max-w-7xl auto-mx px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-evenly	 px-4 h-20">
           <div className="flex items-center">
             <img src="/images/2.webp" alt="Skill Capital Logo" className='h-8'/>
           </div>
           {/* Center: Navigation Links */}
-         <div className="justify-between hidden md:flex gap-4 xl:gap-8 items-center flex-grow">
+         <div className="justify-center	 gap-6 hidden md:flex  xl:gap-2 items-center flex-grow">
           <Link href="/dashboard" className={`text-base font-medium flex items-center text-black  ${getClassLink('/dashboard')}`}>
                     Home
                 </Link>
@@ -41,7 +41,7 @@ export default function Header() {
                 </Link>
           </div>
           {/* Right: Icons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6  ">
           <p><FontAwesomeIcon icon={faAtom} className='text-lg' /></p>
           <p><FontAwesomeIcon icon={faBell} className='text-lg' /></p>
           <p><FontAwesomeIcon icon={faUser} className='text-lg' /></p>

@@ -14,7 +14,7 @@ export default function UpdateLeadForm({ lead, onClose, onUpdate }) {
     setError(null); // Reset any previous errors
 
     try {
-      const response = await fetch(`http://18.224.180.46:8000/api/leads/${updatedLead.id}`, {
+      const response = await fetch("http://3.140.199.145:8000/api/leads/${updatedLead.id}/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export default function UpdateLeadForm({ lead, onClose, onUpdate }) {
       onClose();
     } catch (error) {
       console.error('Error updating lead:', error);
-      setError(error.message); // Set error message to display
+      setError('not updated:',error); // Set error message to display
     }
   };
 

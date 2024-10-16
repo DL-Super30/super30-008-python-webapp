@@ -1,142 +1,164 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faAngleDown, faTable, faColumns, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faTable, faColumns, faSearch, faPlus, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+library.add(faAngleDown, faTable, faColumns, faSearch, faPlus, faEllipsisV);
+
+const statusColors = {
+  'Upcoming': 'bg-blue-500',
+  'Ongoing': 'bg-green-500',
+  'On Hold': 'bg-yellow-500',
+  'Completed': 'bg-purple-500'
+};
 
 export default function Learners() {
-  const [activelearnerStatus, setActivelearnerStatus] = useState(null);
+  const [activeLearnerStatus, setActiveLearnerStatus] = useState(null);
   const [activeView, setActiveView] = useState('Table');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [learnerCounts, setLearnerCounts] = useState({
+    Upcoming: 0,
+    Ongoing: 0,
+    'On Hold': 0,
+    Completed: 0
+  });
 
-  const handlelearnerStatusClick = (status) => {
-    setActivelearnerStatus(status);
-    // Add your logic here
-    console.log(`learner status clicked: ${status}`);
+  useEffect(() => {
+    // Simulating API call to get learner counts
+    const fetchLearnerCounts = () => {
+      setLearnerCounts({
+        Upcoming: Math.floor(Math.random() * 50),
+        Ongoing: Math.floor(Math.random() * 100),
+        'On Hold': Math.floor(Math.random() * 30),
+        Completed: Math.floor(Math.random() * 200)
+      });
+    };
+
+    fetchLearnerCounts();
+    const interval = setInterval(fetchLearnerCounts, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLearnerStatusClick = (status) => {
+    setActiveLearnerStatus(status);
+    console.log(`Learner status clicked: ${status}`);
   };
 
   const handleViewClick = (view) => {
     setActiveView(view);
-    // Add your logic here
     console.log(`View clicked: ${view}`);
   };
+
   return (
-    
-      <div className="lg:w-full">
-        <div className="mx-5 my-2.5 py-2.5 shadow-lg border-2 bg-[#FFF] rounded-lg">
-          <div className="mb-5">
-            <div className="flex flex-wrap gap-3 justify-between items-center px-5 py-2">
-              <div className="flex gap-3 items-center">
+    <div className="lg:w-full bg-gray-100 min-h-screen ">
+      <div className="mx-auto max-w-9xl px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6">
+            <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+              <div className="flex gap-4 items-center">
                 <Image
                   src="/images/employee_contact.2d215fd6.svg"
                   alt="logo"
                   width={44}
                   height={44}
+                  className="rounded-full bg-purple-100 p-2"
                 />
-                <h2 className="text-2xl font-medium text-black flex items-center gap-2">All Learners<FontAwesomeIcon icon={faAngleDown} /></h2>
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                  All Learners
+                  <FontAwesomeIcon icon={faAngleDown} className="text-purple-500" />
+                </h2>
               </div>
-              <div className="flex gap-2">
-                <div>
-                  <button className="bg-[#ab43c8] text-white text-sm rounded-lg border-solid border-black px-4 p-1 leading-6 gap-2">Create Learner <FontAwesomeIcon icon={faAngleDown} className="mt-2" /></button>
-                </div>
-                <div>
-                  <button className="bg-white text-black text-sm rounded-md border border-neutral-400 px-4 p-1 leading-6 gap-2">Actions<FontAwesomeIcon icon={faAngleDown} className="mt-2 ml-1" /></button>
-                </div>
-
+              <div className="flex gap-4">
+                <button className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center gap-2">
+                  <FontAwesomeIcon icon={faPlus} />
+                  Create Learner
+                </button>
+                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded-lg shadow transition duration-300 ease-in-out flex items-center gap-2">
+                  Actions
+                  <FontAwesomeIcon icon={faAngleDown} />
+                </button>
               </div>
-
             </div>
-            <div className="flex justify-between items-center px-5 py-2">
-              <div className="flex flex-wrap gap-3 items-center">
-                <div className="relative w-72">
+
+            <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+              <div className="flex-grow max-w-md">
+                <div className="relative">
+                  <input
+                    type="search"
+                    className="w-full h-10 pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    placeholder="Search learners..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                   <FontAwesomeIcon
                     icon={faSearch}
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                   />
-                  <input
-                    type="search"
-                    className="w-full h-8 rounded-md border border-[#969492] pl-10 p-1.5 text-gray-900"
-                    placeholder="search"
-                  />
-                </div>
-                <div className="inline-flex rounded-md shadow-sm">
-                  <button
-                    type="button"
-                    className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 rounded-s-lg ${activelearnerStatus === 'Not Contacted'
-                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
-                      : 'bg-white text-black border-[#747474]'
-                      }`}
-                    onClick={() => handlelearnerStatusClick('Not Contacted')}
-                  >
-                    Upcoming
-                    <p className="bg-rose-600 py-1 px-2.5 rounded-full">0</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activelearnerStatus === 'Attempted'
-                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
-                      : 'bg-white text-black border-[#747474]'
-                      }`}
-                    onClick={() => handlelearnerStatusClick('Attempted')}
-                  >
-                    Ongoing
-                    <p className="bg-rose-600 py-1 px-2.5 rounded-full">0</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activelearnerStatus === 'Warm Lead'
-                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
-                      : 'bg-white text-black border-[#747474]'
-                      }`}
-                    onClick={() => handlelearnerStatusClick('Warm Lead')}
-                  >
-                    On Hold
-                    <p className="bg-rose-600 py-1 px-2.5 rounded-full">0</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`inline-flex gap-2 items-center px-4 py-1 text-sm font-normal border focus:border-transparent transition duration-700 ${activelearnerStatus === 'Cold Lead'
-                      ? 'bg-[#ab43c8] text-white border-[#ab43c8]'
-                      : 'bg-white text-black border-[#747474]'
-                      }`}
-                    onClick={() => handlelearnerStatusClick('Cold Lead')}
-                  >
-                    Completed
-                    <p className="bg-rose-600 py-1 px-2.5 rounded-full">0</p>
-                  </button>
-                </div>
-
-                <div className="inline-flex rounded-md shadow-sm">
-                  <button
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-s-lg ${activeView === 'Table'
-                      ? 'bg-[#ab43c8] text-white'
-                      : 'bg-white text-black border-[#747474]'
-                      }`}
-                    onClick={() => handleViewClick('Table')}
-                  >
-                    <FontAwesomeIcon icon={faTable} />
-                    Table
-                  </button>
-                  <button
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-normal border rounded-e-lg ${activeView === 'Kanban'
-                      ? 'bg-[#ab43c8] text-white'
-                      : 'bg-white text-black border-[#747474]'
-                      }`}
-                    onClick={() => handleViewClick('Kanban')}
-                  >
-                    <FontAwesomeIcon icon={faColumns} />
-                    Kanban
-                  </button>
                 </div>
               </div>
+
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(learnerCounts).map(([status, count]) => (
+                  <button
+                    key={status}
+                    className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition duration-300 ease-in-out ${
+                      activeLearnerStatus === status
+                        ? `${statusColors[status]} text-white`
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                    onClick={() => handleLearnerStatusClick(status)}
+                  >
+                    {status}
+                    <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
+                      activeLearnerStatus === status ? 'bg-white text-gray-800' : statusColors[status]
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex rounded-lg overflow-hidden border border-gray-300">
+                <button
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition duration-300 ease-in-out ${
+                    activeView === 'Table'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                  onClick={() => handleViewClick('Table')}
+                >
+                  <FontAwesomeIcon icon={faTable} />
+                  Table
+                </button>
+                <button
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition duration-300 ease-in-out ${
+                    activeView === 'Kanban'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                  onClick={() => handleViewClick('Kanban')}
+                >
+                  <FontAwesomeIcon icon={faColumns} />
+                  Kanban
+                </button>
+              </div>
+            </div>
+
+            {/* Placeholder for learner data table or kanban board */}
+            <div className="bg-gray-100 rounded-lg p-8 text-center text-gray-500">
+              {activeView === 'Table' ? (
+                <p>Learner data table will be displayed here</p>
+              ) : (
+                <p>Learner kanban board will be displayed here</p>
+              )}
             </div>
           </div>
         </div>
       </div>
-    
-  )
+    </div>
+  );
 }
