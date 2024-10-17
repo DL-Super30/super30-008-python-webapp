@@ -10,7 +10,7 @@ export default function Header() {
   const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const getClassLink = (pathId) =>
-    pathId === pathName ? 'bg-[#ab43c8] text-white  px-5 rounded font-semi-bold' : 'text-black';
+    pathId === pathName ? 'text-indigo-600  px-5 rounded font-semi-bold' : 'text-black';
   return (
     <nav className="bg- blue shadow rounded-md border">
       <div className="max-w-7xl auto-mx px-4 sm:px-6 lg:px-8">

@@ -79,7 +79,7 @@ export default function Leads() {
 
   const handleDeleteLead = async (leadId) => {
     try {
-      const response = await fetch(`http://18.217.221.233:8000/api/leads/${leadId}`, {
+      const response = await fetch(`http://3.140.199.145:8000/api/leads//${leadId}`, {
         method: "DELETE",
       })
       if (!response.ok) throw new Error("Failed to delete lead")
